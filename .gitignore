@@ -4,6 +4,10 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# Keep hexagonal architecture packages named "out" under source control.
+!**/src/main/**/out/
+!**/src/main/**/out/**
+
 ### macOS ###
 .DS_Store
 .AppleDouble
