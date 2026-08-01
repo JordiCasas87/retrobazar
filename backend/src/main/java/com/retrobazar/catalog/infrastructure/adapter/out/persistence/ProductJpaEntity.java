@@ -62,4 +62,44 @@ public class ProductJpaEntity {
 
     protected ProductJpaEntity() {
     }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public ProductCategory getCategory() {
+        return category;
+    }
+
+    public List<String> getImageUrls() {
+        return imageUrls;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
 }
