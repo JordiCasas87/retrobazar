@@ -3,10 +3,12 @@ package com.retrobazar.catalog.application.implementation;
 import com.retrobazar.catalog.application.port.in.ListActiveProductsUseCase;
 import com.retrobazar.catalog.application.port.out.ProductRepositoryPort;
 import com.retrobazar.catalog.domain.Product;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 
+@Service
 public class ListActiveProductsUseCaseImpl implements ListActiveProductsUseCase {
 
     private final ProductRepositoryPort productRepositoryPort;
