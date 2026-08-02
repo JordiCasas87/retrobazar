@@ -1,0 +1,8 @@
+Este paquete contendra la configuracion tecnica del modulo Catalog.
+
+Ejemplos:
+- Configuracion de seguridad y permisos de sus endpoints.
+- Configuracion de Swagger/OpenAPI relacionada con el modulo.
+- Creacion explicita de beans tecnicos cuando sea necesaria.
+
+Este archivo se eliminara cuando creemos la primera configuracion real.

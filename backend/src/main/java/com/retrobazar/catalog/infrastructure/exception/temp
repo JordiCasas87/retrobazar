@@ -1,0 +1,8 @@
+Este paquete contendra el tratamiento de excepciones en la frontera HTTP.
+
+Ejemplos:
+- Convertir excepciones del dominio en respuestas HTTP.
+- Definir el formato comun de los errores devueltos como JSON.
+- Asignar codigos HTTP como 400, 404 o 409.
+
+Este archivo se eliminara cuando creemos el manejador de excepciones real.
