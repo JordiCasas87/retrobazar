@@ -27,6 +27,29 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
                 .toList();
     }
 
+    @Override
+    public Product save(Product newProduct) {
+        ProductJpaEntity productEntity = toEntity(newProduct);
+        ProductJpaEntity savedProductEntity = springDataProductRepository.save(productEntity);
+        Product savedProduct = toDomain(savedProductEntity);
+        return savedProduct;
+    }
+
+    private ProductJpaEntity toEntity(Product product) {
+        return new ProductJpaEntity(
+                product.getId(),
+                product.getName(),
+                product.getBrand(),
+                product.getDescription(),
+                product.getPrice(),
+                product.getStock(),
+                product.getCategory(),
+                product.getImageUrls(),
+                product.isActive(),
+                product.getCreatedAt()
+        );
+    }
+
     private Product toDomain(ProductJpaEntity entity) {
         return new Product(
                 entity.getId(),

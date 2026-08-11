@@ -63,6 +63,30 @@ public class ProductJpaEntity {
     protected ProductJpaEntity() {
     }
 
+    public ProductJpaEntity(
+            UUID id,
+            String name,
+            String brand,
+            String description,
+            BigDecimal price,
+            int stock,
+            ProductCategory category,
+            List<String> imageUrls,
+            boolean active,
+            Instant createdAt
+    ) {
+        this.id = id;
+        this.name = name;
+        this.brand = brand;
+        this.description = description;
+        this.price = price;
+        this.stock = stock;
+        this.category = category;
+        this.imageUrls = new ArrayList<>(imageUrls);
+        this.active = active;
+        this.createdAt = createdAt;
+    }
+
     public UUID getId() {
         return id;
     }

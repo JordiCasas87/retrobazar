@@ -1,10 +1,14 @@
 package com.retrobazar.catalog.infrastructure.adapter.in.web;
 
+import com.retrobazar.catalog.application.command.CreateProductCommand;
+import com.retrobazar.catalog.application.port.in.CreateProductUseCase;
 import com.retrobazar.catalog.application.port.in.ListActiveProductsUseCase;
+import com.retrobazar.catalog.domain.Product;
+import com.retrobazar.catalog.infrastructure.adapter.in.web.dto.CreateProductRequestDto;
 import com.retrobazar.catalog.infrastructure.adapter.in.web.dto.ProductResponseDto;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -13,9 +17,14 @@ import java.util.List;
 public class ProductController {
 
     private final ListActiveProductsUseCase listActiveProductsUseCase;
+    private final CreateProductUseCase createProductUseCase;
 
-    public ProductController(ListActiveProductsUseCase listActiveProductsUseCase) {
+    public ProductController(
+            ListActiveProductsUseCase listActiveProductsUseCase,
+            CreateProductUseCase createProductUseCase
+    ) {
         this.listActiveProductsUseCase = listActiveProductsUseCase;
+        this.createProductUseCase = createProductUseCase;
     }
 
     @GetMapping
@@ -24,5 +33,16 @@ public class ProductController {
                 .stream()
                 .map(ProductResponseDto::fromProduct)
                 .toList();
+    }
+
+    @PostMapping
+    public ResponseEntity<ProductResponseDto> createProduct(
+            @RequestBody CreateProductRequestDto request
+    ) {
+        CreateProductCommand newCommandCreate = request.toCommand();
+        Product product = createProductUseCase.createProduct(newCommandCreate);
+        ProductResponseDto productDto = ProductResponseDto.fromProduct(product);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(productDto);
     }
 }

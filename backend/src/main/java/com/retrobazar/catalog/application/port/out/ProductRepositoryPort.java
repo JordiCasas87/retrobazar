@@ -7,4 +7,5 @@ import java.util.List;
 public interface ProductRepositoryPort {
 
     List<Product> findAllActive();
+    Product save(Product newProduct);
 }
