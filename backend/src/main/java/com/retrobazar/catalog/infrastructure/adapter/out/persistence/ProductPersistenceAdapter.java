@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public class ProductPersistenceAdapter implements ProductRepositoryPort {
@@ -33,6 +35,14 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
         ProductJpaEntity savedProductEntity = springDataProductRepository.save(productEntity);
         Product savedProduct = toDomain(savedProductEntity);
         return savedProduct;
+    }
+
+    @Override
+    public Optional <Product> findById(UUID id){
+        Optional <ProductJpaEntity> savedProductEntity = springDataProductRepository.findByID(id);
+        Optional <Product> product = savedProductEntity.map(this::toDomain);
+
+        return product;
     }
 
     private ProductJpaEntity toEntity(Product product) {

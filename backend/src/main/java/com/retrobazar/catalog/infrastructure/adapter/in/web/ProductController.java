@@ -1,6 +1,7 @@
 package com.retrobazar.catalog.infrastructure.adapter.in.web;
 
 import com.retrobazar.catalog.application.command.CreateProductCommand;
+import com.retrobazar.catalog.application.port.in.ActivateProductUseCase;
 import com.retrobazar.catalog.application.port.in.CreateProductUseCase;
 import com.retrobazar.catalog.application.port.in.ListActiveProductsUseCase;
 import com.retrobazar.catalog.domain.Product;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/products")
@@ -18,13 +20,15 @@ public class ProductController {
 
     private final ListActiveProductsUseCase listActiveProductsUseCase;
     private final CreateProductUseCase createProductUseCase;
+    private final ActivateProductUseCase activateProductUseCase;
 
     public ProductController(
             ListActiveProductsUseCase listActiveProductsUseCase,
-            CreateProductUseCase createProductUseCase
+            CreateProductUseCase createProductUseCase, ActivateProductUseCase activateProductUseCase
     ) {
         this.listActiveProductsUseCase = listActiveProductsUseCase;
         this.createProductUseCase = createProductUseCase;
+        this.activateProductUseCase = activateProductUseCase;
     }
 
     @GetMapping
@@ -44,5 +48,13 @@ public class ProductController {
         ProductResponseDto productDto = ProductResponseDto.fromProduct(product);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(productDto);
+    }
+
+    @PatchMapping ("/{id}/activate")
+    public ResponseEntity <ProductResponseDto> activateProduct (@PathVariable UUID id){
+        Product product = activateProductUseCase.activate(id);
+        ProductResponseDto productDto = ProductResponseDto.fromProduct(product);
+
+        return ResponseEntity.status(HttpStatus.OK).body(productDto);
     }
 }
