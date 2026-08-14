@@ -9,8 +9,10 @@ import java.util.UUID;
 
 public interface ProductRepositoryPort {
 
+    List<Product> findAll();
     List<Product> findAllActive();
     List<Product> findAllActiveByCategory(ProductCategory category);
+    List<Product> searchActiveProducts(List<String> words);
     Product save(Product newProduct);
     Optional<Product> findById(UUID id);
 }

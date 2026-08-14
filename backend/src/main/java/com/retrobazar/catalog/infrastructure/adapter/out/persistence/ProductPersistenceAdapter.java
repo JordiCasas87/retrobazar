@@ -4,11 +4,15 @@ import com.retrobazar.catalog.application.port.out.ProductRepositoryPort;
 import com.retrobazar.catalog.domain.Product;
 import com.retrobazar.catalog.domain.ProductCategory;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
+
+import jakarta.persistence.criteria.Predicate;
 
 @Repository
 public class ProductPersistenceAdapter implements ProductRepositoryPort {
@@ -19,6 +23,15 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
             SpringDataProductRepository springDataProductRepository
     ) {
         this.springDataProductRepository = springDataProductRepository;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Product> findAll() {
+        return springDataProductRepository.findAll()
+                .stream()
+                .map(productEntity -> toDomain(productEntity))
+                .toList();
     }
 
     @Override
@@ -34,6 +47,33 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
     @Transactional(readOnly = true)
     public List<Product> findAllActiveByCategory(ProductCategory category) {
         return springDataProductRepository.findByCategoryAndActiveTrue(category)
+                .stream()
+                .map(productEntity -> toDomain(productEntity))
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Product> searchActiveProducts(List<String> words) {
+        Specification<ProductJpaEntity> specification = (root, query, criteriaBuilder) -> {
+            Predicate searchConditions = criteriaBuilder.isTrue(root.get("active"));
+
+            for (String word : words) {
+                String pattern = "%" + word.toLowerCase(Locale.ROOT) + "%";
+
+                Predicate wordCondition = criteriaBuilder.or(
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), pattern),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("brand")), pattern),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), pattern)
+                );
+
+                searchConditions = criteriaBuilder.and(searchConditions, wordCondition);
+            }
+
+            return searchConditions;
+        };
+
+        return springDataProductRepository.findAll(specification)
                 .stream()
                 .map(productEntity -> toDomain(productEntity))
                 .toList();
