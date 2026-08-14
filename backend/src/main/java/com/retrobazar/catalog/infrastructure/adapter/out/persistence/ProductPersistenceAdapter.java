@@ -2,6 +2,7 @@ package com.retrobazar.catalog.infrastructure.adapter.out.persistence;
 
 import com.retrobazar.catalog.application.port.out.ProductRepositoryPort;
 import com.retrobazar.catalog.domain.Product;
+import com.retrobazar.catalog.domain.ProductCategory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,16 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
     public List<Product> findAllActive() {
         return springDataProductRepository.findByActiveTrue()
                 .stream()
-                .map(this::toDomain)
+                .map(productEntity -> toDomain(productEntity))
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Product> findAllActiveByCategory(ProductCategory category) {
+        return springDataProductRepository.findByCategoryAndActiveTrue(category)
+                .stream()
+                .map(productEntity -> toDomain(productEntity))
                 .toList();
     }
 
@@ -41,7 +51,8 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
     @Transactional(readOnly = true)
     public Optional <Product> findById(UUID id){
         Optional <ProductJpaEntity> savedProductEntity = springDataProductRepository.findById(id);
-        Optional <Product> product = savedProductEntity.map(this::toDomain);
+        Optional <Product> product = savedProductEntity
+                .map(productEntity -> toDomain(productEntity));
 
         return product;
     }
