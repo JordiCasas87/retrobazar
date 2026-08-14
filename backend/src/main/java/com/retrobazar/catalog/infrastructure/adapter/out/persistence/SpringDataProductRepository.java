@@ -11,5 +11,5 @@ public interface SpringDataProductRepository
         extends JpaRepository<ProductJpaEntity, UUID> {
 
     List<ProductJpaEntity> findByActiveTrue();
-   Optional <ProductJpaEntity> findByID(UUID id);
+
 }

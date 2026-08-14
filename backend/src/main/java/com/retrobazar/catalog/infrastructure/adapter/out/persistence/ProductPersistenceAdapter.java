@@ -38,8 +38,9 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional <Product> findById(UUID id){
-        Optional <ProductJpaEntity> savedProductEntity = springDataProductRepository.findByID(id);
+        Optional <ProductJpaEntity> savedProductEntity = springDataProductRepository.findById(id);
         Optional <Product> product = savedProductEntity.map(this::toDomain);
 
         return product;

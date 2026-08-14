@@ -5,14 +5,12 @@ import com.retrobazar.catalog.application.port.in.ActivateProductUseCase;
 import com.retrobazar.catalog.application.port.out.ProductRepositoryPort;
 import com.retrobazar.catalog.domain.Product;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class ActivateProductService implements ActivateProductUseCase {
 
-private final ProductRepositoryPort productRepositoryPort;
+    private final ProductRepositoryPort productRepositoryPort;
 
     public ActivateProductService(ProductRepositoryPort productRepositoryPort) {
         this.productRepositoryPort = productRepositoryPort;
@@ -20,14 +18,15 @@ private final ProductRepositoryPort productRepositoryPort;
 
     @Override
     public Product activate(UUID id) {
-
         Product product = productRepositoryPort.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
 
+        if (product.isActive()) {
+            return product;
+        }
+
         product.activate();
 
-        // producto encontrado, falta cambiar de inactivo a activo o dejarlo igual y guardar si es necesario
-        //luego devolver el producto
-        return product;
+        return productRepositoryPort.save(product);
     }
 }

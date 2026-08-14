@@ -39,7 +39,7 @@ INSERT IGNORE INTO products (
     89.00,
     6,
     'SETUP_ACCESSORIES',
-    TRUE,
+    FALSE,
     '2026-08-04 10:10:00'
 ),
 (
