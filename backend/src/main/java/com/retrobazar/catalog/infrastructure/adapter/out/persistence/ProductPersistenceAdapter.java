@@ -97,6 +97,11 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
         return product;
     }
 
+    @Override
+    public void deleteById(UUID id) {
+        springDataProductRepository.deleteById(id);
+    }
+
     private ProductJpaEntity toEntity(Product product) {
         return new ProductJpaEntity(
                 product.getId(),

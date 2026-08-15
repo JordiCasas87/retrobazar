@@ -15,4 +15,5 @@ public interface ProductRepositoryPort {
     List<Product> searchActiveProducts(List<String> words);
     Product save(Product newProduct);
     Optional<Product> findById(UUID id);
+    void deleteById(UUID id);
 }

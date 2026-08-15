@@ -83,6 +83,35 @@ public class Product {
         return createdAt;
     }
 
+    public void updateDetails(
+            String name,
+            String brand,
+            String description,
+            BigDecimal price,
+            int stock,
+            ProductCategory category,
+            List<String> imageUrls
+    ) {
+        String validName = requireText(name, "name");
+        String validBrand = requireText(brand, "brand");
+        String validDescription = requireText(description, "description");
+        BigDecimal validPrice = requireNonNegativePrice(price);
+        int validStock = requireNonNegativeStock(stock);
+        ProductCategory validCategory = Objects.requireNonNull(
+                category,
+                "category cannot be null"
+        );
+        List<String> validImageUrls = requireImages(imageUrls);
+
+        this.name = validName;
+        this.brand = validBrand;
+        this.description = validDescription;
+        this.price = validPrice;
+        this.stock = validStock;
+        this.category = validCategory;
+        this.imageUrls = validImageUrls;
+    }
+
     private static String requireText(String value, String fieldName) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException(fieldName + " cannot be blank");
