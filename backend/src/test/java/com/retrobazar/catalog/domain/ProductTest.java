@@ -51,6 +51,29 @@ class ProductTest {
     }
 
     @Test
+    void shouldRejectAZeroPriceInConstructor() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> createProduct(
+                        BigDecimal.ZERO,
+                        10,
+                        List.of("https://example.com/product.jpg")
+                )
+        );
+    }
+
+    @Test
+    void shouldAcceptAPositivePriceInConstructor() {
+        Product product = createProduct(
+                new BigDecimal("0.01"),
+                10,
+                List.of("https://example.com/product.jpg")
+        );
+
+        assertEquals(new BigDecimal("0.01"), product.getPrice());
+    }
+
+    @Test
     void shouldRejectANegativeStock() {
         assertThrows(
                 IllegalArgumentException.class,
@@ -132,6 +155,59 @@ class ProductTest {
         assertEquals(10, product.getStock());
         assertEquals(ProductCategory.GADGETS, product.getCategory());
         assertEquals(List.of("https://example.com/product.jpg"), product.getImageUrls());
+    }
+
+    @Test
+    void shouldRejectANegativePriceWhenUpdatingDetails() {
+        Product product = createProduct(
+                new BigDecimal("49.99"),
+                10,
+                List.of("https://example.com/product.jpg")
+        );
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> updatePrice(product, new BigDecimal("-0.01"))
+        );
+    }
+
+    @Test
+    void shouldRejectAZeroPriceWhenUpdatingDetails() {
+        Product product = createProduct(
+                new BigDecimal("49.99"),
+                10,
+                List.of("https://example.com/product.jpg")
+        );
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> updatePrice(product, BigDecimal.ZERO)
+        );
+    }
+
+    @Test
+    void shouldAcceptAPositivePriceWhenUpdatingDetails() {
+        Product product = createProduct(
+                new BigDecimal("49.99"),
+                10,
+                List.of("https://example.com/product.jpg")
+        );
+
+        updatePrice(product, new BigDecimal("0.01"));
+
+        assertEquals(new BigDecimal("0.01"), product.getPrice());
+    }
+
+    private void updatePrice(Product product, BigDecimal price) {
+        product.updateDetails(
+                "Pixel Clock",
+                "Divoom",
+                "A pixel art clock for a retro setup",
+                price,
+                10,
+                ProductCategory.GADGETS,
+                List.of("https://example.com/product.jpg")
+        );
     }
 
     private Product createProduct(

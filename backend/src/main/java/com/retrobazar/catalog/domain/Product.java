@@ -35,7 +35,7 @@ public class Product {
         this.name = requireText(name, "name");
         this.brand = requireText(brand, "brand");
         this.description = requireText(description, "description");
-        this.price = requireNonNegativePrice(price);
+        this.price = requirePositivePrice(price);
         this.stock = requireNonNegativeStock(stock);
         this.category = Objects.requireNonNull(category, "category cannot be null");
         this.imageUrls = requireImages(imageUrls);
@@ -95,7 +95,7 @@ public class Product {
         String validName = requireText(name, "name");
         String validBrand = requireText(brand, "brand");
         String validDescription = requireText(description, "description");
-        BigDecimal validPrice = requireNonNegativePrice(price);
+        BigDecimal validPrice = requirePositivePrice(price);
         int validStock = requireNonNegativeStock(stock);
         ProductCategory validCategory = Objects.requireNonNull(
                 category,
@@ -119,11 +119,11 @@ public class Product {
         return value;
     }
 
-    private static BigDecimal requireNonNegativePrice(BigDecimal price) {
+    private static BigDecimal requirePositivePrice(BigDecimal price) {
         Objects.requireNonNull(price, "price cannot be null");
 
-        if (price.signum() < 0) {
-            throw new IllegalArgumentException("price cannot be negative");
+        if (price.signum() <= 0) {
+            throw new IllegalArgumentException("price must be greater than zero");
         }
 
         return price;
@@ -148,7 +148,7 @@ public class Product {
         return List.copyOf(imageUrls);
     }
 
-    //metodos de active
+    //métodos de active
 
     public void activate() {
         this.active = true;

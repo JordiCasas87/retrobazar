@@ -13,6 +13,7 @@ import com.retrobazar.catalog.domain.Product;
 import com.retrobazar.catalog.infrastructure.adapter.in.web.dto.CreateProductRequestDto;
 import com.retrobazar.catalog.infrastructure.adapter.in.web.dto.ProductResponseDto;
 import com.retrobazar.catalog.infrastructure.adapter.in.web.dto.UpdateProductRequestDto;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,7 +76,7 @@ public class AdminProductController {
 
     @PostMapping
     public ResponseEntity<ProductResponseDto> createProduct(
-            @RequestBody CreateProductRequestDto request
+            @Valid @RequestBody CreateProductRequestDto request
     ) {
         CreateProductCommand command = request.toCommand();
         Product product = createProductUseCase.createProduct(command);
@@ -87,7 +88,7 @@ public class AdminProductController {
     @PutMapping("/{id}")
     public ProductResponseDto updateProduct(
             @PathVariable UUID id,
-            @RequestBody UpdateProductRequestDto request
+            @Valid @RequestBody UpdateProductRequestDto request
     ) {
         UpdateProductCommand command = request.toCommand();
         Product product = updateProductUseCase.update(id, command);
