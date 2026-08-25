@@ -1,0 +1,199 @@
+<div class="announcement">
+  <span>Objetos con historia. Tecnología con carácter.</span>
+  <span class="announcement-extra">Selección independiente · Unidades limitadas</span>
+</div>
+
+<header class="site-header">
+  <button class="icon-button mobile-only" type="button" [attr.aria-label]="menuOpen() ? 'Cerrar menú' : 'Abrir menú'" [attr.aria-expanded]="menuOpen()" (click)="toggleMenu()">
+    <span></span><span></span>
+  </button>
+  <a class="wordmark" routerLink="/" aria-label="Retro Bazar, inicio">
+    <img src="assets/logo-retro-bazar.png" alt="">
+    <span>RETRO BAZAR</span>
+  </a>
+  <nav class="desktop-nav" aria-label="Navegación principal">
+    <a routerLink="/" fragment="seleccion">Novedades</a>
+    <a routerLink="/" fragment="categorias">Colecciones</a>
+    <a routerLink="/" fragment="manifiesto">Nuestra idea</a>
+  </nav>
+  <div class="header-actions">
+    <button class="text-button" type="button" (click)="toggleSearch()">Buscar</button>
+    <button class="text-button desktop-action" type="button">Cuenta</button>
+    <button class="bag-button" type="button" aria-label="Abrir cesta">Bolsa <span>0</span></button>
+  </div>
+
+  @if (menuOpen()) {
+    <nav class="mobile-menu" aria-label="Menú móvil">
+      <div class="mobile-menu-main">
+        <a routerLink="/" fragment="seleccion" (click)="toggleMenu()"><span>01</span>Novedades</a>
+        <a routerLink="/" fragment="categorias" (click)="toggleMenu()"><span>02</span>Colecciones</a>
+        <a routerLink="/" fragment="manifiesto" (click)="toggleMenu()"><span>03</span>Nuestra idea</a>
+      </div>
+      <div class="mobile-menu-actions">
+        <button type="button" (click)="openSearchFromMenu()">Buscar</button>
+        <button type="button" disabled>Cuenta <span>Próximamente</span></button>
+        <button type="button" disabled>Bolsa <span>0 productos</span></button>
+      </div>
+      <p>Objetos con historia.<br>Tecnología con carácter.</p>
+    </nav>
+  }
+
+  @if (searchOpen()) {
+    <section class="search-panel">
+      <label for="site-search">¿Qué estás buscando?</label>
+      <form (submit)="$event.preventDefault(); searchProducts(searchInput.value)">
+        <input #searchInput id="site-search" type="search" placeholder="Consolas, luces, gadgets…" autofocus>
+        <button class="search-submit" type="submit">Buscar</button>
+        <button type="button" (click)="toggleSearch()">Cerrar</button>
+      </form>
+    </section>
+  }
+</header>
+
+@if (isProductPage()) {
+  <router-outlet></router-outlet>
+} @else {
+<main id="inicio">
+  <section class="hero">
+    <img src="assets/hero-retro-tech.png" alt="Selección de tecnología retro: consola, robot y teclado">
+    <div class="hero-shade"></div>
+    <div class="hero-copy">
+      <p class="eyebrow">Colección 01 / 2026</p>
+      <h1 aria-label="El futuro también fue retro"
+          (mousemove)="scatterHeroLetters($event)"
+          (mouseleave)="restoreHeroLetters($event)">
+        @for (line of heroLines; track $index) {
+          <span class="hero-line" aria-hidden="true">
+            @for (letter of line; track $index) {
+              <span class="hero-letter">{{ letter === ' ' ? '\u00a0' : letter }}</span>
+            }
+          </span>
+        }
+      </h1>
+      <p class="hero-intro">Piezas escogidas para jugar, crear y vivir tu setup de otra manera.</p>
+      <a class="primary-link" href="#seleccion">Explorar la selección <span>↗</span></a>
+    </div>
+    <p class="hero-note">Diseño memorable.<br>Uso cotidiano.</p>
+  </section>
+
+  <section class="intro-block">
+    <p class="section-kicker">Retro Bazar / Nuestra selección</p>
+    <h2>No vendemos nostalgia.<br>Elegimos objetos que aún sorprenden.</h2>
+    <p>Cada pieza mezcla utilidad, diseño y esa extraña alegría de pulsar un botón de verdad.</p>
+  </section>
+
+  <section class="categories" id="categorias">
+    <button class="category-card cyan" type="button" (click)="selectCategory('GAMING')">
+      <span class="signal-lines" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="category-number">01</span>
+      <span class="category-icon">✚</span>
+      <span class="category-name">Retro gaming</span>
+      <span class="category-arrow">↗</span>
+    </button>
+    <button class="category-card amber" type="button" (click)="selectCategory('GADGETS')">
+      <span class="signal-lines" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="category-number">02</span>
+      <span class="category-icon">▦</span>
+      <span class="category-name">Gadgets de escritorio</span>
+      <span class="category-arrow">↗</span>
+    </button>
+    <button class="category-card neutral" type="button" (click)="selectCategory('SETUP_ACCESSORIES')">
+      <span class="signal-lines" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="category-number">03</span>
+      <span class="category-icon">⌨</span>
+      <span class="category-name">Setup &amp; accesorios</span>
+      <span class="category-arrow">↗</span>
+    </button>
+  </section>
+
+  <section class="products-section" id="seleccion">
+    <div class="section-heading">
+      <div>
+        <p class="section-kicker">Una primera selección</p>
+        <h2>{{ catalogTitle() }}</h2>
+      </div>
+      <div class="filter-tabs" aria-label="Filtrar productos">
+        <button [class.active]="selectedCategory() === 'ALL'" (click)="selectCategory('ALL')">Todo</button>
+        <button [class.active]="selectedCategory() === 'GAMING'" (click)="selectCategory('GAMING')">Gaming</button>
+        <button [class.active]="selectedCategory() === 'GADGETS'" (click)="selectCategory('GADGETS')">Gadgets</button>
+        <button [class.active]="selectedCategory() === 'SETUP_ACCESSORIES'" (click)="selectCategory('SETUP_ACCESSORIES')">Setup</button>
+        <button [class.active]="selectedCategory() === 'OTHERS'" (click)="selectCategory('OTHERS')">Otros</button>
+      </div>
+    </div>
+
+    @if (catalogLoading()) {
+      <div class="catalog-status" aria-live="polite">
+        <span class="catalog-loader"></span>
+        <p>Cargando la selección…</p>
+      </div>
+    } @else if (catalogError()) {
+      <div class="catalog-status catalog-error">
+        <p>No hemos podido conectar con el catálogo.</p>
+        <button type="button" (click)="retryCatalog()">Reintentar</button>
+      </div>
+    } @else {
+    <div class="product-grid">
+      @for (product of visibleProducts(); track product.id; let index = $index) {
+        <article class="product-card">
+          <a class="product-image" [routerLink]="['/producto', product.id]" [attr.aria-label]="'Ver ' + product.name">
+            <img
+              [src]="product.imageUrls[0] || productFallbackImage"
+              [alt]="product.imageUrls[0] ? product.name : 'Imagen provisional de ' + product.name"
+              (error)="useProductFallback($event)">
+            @if (index === 0) { <span class="product-badge">Favorito</span> }
+          </a>
+          <div class="product-info">
+            <div>
+              <p>{{ product.brand }}</p>
+              <h3>{{ product.name }}</h3>
+            </div>
+            <strong>{{ product.price | currency:'EUR':'symbol':'1.2-2':'es' }}</strong>
+          </div>
+          <p class="product-description">{{ product.description }}</p>
+        </article>
+      } @empty {
+        <p class="empty-state">Aún no hay piezas en esta colección. Prueba con otra categoría.</p>
+      }
+    </div>
+    }
+  </section>
+
+  <section class="manifesto" id="manifiesto">
+    <div class="manifesto-visual">
+      <img src="assets/logo-retro-bazar.png" alt="Retro Bazar">
+      <span class="logo-orbit" aria-hidden="true"></span>
+      <small>IDENTIDAD / EST. 2026</small>
+    </div>
+    <div class="manifesto-copy">
+      <p class="section-kicker">Nuestra manera de elegir</p>
+      <h2>Menos ruido.<br>Más carácter.</h2>
+      <p>Buscamos productos que merecen quedarse sobre la mesa: útiles, bien diseñados y con una personalidad difícil de confundir.</p>
+      <a href="#categorias">Conocer la selección <span>→</span></a>
+    </div>
+  </section>
+
+  <section class="benefits">
+    <div><span>01</span><h3>Selección cuidada</h3><p>Solo piezas con diseño, utilidad y un punto de sorpresa.</p></div>
+    <div><span>02</span><h3>Unidades limitadas</h3><p>Colecciones pequeñas y disponibilidad clara para que siempre sepas qué puedes encontrar.</p></div>
+    <div><span>03</span><h3>Compra sin ruido</h3><p>Una experiencia clara que pone los objetos en primer plano.</p></div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-lead">
+    <p>Entra al bazar antes que nadie.</p>
+    <form (submit)="$event.preventDefault()">
+      <label class="sr-only" for="newsletter">Correo electrónico</label>
+      <input id="newsletter" type="email" placeholder="tu@email.com">
+      <button type="submit" aria-label="Suscribirse">→</button>
+    </form>
+  </div>
+  <div class="footer-grid">
+    <div class="footer-brand"><strong>RETRO<br>BAZAR</strong><span>Objetos de ayer.<br>Elegidos para hoy.</span></div>
+    <div><h3>Explora</h3><a href="#seleccion">Novedades</a><a href="#categorias">Colecciones</a><a href="#manifiesto">Nuestra idea</a></div>
+    <div><h3>Ayuda</h3><span>Envíos</span><span>Devoluciones</span><span>Contacto</span></div>
+    <div><h3>Síguenos</h3><span>Instagram</span><span>TikTok</span><span>Newsletter</span></div>
+  </div>
+  <div class="footer-bottom"><span>© {{ year }} Retro Bazar</span><span>MVP · Portfolio project</span></div>
+</footer>
+}
