@@ -1,0 +1,60 @@
+<main class="detail-page">
+  <div class="detail-toolbar">
+    <button type="button" (click)="goBack()">Volver</button>
+    <a routerLink="/">Inicio</a>
+  </div>
+
+  @if (loading()) {
+    <section class="detail-state" aria-live="polite">
+      <span class="loader"></span>
+      <p>Cargando la pieza…</p>
+    </section>
+  } @else if (error()) {
+    <section class="detail-state error-state">
+      <p class="kicker">Producto no disponible</p>
+      <h1>No hemos encontrado esta pieza.</h1>
+      <p>Puede que ya no forme parte de la selección o que la conexión se haya interrumpido.</p>
+      <button type="button" (click)="goBack()">Volver al catálogo</button>
+    </section>
+  } @else if (product(); as item) {
+    <section class="detail-layout">
+      <div class="gallery">
+        <div class="main-image">
+          <img
+            [src]="item.imageUrls[activeImage()] || fallbackImage"
+            [alt]="item.name"
+            (error)="useFallback($event)">
+          @if (item.stock <= 3) { <span class="stock-label">Últimas unidades</span> }
+        </div>
+
+        @if (item.imageUrls.length > 1) {
+          <div class="thumbnails" aria-label="Imágenes del producto">
+            @for (image of item.imageUrls; track image; let index = $index) {
+              <button type="button" [class.active]="activeImage() === index" (click)="selectImage(index)">
+                <img [src]="image" alt="" (error)="useFallback($event)">
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="product-copy">
+        <p class="kicker">{{ categoryLabel(item.category) }} / {{ item.brand }}</p>
+        <h1>{{ item.name }}</h1>
+        <p class="price">{{ item.price | currency:'EUR':'symbol':'1.2-2':'es' }}</p>
+        <p class="description">{{ item.description }}</p>
+
+        <dl>
+          <div><dt>Marca</dt><dd>{{ item.brand }}</dd></div>
+          <div><dt>Categoría</dt><dd>{{ categoryLabel(item.category) }}</dd></div>
+          <div><dt>Disponibilidad</dt><dd>{{ item.stock > 0 ? 'Disponible' : 'Agotado' }}</dd></div>
+        </dl>
+
+        <button class="cart-action" type="button" disabled>
+          Añadir a la bolsa <span>Próximamente</span>
+        </button>
+        <p class="purchase-note">La compra estará disponible en la siguiente fase del proyecto.</p>
+      </div>
+    </section>
+  }
+</main>
