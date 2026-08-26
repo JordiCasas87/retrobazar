@@ -31,6 +31,11 @@ export class AppComponent {
     Array.from('El futuro'),
     Array.from('también fue retro.')
   ];
+  readonly mobileHeroLines = [
+    Array.from('El futuro'),
+    Array.from('también fue'),
+    Array.from('retro.')
+  ];
 
   readonly visibleProducts = computed(() => {
     return this.products().slice(0, 5);

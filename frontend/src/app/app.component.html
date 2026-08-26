@@ -59,7 +59,7 @@
     <div class="hero-shade"></div>
     <div class="hero-copy">
       <p class="eyebrow">Colección 01 / 2026</p>
-      <h1 aria-label="El futuro también fue retro"
+      <h1 class="hero-title-desktop" aria-label="El futuro también fue retro"
           (mousemove)="scatterHeroLetters($event)"
           (mouseleave)="restoreHeroLetters($event)">
         @for (line of heroLines; track $index) {
@@ -70,8 +70,19 @@
           </span>
         }
       </h1>
+      <h1 class="hero-title-mobile" aria-label="El futuro también fue retro"
+          (mousemove)="scatterHeroLetters($event)"
+          (mouseleave)="restoreHeroLetters($event)">
+        @for (line of mobileHeroLines; track $index) {
+          <span class="hero-line" aria-hidden="true">
+            @for (letter of line; track $index) {
+              <span class="hero-letter">{{ letter === ' ' ? '\u00a0' : letter }}</span>
+            }
+          </span>
+        }
+      </h1>
       <p class="hero-intro">Piezas escogidas para jugar, crear y vivir tu setup de otra manera.</p>
-      <a class="primary-link" href="#seleccion">Explorar la selección <span>↗</span></a>
+      <a class="primary-link" href="#seleccion">Explorar la selección</a>
     </div>
     <p class="hero-note">Diseño memorable.<br>Uso cotidiano.</p>
   </section>
@@ -86,23 +97,17 @@
     <button class="category-card cyan" type="button" (click)="selectCategory('GAMING')">
       <span class="signal-lines" aria-hidden="true"><i></i><i></i><i></i></span>
       <span class="category-number">01</span>
-      <span class="category-icon">✚</span>
       <span class="category-name">Retro gaming</span>
-      <span class="category-arrow">↗</span>
     </button>
     <button class="category-card amber" type="button" (click)="selectCategory('GADGETS')">
       <span class="signal-lines" aria-hidden="true"><i></i><i></i><i></i></span>
       <span class="category-number">02</span>
-      <span class="category-icon">▦</span>
       <span class="category-name">Gadgets de escritorio</span>
-      <span class="category-arrow">↗</span>
     </button>
     <button class="category-card neutral" type="button" (click)="selectCategory('SETUP_ACCESSORIES')">
       <span class="signal-lines" aria-hidden="true"><i></i><i></i><i></i></span>
       <span class="category-number">03</span>
-      <span class="category-icon">⌨</span>
       <span class="category-name">Setup &amp; accesorios</span>
-      <span class="category-arrow">↗</span>
     </button>
   </section>
 
@@ -168,7 +173,7 @@
       <p class="section-kicker">Nuestra manera de elegir</p>
       <h2>Menos ruido.<br>Más carácter.</h2>
       <p>Buscamos productos que merecen quedarse sobre la mesa: útiles, bien diseñados y con una personalidad difícil de confundir.</p>
-      <a href="#categorias">Conocer la selección <span>→</span></a>
+      <a href="#categorias">Conocer la selección</a>
     </div>
   </section>
 
@@ -185,7 +190,7 @@
     <form (submit)="$event.preventDefault()">
       <label class="sr-only" for="newsletter">Correo electrónico</label>
       <input id="newsletter" type="email" placeholder="tu@email.com">
-      <button type="submit" aria-label="Suscribirse">→</button>
+      <button type="submit">Suscribirme</button>
     </form>
   </div>
   <div class="footer-grid">
