@@ -1,0 +1,20 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: retro-bazar-mysql
+    environment:
+      MYSQL_DATABASE: retro_bazar
+      MYSQL_ROOT_PASSWORD: retro_bazar_local
+    ports:
+      - "127.0.0.1:3307:3306"
+    volumes:
+      - retro-bazar-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+volumes:
+  retro-bazar-mysql-data:
