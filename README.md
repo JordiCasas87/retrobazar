@@ -79,11 +79,12 @@ retro-bazar/
 ## Requisitos para desarrollo local
 
 - JDK 21.
-- MySQL 8.
+- Docker Desktop (recomendado para ejecutar MySQL 8.4) o una instalación local de MySQL 8.
 - Node.js y npm.
 
-Docker no es necesario actualmente. Se añadirá más adelante junto con Docker
-Compose para facilitar el arranque reproducible de MySQL, backend y frontend.
+Docker Compose se utiliza únicamente para la base de datos de desarrollo. El
+backend y el frontend se siguen ejecutando directamente desde la terminal o el
+IDE. No se han creado imágenes Docker para las aplicaciones.
 
 ## Configuración del backend
 
@@ -91,9 +92,9 @@ El backend reconoce estas variables de entorno:
 
 | Variable | Valor local por defecto | Descripción |
 |---|---|---|
-| `DB_URL` | `jdbc:mysql://localhost:3306/retro_bazar?...` | Conexión con MySQL |
+| `DB_URL` | `jdbc:mysql://localhost:3307/retro_bazar?...` | Conexión con MySQL de Docker |
 | `DB_USERNAME` | `root` | Usuario de la base de datos |
-| `DB_PASSWORD` | vacío | Contraseña de la base de datos |
+| `DB_PASSWORD` | `retro_bazar_local` | Contraseña local de la base de datos |
 | `FRONTEND_ORIGIN` | `http://localhost:4200` | Origen permitido por CORS |
 
 [`backend/.env.example`](backend/.env.example) documenta estas variables sin
@@ -101,7 +102,27 @@ incluir credenciales reales. Spring Boot no carga archivos `.env`
 automáticamente: las variables deben configurarse en IntelliJ, en la terminal o
 mediante la herramienta utilizada para ejecutar la aplicación.
 
-Crear la base de datos local:
+Con Docker Desktop iniciado, levantar MySQL:
+
+```bash
+docker compose up -d
+```
+
+El contenedor crea la base de datos `retro_bazar`, escucha únicamente en
+`localhost:3307` y conserva los datos en un volumen. Se utiliza el puerto 3307
+para no interferir con una posible instalación local de MySQL en el 3306. Para
+consultar su estado o detenerlo:
+
+```bash
+docker compose ps
+docker compose down
+```
+
+`docker compose down` no elimina los datos. Solo se borran explícitamente con
+`docker compose down --volumes`.
+
+Si se utiliza una instalación local de MySQL en lugar de Docker, crear la base
+de datos manualmente:
 
 ```sql
 CREATE DATABASE retro_bazar;
@@ -171,8 +192,8 @@ cd backend
 
 Las pruebas unitarias no requieren Docker. La prueba de carga completa del
 contexto utiliza Testcontainers y necesita un entorno Docker disponible. Esta
-infraestructura se completará en una fase posterior; actualmente la aplicación
-se ejecuta contra MySQL local.
+infraestructura se completará en una fase posterior. Para el desarrollo habitual,
+la aplicación se ejecuta contra el MySQL levantado mediante Docker Compose.
 
 Comprobar el frontend:
 
@@ -181,14 +202,70 @@ cd frontend
 npm run build
 ```
 
+## Agente de IA para el alta de productos
+
+La primera incorporación de IA prevista será un agente integrado en el flujo
+administrativo de creación de productos. Su objetivo será preparar una ficha de
+producto coherente, detectar posibles duplicados y reducir el trabajo manual sin
+tomar decisiones irreversibles.
+
+La implementación utilizará Spring AI en el backend y tendrá inicialmente a
+Gemini como proveedor del modelo. No será una única petición para generar texto:
+el agente recibirá un objetivo, decidirá qué herramientas autorizadas necesita y
+podrá utilizarlas en varias etapas antes de producir el resultado.
+
+### Flujo previsto
+
+1. El administrador aporta fotografías y los datos disponibles del producto.
+2. El agente analiza la información recibida y determina qué consultas necesita.
+3. Utiliza herramientas internas para buscar coincidencias, consultar detalles y
+   comparar precios del catálogo.
+4. Advierte si encuentra un producto igual o suficientemente similar.
+5. Devuelve un borrador estructurado con nombre, categoría, descripción y precio
+   orientativo, acompañado de sus advertencias y referencias.
+6. El administrador revisa, modifica y confirma el borrador mediante el flujo
+   normal de creación de productos.
+
+### Herramientas iniciales
+
+- `searchCatalog`: busca coincidencias por nombre, marca o descripción.
+- `getProductDetails`: obtiene la información completa de un producto encontrado.
+- `getCategoryPriceStatistics`: calcula el rango y el promedio de precios de una
+  categoría utilizando únicamente datos del catálogo.
+
+Estas herramientas serán métodos controlados del backend, conectados con los
+casos de uso existentes. El agente no tendrá acceso a SQL libre ni a operaciones
+arbitrarias sobre la base de datos.
+
+### Límites y trazabilidad
+
+- El agente no podrá crear, modificar ni eliminar productos directamente.
+- Toda propuesta requerirá confirmación humana antes de persistirse.
+- La respuesta tendrá una estructura validable en lugar de texto libre.
+- Se conservarán los pasos, herramientas utilizadas y resultados relevantes de
+  cada ejecución para facilitar pruebas, diagnóstico y explicación.
+- Las sugerencias de precio se identificarán como orientativas y se basarán en
+  los datos disponibles, sin presentarse como precios de mercado verificados.
+
+Una primera versión se considerará agéntica cuando el modelo pueda seleccionar
+de forma controlada qué herramientas utilizar y en qué orden según el producto,
+en lugar de ejecutar siempre una secuencia fija programada.
+
 ## Próximos pasos
 
+- Preparar fotografías propias de los productos en formato cuadrado, optimizarlas
+  a WebP y guardarlas organizadas en `frontend/src/assets/products/`.
+- Sustituir en `data.sql` las imágenes y descripciones de demostración por el
+  catálogo propio, utilizando rutas locales a los recursos del frontend.
+- Implementar el agente de IA para el alta administrativa definido en la sección
+  anterior.
 - Separar el catálogo completo de la selección mostrada en la portada.
 - Configurar la URL de la API mediante entornos de Angular.
 - Añadir usuarios y autenticación.
 - Configurar autorización por roles.
 - Incorporar carrito y pedidos.
-- Añadir Dockerfiles y Docker Compose.
+- Añadir Dockerfiles para el backend y el frontend y ampliar Docker Compose al
+  preparar el entorno completo.
 - Preparar el despliegue público.
 
 ## Alcance
