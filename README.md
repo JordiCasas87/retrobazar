@@ -251,22 +251,30 @@ Una primera versión se considerará agéntica cuando el modelo pueda selecciona
 de forma controlada qué herramientas utilizar y en qué orden según el producto,
 en lugar de ejecutar siempre una secuencia fija programada.
 
-## Próximos pasos
+## Hoja de ruta
 
-- Preparar fotografías propias de los productos en formato cuadrado, optimizarlas
-  a WebP y guardarlas organizadas en `frontend/src/assets/products/`.
-- Sustituir en `data.sql` las imágenes y descripciones de demostración por el
-  catálogo propio, utilizando rutas locales a los recursos del frontend.
-- Implementar el agente de IA para el alta administrativa definido en la sección
-  anterior.
-- Separar el catálogo completo de la selección mostrada en la portada.
-- Configurar la URL de la API mediante entornos de Angular.
-- Añadir usuarios y autenticación.
-- Configurar autorización por roles.
-- Incorporar carrito y pedidos.
-- Añadir Dockerfiles para el backend y el frontend y ampliar Docker Compose al
-  preparar el entorno completo.
-- Preparar el despliegue público.
+1. **Estructura del frontend — completado.** La portada vive en un
+   `HomeComponent` enrutado y `AppComponent` conserva únicamente el layout y la
+   interacción global.
+2. **Catálogo público.** Crear `/catalogo` con búsqueda, filtros por categoría y
+   paginación inicial de diez productos en Angular. La portada mantendrá solo una
+   selección reducida y enlazará al catálogo completo.
+3. **Administración abierta de demostración.** Crear el listado administrativo y
+   las pantallas de alta, edición, activación y eliminación utilizando los
+   endpoints actuales. El acceso se identificará como `Administración · Demo`.
+4. **Catálogo propio.** Preparar fotografías cuadradas, optimizarlas a WebP y
+   guardarlas en `frontend/src/assets/products/`. Sustituir después en `data.sql`
+   las imágenes y descripciones de demostración.
+5. **Agente de IA.** Integrar en el alta de productos el agente definido en la
+   sección anterior, con análisis de imágenes, herramientas del catálogo,
+   detección de duplicados, propuesta editable y confirmación humana.
+6. **Autenticación y autorización.** Añadir usuarios, login y roles; proteger las
+   rutas administrativas de Angular y los endpoints `/api/admin/**`.
+7. **Evolución del e-commerce.** Incorporar carrito y pedidos cuando el catálogo y
+   la administración estén consolidados.
+8. **Preparación para publicación.** Configurar los entornos de Angular, añadir
+   Dockerfiles para backend y frontend, ampliar Docker Compose y preparar el
+   despliegue público.
 
 ## Alcance
 

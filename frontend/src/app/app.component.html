@@ -11,28 +11,28 @@
     <img src="assets/logo-retro-bazar.png" alt="">
     <span>RETRO BAZAR</span>
   </a>
-  <nav class="desktop-nav" aria-label="Navegación principal">
-    <a routerLink="/" fragment="seleccion">Novedades</a>
-    <a routerLink="/" fragment="categorias">Colecciones</a>
-    <a routerLink="/" fragment="manifiesto">Nuestra idea</a>
-  </nav>
   <div class="header-actions">
+    <nav class="desktop-nav" aria-label="Navegación principal">
+      <a routerLink="/">Inicio</a>
+      <a href="/#manifiesto" (click)="showIdea($event)">Nuestra idea</a>
+      <a routerLink="/catalogo">Catálogo</a>
+    </nav>
     <button class="text-button" type="button" (click)="toggleSearch()">Buscar</button>
     <button class="text-button desktop-action" type="button">Cuenta</button>
-    <button class="bag-button" type="button" aria-label="Abrir cesta">Bolsa <span>0</span></button>
+    <button class="bag-button" type="button" aria-label="Abrir carrito">Carrito <span>0</span></button>
   </div>
 
   @if (menuOpen()) {
     <nav class="mobile-menu" aria-label="Menú móvil">
       <div class="mobile-menu-main">
-        <a routerLink="/" fragment="seleccion" (click)="toggleMenu()"><span>01</span>Novedades</a>
-        <a routerLink="/" fragment="categorias" (click)="toggleMenu()"><span>02</span>Colecciones</a>
-        <a routerLink="/" fragment="manifiesto" (click)="toggleMenu()"><span>03</span>Nuestra idea</a>
+        <a routerLink="/" (click)="toggleMenu()"><span>01</span>Inicio</a>
+        <a href="/#manifiesto" (click)="showIdea($event)"><span>02</span>Nuestra idea</a>
+        <a routerLink="/catalogo" (click)="toggleMenu()"><span>03</span>Catálogo</a>
       </div>
       <div class="mobile-menu-actions">
         <button type="button" (click)="openSearchFromMenu()">Buscar</button>
         <button type="button" disabled>Cuenta <span>Próximamente</span></button>
-        <button type="button" disabled>Bolsa <span>0 productos</span></button>
+        <button type="button" disabled>Carrito <span>0 productos</span></button>
       </div>
       <p>Objetos con historia.<br>Tecnología con carácter.</p>
     </nav>
@@ -63,7 +63,7 @@
   </div>
   <div class="footer-grid">
     <div class="footer-brand"><strong>RETRO<br>BAZAR</strong><span>Objetos de ayer.<br>Elegidos para hoy.</span></div>
-    <div><h3>Explora</h3><a routerLink="/" fragment="seleccion">Novedades</a><a routerLink="/" fragment="categorias">Colecciones</a><a routerLink="/" fragment="manifiesto">Nuestra idea</a></div>
+    <div><h3>Explora</h3><a routerLink="/catalogo">Catálogo</a><a routerLink="/" fragment="categorias">Colecciones</a><a routerLink="/" fragment="manifiesto">Nuestra idea</a></div>
     <div><h3>Ayuda</h3><span>Envíos</span><span>Devoluciones</span><span>Contacto</span></div>
     <div><h3>Síguenos</h3><span>Instagram</span><span>TikTok</span><span>Newsletter</span></div>
   </div>

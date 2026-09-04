@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { CatalogService } from './catalog.service';
-import { Product, ProductCategory } from './product.model';
+import { Product } from './product.model';
 
 @Component({
   selector: 'rb-home',
@@ -14,16 +14,12 @@ import { Product, ProductCategory } from './product.model';
 })
 export class HomeComponent {
   private readonly catalog = inject(CatalogService);
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
   private pointerFrame: number | null = null;
   private lastPointer = { x: 0, y: 0 };
 
-  readonly selectedCategory = signal<ProductCategory | 'ALL'>('ALL');
   readonly products = signal<Product[]>([]);
   readonly catalogLoading = signal(true);
   readonly catalogError = signal(false);
-  readonly catalogTitle = signal('Objetos más buscados');
   readonly productFallbackImage = 'assets/product-placeholder-retro-bazar-v6.png';
   readonly heroLines = [Array.from('El futuro'), Array.from('también fue retro.')];
   readonly mobileHeroLines = [
@@ -34,30 +30,11 @@ export class HomeComponent {
   readonly visibleProducts = computed(() => this.products().slice(0, 5));
 
   constructor() {
-    this.route.queryParamMap.subscribe((params) => {
-      const search = params.get('search')?.trim();
-      const category = this.parseCategory(params.get('category'));
-      if (search) {
-        this.selectedCategory.set('ALL');
-        this.loadProducts(this.catalog.search(search), `Resultados para “${search}”`);
-      } else if (category) {
-        this.selectedCategory.set(category);
-        this.loadProducts(this.catalog.byCategory(category), this.categoryLabel(category));
-      } else {
-        this.loadAll();
-      }
-    });
-  }
-
-  selectCategory(category: ProductCategory | 'ALL'): void {
-    void this.router.navigate(['/'], {
-      queryParams: category === 'ALL' ? {} : { category },
-      fragment: 'seleccion'
-    });
+    this.loadProducts(this.catalog.byCategory('GAMING'));
   }
 
   retryCatalog(): void {
-    this.loadAll();
+    this.loadProducts(this.catalog.byCategory('GAMING'));
   }
 
   scatterHeroLetters(event: MouseEvent): void {
@@ -111,22 +88,9 @@ export class HomeComponent {
     image.src = this.productFallbackImage;
   }
 
-  categoryLabel(category: ProductCategory): string {
-    return {
-      GADGETS: 'Gadgets', GAMING: 'Retro gaming',
-      SETUP_ACCESSORIES: 'Setup', OTHERS: 'Hallazgos'
-    }[category];
-  }
-
-  private loadAll(): void {
-    this.selectedCategory.set('ALL');
-    this.loadProducts(this.catalog.list(), 'Objetos más buscados');
-  }
-
-  private loadProducts(request: Observable<Product[]>, title: string): void {
+  private loadProducts(request: Observable<Product[]>): void {
     this.catalogLoading.set(true);
     this.catalogError.set(false);
-    this.catalogTitle.set(title);
     request.subscribe({
       next: (products) => {
         this.products.set(products);
@@ -140,8 +104,4 @@ export class HomeComponent {
     });
   }
 
-  private parseCategory(value: string | null): ProductCategory | null {
-    const categories: ProductCategory[] = ['GADGETS', 'GAMING', 'SETUP_ACCESSORIES', 'OTHERS'];
-    return categories.find((category) => category === value) ?? null;
-  }
 }
