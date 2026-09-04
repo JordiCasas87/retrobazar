@@ -29,12 +29,24 @@ export class AppComponent {
     this.searchOpen.update((open) => !open);
   }
 
+  showIdea(event: Event): void {
+    event.preventDefault();
+    this.menuOpen.set(false);
+    void this.router.navigate(['/'], { fragment: 'manifiesto' }).then(() => {
+      requestAnimationFrame(() => {
+        document.getElementById('manifiesto')?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      });
+    });
+  }
+
   searchProducts(text: string): void {
     const search = text.trim();
     this.searchOpen.set(false);
-    void this.router.navigate(['/'], {
-      queryParams: search ? { search } : {},
-      fragment: 'seleccion'
+    void this.router.navigate(['/catalogo'], {
+      queryParams: search ? { search } : {}
     });
   }
 }

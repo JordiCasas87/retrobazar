@@ -1,6 +1,6 @@
 <main id="inicio">
   <section class="hero">
-    <img src="assets/hero-retro-tech.png" alt="Selección de tecnología retro: consola, robot y teclado">
+    <img src="assets/hero-retro-products-v2.jpg" alt="Selección de productos retro: consola portátil, teclado, cámaras, robot y pantalla">
     <div class="hero-shade"></div>
     <div class="hero-copy">
       <p class="eyebrow">Colección 01 / 2026</p>
@@ -27,48 +27,41 @@
         }
       </h1>
       <p class="hero-intro">Piezas escogidas para jugar, crear y vivir tu setup de otra manera.</p>
-      <a class="primary-link" href="#seleccion">Explorar la selección</a>
+      <a class="primary-link" routerLink="/catalogo">Ver catálogo</a>
     </div>
-    <p class="hero-note">Diseño memorable.<br>Uso cotidiano.</p>
   </section>
 
   <section class="intro-block">
     <p class="section-kicker">Retro Bazar / Nuestra selección</p>
-    <h2>No vendemos nostalgia.<br>Elegimos objetos que aún sorprenden.</h2>
-    <p>Cada pieza mezcla utilidad, diseño y esa extraña alegría de pulsar un botón de verdad.</p>
+    <h2>Elegimos objetos que aún sorprenden.</h2>
+    <a class="intro-link" routerLink="/catalogo">Abrir el catálogo <span aria-hidden="true">→</span></a>
   </section>
 
   <section class="categories" id="categorias">
-    <button class="category-card cyan" type="button" (click)="selectCategory('GAMING')">
+    <a class="category-card cyan" routerLink="/catalogo" [queryParams]="{ category: 'GAMING' }">
       <span class="signal-lines" aria-hidden="true"><i></i><i></i><i></i></span>
       <span class="category-number">01</span>
       <span class="category-name">Retro gaming</span>
-    </button>
-    <button class="category-card amber" type="button" (click)="selectCategory('GADGETS')">
+    </a>
+    <a class="category-card amber" routerLink="/catalogo" [queryParams]="{ category: 'GADGETS' }">
       <span class="signal-lines" aria-hidden="true"><i></i><i></i><i></i></span>
       <span class="category-number">02</span>
       <span class="category-name">Gadgets de escritorio</span>
-    </button>
-    <button class="category-card neutral" type="button" (click)="selectCategory('SETUP_ACCESSORIES')">
+    </a>
+    <a class="category-card neutral" routerLink="/catalogo" [queryParams]="{ category: 'SETUP_ACCESSORIES' }">
       <span class="signal-lines" aria-hidden="true"><i></i><i></i><i></i></span>
       <span class="category-number">03</span>
       <span class="category-name">Setup &amp; accesorios</span>
-    </button>
+    </a>
   </section>
 
   <section class="products-section" id="seleccion">
     <div class="section-heading">
       <div>
-        <p class="section-kicker">Una primera selección</p>
-        <h2>{{ catalogTitle() }}</h2>
+        <p class="section-kicker">Nuestra primera colección</p>
+        <h2>Productos más buscados</h2>
       </div>
-      <div class="filter-tabs" aria-label="Filtrar productos">
-        <button [class.active]="selectedCategory() === 'ALL'" (click)="selectCategory('ALL')">Todo</button>
-        <button [class.active]="selectedCategory() === 'GAMING'" (click)="selectCategory('GAMING')">Gaming</button>
-        <button [class.active]="selectedCategory() === 'GADGETS'" (click)="selectCategory('GADGETS')">Gadgets</button>
-        <button [class.active]="selectedCategory() === 'SETUP_ACCESSORIES'" (click)="selectCategory('SETUP_ACCESSORIES')">Setup</button>
-        <button [class.active]="selectedCategory() === 'OTHERS'" (click)="selectCategory('OTHERS')">Otros</button>
-      </div>
+      <a class="catalog-link" routerLink="/catalogo">Ver catálogo completo <span aria-hidden="true">→</span></a>
     </div>
 
     @if (catalogLoading()) {
@@ -89,6 +82,7 @@
               <img
                 [src]="product.imageUrls[0] || productFallbackImage"
                 [alt]="product.imageUrls[0] ? product.name : 'Imagen provisional de ' + product.name"
+                loading="lazy"
                 (error)="useProductFallback($event)">
               @if (index === 0) { <span class="product-badge">Favorito</span> }
             </a>
@@ -116,7 +110,7 @@
     </div>
     <div class="manifesto-copy">
       <p class="section-kicker">Nuestra manera de elegir</p>
-      <h2>Menos ruido.<br>Más carácter.</h2>
+      <h2>Un poco de nostalgia<br>con mucha utilidad.</h2>
       <p>Buscamos productos que merecen quedarse sobre la mesa: útiles, bien diseñados y con una personalidad difícil de confundir.</p>
       <a href="#categorias">Conocer la selección</a>
     </div>
