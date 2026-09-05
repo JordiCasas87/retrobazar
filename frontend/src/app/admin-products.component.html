@@ -1,0 +1,81 @@
+<main class="catalog-page admin-page">
+  <section class="catalog-intro admin-intro">
+    <p class="catalog-kicker">Retro Bazar / Administración</p>
+    <div class="admin-title-row">
+      <div>
+        <h1>Administrar productos</h1>
+        <p>Consulta el catálogo completo, añade productos o elimina los que ya no necesites.</p>
+      </div>
+      <a class="create-link" routerLink="/admin/productos/nuevo">Crear producto <span aria-hidden="true">＋</span></a>
+    </div>
+  </section>
+
+  <section class="catalog-controls admin-controls" aria-label="Filtros de productos">
+    <div class="category-filters" aria-label="Filtrar por categoría">
+      <button [class.active]="selectedCategory() === 'ALL'" (click)="selectCategory('ALL')">Todo</button>
+      <button [class.active]="selectedCategory() === 'GAMING'" (click)="selectCategory('GAMING')">Gaming</button>
+      <button [class.active]="selectedCategory() === 'GADGETS'" (click)="selectCategory('GADGETS')">Gadgets</button>
+      <button [class.active]="selectedCategory() === 'SETUP_ACCESSORIES'" (click)="selectCategory('SETUP_ACCESSORIES')">Setup</button>
+      <button [class.active]="selectedCategory() === 'OTHERS'" (click)="selectCategory('OTHERS')">Otros</button>
+    </div>
+  </section>
+
+  <section class="catalog-results">
+    <div class="results-heading">
+      <p>{{ filteredProducts().length }} {{ filteredProducts().length === 1 ? 'producto' : 'productos' }}</p>
+      @if (totalPages() > 1) {
+        <p>Página {{ currentPage() }} de {{ totalPages() }}</p>
+      }
+      <p>Incluye productos activos e inactivos</p>
+    </div>
+
+    @if (feedback()) {
+      <p class="admin-feedback" aria-live="polite">{{ feedback() }}</p>
+    }
+
+    @if (loading()) {
+      <div class="catalog-state" aria-live="polite"><span class="loader"></span><p>Cargando productos…</p></div>
+    } @else if (error()) {
+      <div class="catalog-state"><p>No hemos podido cargar los productos.</p><button type="button" (click)="loadProducts()">Reintentar</button></div>
+    } @else {
+      <div class="catalog-grid">
+        @for (product of visibleProducts(); track product.id) {
+          <article class="catalog-card admin-card">
+            <div class="product-image">
+              <img [src]="product.imageUrls[0] || fallbackImage" [alt]="product.name" loading="lazy" (error)="useFallback($event)">
+              <span class="status-badge" [class.inactive]="!product.active">{{ product.active ? 'Activo' : 'Inactivo' }}</span>
+            </div>
+            <div class="product-info">
+              <div><p>{{ product.brand }}</p><h2>{{ product.name }}</h2></div>
+              <strong>{{ product.price | currency:'EUR':'symbol':'1.2-2':'es' }}</strong>
+            </div>
+            <p class="product-description">{{ product.description }}</p>
+            <div class="admin-card-footer">
+              <span>Stock: {{ product.stock }}</span>
+              <div class="admin-card-actions">
+                <a [routerLink]="['/admin/productos', product.id, 'editar']">Editar</a>
+                <button type="button" [disabled]="deletingId() === product.id" (click)="deleteProduct(product)">
+                  {{ deletingId() === product.id ? 'Eliminando…' : 'Eliminar' }}
+                </button>
+              </div>
+            </div>
+          </article>
+        } @empty {
+          <div class="empty-state"><p>No hay productos en esta categoría.</p></div>
+        }
+      </div>
+
+      @if (totalPages() > 1) {
+        <nav class="pagination" aria-label="Paginación de administración">
+          <button type="button" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">Anterior</button>
+          <div>
+            @for (page of pages(); track page) {
+              <button type="button" [class.active]="page === currentPage()" [attr.aria-current]="page === currentPage() ? 'page' : null" (click)="goToPage(page)">{{ page }}</button>
+            }
+          </div>
+          <button type="button" [disabled]="currentPage() === totalPages()" (click)="goToPage(currentPage() + 1)">Siguiente</button>
+        </nav>
+      }
+    }
+  </section>
+</main>

@@ -1,0 +1,97 @@
+<main class="create-page">
+  <header class="create-header">
+    <p>Retro Bazar / Administración</p>
+    <a routerLink="/admin/productos">← Volver a productos</a>
+  </header>
+
+  <section class="create-layout">
+    <div class="create-intro">
+      <p class="kicker">{{ editing() ? 'Editar producto' : 'Nuevo producto' }}</p>
+      <h1>{{ editing() ? 'Modificar producto' : 'Crear producto' }}</h1>
+      <p>{{ editing() ? 'Actualiza la información del producto y guarda los cambios.' : 'Completa la información que aparecerá en el catálogo. Por ahora las imágenes se añaden mediante una URL pública.' }}</p>
+    </div>
+
+    @if (loadingProduct()) {
+      <div class="form-loading" aria-live="polite"><span></span><p>Cargando producto…</p></div>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="form-grid">
+        <label>
+          <span>Nombre *</span>
+          <input type="text" formControlName="name" placeholder="Game Boy DMG">
+          @if (form.controls.name.touched && form.controls.name.invalid) { <small>Introduce un nombre.</small> }
+        </label>
+
+        <label>
+          <span>Marca *</span>
+          <input type="text" formControlName="brand" placeholder="Nintendo">
+          @if (form.controls.brand.touched && form.controls.brand.invalid) { <small>Introduce una marca.</small> }
+        </label>
+
+        <label class="full-width">
+          <span>Descripción *</span>
+          <textarea formControlName="description" rows="6" placeholder="Describe el producto, su utilidad y su estado."></textarea>
+          <em>{{ form.controls.description.value.length }} / 2000</em>
+          @if (form.controls.description.touched && form.controls.description.invalid) { <small>Introduce una descripción.</small> }
+        </label>
+
+        <label>
+          <span>Precio (€) *</span>
+          <input type="number" min="0.01" step="0.01" formControlName="price" placeholder="89.90">
+          @if (form.controls.price.touched && form.controls.price.invalid) { <small>El precio debe ser mayor que cero.</small> }
+        </label>
+
+        <label>
+          <span>Stock *</span>
+          <input type="number" min="0" step="1" formControlName="stock">
+          @if (form.controls.stock.touched && form.controls.stock.invalid) { <small>El stock no puede ser negativo.</small> }
+        </label>
+
+        <label>
+          <span>Categoría *</span>
+          <select formControlName="category">
+            @for (category of categories; track category.value) {
+              <option [value]="category.value">{{ category.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="active-field">
+          <input type="checkbox" formControlName="active">
+          <span>Publicar como producto activo</span>
+        </label>
+      </div>
+
+      <fieldset formArrayName="imageUrls">
+        <div class="images-heading">
+          <div><legend>Imágenes *</legend><p>Entre 1 y 5 URLs públicas. La primera será la imagen principal.</p></div>
+          <button type="button" [disabled]="imageUrls.length >= 5" (click)="addImageUrl()">Añadir otra imagen</button>
+        </div>
+
+        @for (control of imageUrls.controls; track control; let index = $index) {
+          <div class="image-row">
+            <div class="image-preview">
+              <img [src]="control.valid && control.value ? control.value : fallbackImage" [alt]="index === 0 ? 'Vista previa principal' : 'Vista previa ' + (index + 1)" (error)="useFallback($event)">
+            </div>
+            <label>
+              <span>{{ index === 0 ? 'Imagen principal' : 'Imagen ' + (index + 1) }}</span>
+              <input type="url" [formControlName]="index" placeholder="https://ejemplo.com/producto.jpg">
+              @if (control.touched && control.invalid) { <small>Introduce una URL que empiece por http:// o https://</small> }
+            </label>
+            <button class="remove-image" type="button" [disabled]="imageUrls.length === 1" (click)="removeImageUrl(index)">Quitar</button>
+          </div>
+        }
+      </fieldset>
+
+      @if (submitError()) {
+        <p class="submit-error" role="alert">{{ submitError() }}</p>
+      }
+
+      <div class="form-actions">
+        <a routerLink="/admin/productos">Cancelar</a>
+        <button type="submit" [disabled]="submitting()">{{ submitting() ? 'Guardando…' : (editing() ? 'Guardar cambios' : 'Crear producto') }}</button>
+      </div>
+      </form>
+    }
+  </section>
+</main>

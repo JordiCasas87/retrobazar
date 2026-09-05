@@ -16,6 +16,7 @@
       <a routerLink="/">Inicio</a>
       <a href="/#manifiesto" (click)="showIdea($event)">Nuestra idea</a>
       <a routerLink="/catalogo">Catálogo</a>
+      <a routerLink="/admin/productos">Administrar</a>
     </nav>
     <button class="text-button" type="button" (click)="toggleSearch()">Buscar</button>
     <button class="text-button desktop-action" type="button">Cuenta</button>
@@ -28,6 +29,7 @@
         <a routerLink="/" (click)="toggleMenu()"><span>01</span>Inicio</a>
         <a href="/#manifiesto" (click)="showIdea($event)"><span>02</span>Nuestra idea</a>
         <a routerLink="/catalogo" (click)="toggleMenu()"><span>03</span>Catálogo</a>
+        <a routerLink="/admin/productos" (click)="toggleMenu()"><span>04</span>Administrar</a>
       </div>
       <div class="mobile-menu-actions">
         <button type="button" (click)="openSearchFromMenu()">Buscar</button>

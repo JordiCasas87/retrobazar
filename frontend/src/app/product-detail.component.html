@@ -24,7 +24,7 @@
             [src]="item.imageUrls[activeImage()] || fallbackImage"
             [alt]="item.name"
             (error)="useFallback($event)">
-          @if (item.stock <= 3) { <span class="stock-label">Últimas unidades</span> }
+          @if (item.stock <= 3) { <span class="stock-label">Stock limitado</span> }
         </div>
 
         @if (item.imageUrls.length > 1) {
