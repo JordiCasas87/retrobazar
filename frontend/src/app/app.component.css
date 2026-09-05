@@ -40,18 +40,18 @@
 .intro-link:hover::before { transform: rotate(18deg) translateX(700%); }
 .intro-link:hover span { transform: translateX(7px); }
 .categories { display: grid; grid-template-columns: repeat(3, 1fr); min-height: 210px; }
-.category-card { position: relative; overflow: hidden; padding: 26px; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; border: 0; border-right: 1px solid rgba(0,0,0,.18); text-align: left; cursor: pointer; transition: filter .25s ease; isolation: isolate; }
-.category-card:hover { filter: brightness(.94); }
-.signal-lines { position: absolute; z-index: -1; inset: 0; overflow: hidden; opacity: .2; pointer-events: none; }
-.signal-lines i { position: absolute; display: block; width: 72%; height: 1px; right: -26%; background: currentColor; transform: rotate(-34deg); transition: transform .65s cubic-bezier(.2,.8,.2,1), right .65s cubic-bezier(.2,.8,.2,1); }
-.signal-lines i:nth-child(1) { top: 26%; }
-.signal-lines i:nth-child(2) { top: 50%; right: -10%; }
-.signal-lines i:nth-child(3) { top: 74%; right: -34%; }
-.category-card:hover .signal-lines i { right: 18%; transform: rotate(-34deg) translateX(-18px); }
-.category-card:hover .signal-lines i:nth-child(2) { right: 2%; transform: rotate(-34deg) translateX(22px); }
-.cyan { background: var(--cyan); }
-.amber { background: var(--amber); }
-.neutral { background: #d8d6ce; }
+.category-card { position: relative; overflow: hidden; padding: 26px; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; border: 0; border-right: 1px solid rgba(0,0,0,.18); text-align: left; cursor: pointer; transition: filter .3s ease, box-shadow .3s ease; isolation: isolate; }
+.category-card:hover { filter: saturate(1.08); box-shadow: inset 0 0 42px rgba(255,255,255,.16); }
+.signal-lines { position: absolute; z-index: -1; inset: 0; overflow: hidden; pointer-events: none; }
+.signal-lines i { position: absolute; display: block; right: clamp(28px, 5vw, 96px); top: 50%; width: 92px; aspect-ratio: 1; border: 1px solid currentColor; opacity: .16; transform: translateY(-50%) rotate(45deg); transition: transform .7s cubic-bezier(.2,.8,.2,1), opacity .35s ease; }
+.signal-lines i:nth-child(2) { width: 142px; opacity: .12; }
+.signal-lines i:nth-child(3) { width: 192px; opacity: .08; }
+.category-card:hover .signal-lines i { opacity: .32; transform: translateY(-50%) rotate(135deg) scale(1.05); }
+.category-card:hover .signal-lines i:nth-child(2) { opacity: .2; transform: translateY(-50%) rotate(105deg) scale(.98); }
+.category-card:hover .signal-lines i:nth-child(3) { opacity: .13; transform: translateY(-50%) rotate(75deg) scale(1.04); }
+.cyan { background: linear-gradient(135deg, #42d9ef 0%, #72e4ee 52%, #34bfd8 100%); }
+.amber { background: linear-gradient(135deg, #ff9a36 0%, #ffbd58 52%, #ee8128 100%); }
+.neutral { background: linear-gradient(135deg, #c8ccd0 0%, #e1e2df 52%, #aeb6bc 100%); }
 .category-number { font-size: clamp(15px, .78vw, 17px); letter-spacing: .1em; }
 .category-name { font-size: clamp(23px, 2.5vw, 38px); letter-spacing: -.04em; }
 .products-section { padding: clamp(90px, 10vw, 150px) 28px 80px; background: #d8d6cf; }
@@ -59,8 +59,8 @@
 .section-heading h2 { font-size: clamp(46px, 5vw, 76px); }
 .catalog-link { padding: 12px 0; display: flex; align-items: center; gap: 36px; border-bottom: 1px solid var(--ink); font-size: clamp(16px, .85vw, 18px); white-space: nowrap; }
 .product-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
-.product-image { aspect-ratio: 1; position: relative; display: grid; place-items: center; overflow: hidden; background: #c9c7c0; }
-.product-image img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+.product-image { aspect-ratio: 1; position: relative; display: grid; place-items: center; overflow: hidden; background: #fff; }
+.product-image img { width: 100%; height: 100%; object-fit: contain; transition: transform .6s ease; }
 .product-image:hover img { transform: scale(1.025); }
 .product-badge { position: absolute; top: 14px; left: 14px; padding: 8px 10px; background: var(--ink); color: #fff; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; }
 .product-info { padding: 15px 2px 0; display: flex; justify-content: space-between; gap: 12px; }

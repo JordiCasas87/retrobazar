@@ -4,13 +4,13 @@
 .detail-toolbar button, .detail-toolbar a { border: 0; background: transparent; padding: 14px 0; font-size: clamp(19px, 1.05vw, 22px); font-weight: 550; cursor: pointer; }
 .detail-toolbar button { display: flex; gap: 14px; align-items: center; }
 .detail-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(360px, .75fr); gap: clamp(40px, 7vw, 120px); padding-top: clamp(38px, 5vw, 78px); }
-.main-image { position: relative; aspect-ratio: 1 / 1; overflow: hidden; background: #c4c2bb; }
-.main-image > img { width: 100%; height: 100%; object-fit: cover; }
+.main-image { position: relative; aspect-ratio: 1 / 1; overflow: hidden; background: #fff; }
+.main-image > img { width: 100%; height: 100%; object-fit: contain; }
 .stock-label { position: absolute; top: 18px; left: 18px; padding: 9px 12px; background: var(--amber); font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
 .thumbnails { display: flex; gap: 10px; margin-top: 10px; }
-.thumbnails button { width: 88px; aspect-ratio: 1; padding: 0; overflow: hidden; border: 1px solid transparent; background: transparent; cursor: pointer; }
+.thumbnails button { width: 88px; aspect-ratio: 1; padding: 0; overflow: hidden; border: 1px solid transparent; background: #fff; cursor: pointer; }
 .thumbnails button.active { border-color: var(--ink); }
-.thumbnails img { width: 100%; height: 100%; object-fit: cover; }
+.thumbnails img { width: 100%; height: 100%; object-fit: contain; }
 .product-copy { padding-top: clamp(10px, 3vw, 48px); }
 .kicker { margin: 0 0 28px; font-size: 15px; font-weight: 650; letter-spacing: .1em; text-transform: uppercase; }
 .product-copy h1, .detail-state h1 { margin: 0; font-size: clamp(54px, 6vw, 96px); line-height: .9; letter-spacing: -.06em; font-weight: 500; }
