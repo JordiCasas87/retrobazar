@@ -153,9 +153,11 @@ Las funciones aún no implementadas deben comunicarse de forma clara:
 - [x] Cuadrícula y tarjetas de producto.
 - [x] Buscador conectado al backend.
 - [x] Filtro por categoría.
+- [x] Paginación del catálogo y del listado administrativo.
 - [ ] Ordenación visual del catálogo.
 - [x] Vista de detalle de producto.
 - [x] Estados de carga, vacío y error.
+- [x] Panel de administración para crear, editar, activar, desactivar y eliminar productos.
 
 ### Demostrativas o pendientes
 
@@ -163,7 +165,6 @@ Las funciones aún no implementadas deben comunicarse de forma clara:
 - [ ] Registro e inicio de sesión.
 - [ ] Cuenta de cliente.
 - [ ] Creación de pedidos.
-- [ ] Panel de administración.
 - [ ] Pago y envío reales.
 - [ ] Favoritos.
 - [ ] Filtros avanzados por precio, stock o marca.
@@ -177,6 +178,9 @@ Las funciones pendientes deben conservar el lenguaje visual del producto, pero n
 | `/` | MVP | Página principal y catálogo destacado |
 | `/catalogo` | MVP | Catálogo completo con búsqueda y filtros |
 | `/producto/:id` | MVP | Detalle de un producto |
+| `/admin/productos` | Demo | Gestión y paginación de productos |
+| `/admin/productos/nuevo` | Demo | Alta de productos con URLs públicas de imagen |
+| `/admin/productos/:id/editar` | Demo | Edición de productos existentes |
 | `/carrito` | En desarrollo | Preparada para el carrito local |
 | `/cuenta` | Próximamente | Acceso de cuenta deshabilitado hasta implementar autenticación |
 

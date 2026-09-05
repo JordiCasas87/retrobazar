@@ -256,15 +256,16 @@ en lugar de ejecutar siempre una secuencia fija programada.
 1. **Estructura del frontend — completado.** La portada vive en un
    `HomeComponent` enrutado y `AppComponent` conserva únicamente el layout y la
    interacción global.
-2. **Catálogo público.** Crear `/catalogo` con búsqueda, filtros por categoría y
-   paginación inicial de diez productos en Angular. La portada mantendrá solo una
-   selección reducida y enlazará al catálogo completo.
-3. **Administración abierta de demostración.** Crear el listado administrativo y
-   las pantallas de alta, edición, activación y eliminación utilizando los
-   endpoints actuales. El acceso se identificará como `Administración · Demo`.
-4. **Catálogo propio.** Preparar fotografías cuadradas, optimizarlas a WebP y
-   guardarlas en `frontend/src/assets/products/`. Sustituir después en `data.sql`
-   las imágenes y descripciones de demostración.
+2. **Catálogo público — completado.** `/catalogo` ofrece búsqueda, filtros por
+   categoría y paginación de diez productos en Angular. La portada mantiene una
+   selección reducida y enlaza al catálogo completo.
+3. **Administración abierta de demostración — completado.** El panel permite
+   listar con filtros y paginación, crear, editar, activar, desactivar y eliminar
+   productos utilizando los endpoints actuales.
+4. **Catálogo administrable — completado.** Los productos, descripciones e
+   imágenes se mantienen desde el panel mediante URLs públicas. `data.sql` se
+   conserva como catálogo inicial de referencia, pero no se ejecuta
+   automáticamente sobre la base de datos local.
 5. **Agente de IA.** Integrar en el alta de productos el agente definido en la
    sección anterior, con análisis de imágenes, herramientas del catálogo,
    detección de duplicados, propuesta editable y confirmación humana.
