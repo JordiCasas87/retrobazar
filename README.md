@@ -21,8 +21,61 @@ El repositorio contiene actualmente:
 - Una interfaz responsive preparada como MVP visual.
 - Diez productos de demostración distribuidos en cuatro categorías.
 
-Usuarios, autenticación, carrito, pedidos y pagos quedan fuera de esta primera
-versión.
+La siguiente fase incorporará usuarios, autenticación y listas de deseos. El
+checkout, los pedidos y los pagos propios quedan fuera del MVP inicial, que
+delegará temporalmente la transacción en Wallapop mediante un enlace específico
+asociado a cada producto.
+
+## Visión del producto y alcance del MVP
+
+Retro Bazar se plantea como un e-commerce evolutivo, no como un agregador de
+anuncios. La aplicación es responsable de la experiencia de tienda: catálogo,
+búsqueda, detalle de producto, administración, cuentas de usuario y listas de
+deseos. En su primera versión, Wallapop actúa únicamente como canal externo para
+finalizar la compra, el pago y el envío.
+
+El flujo previsto para el MVP es:
+
+```text
+Descubrir en Retro Bazar
+        ↓
+Consultar y guardar productos en una lista personal
+        ↓
+Abrir «Comprar en Wallapop» en el producto seleccionado
+        ↓
+Completar la transacción dentro de Wallapop
+```
+
+Las cuentas de Retro Bazar y Wallapop serán independientes. Retro Bazar no
+solicitará ni almacenará credenciales de Wallapop. Cada usuario registrado tendrá
+su propia lista de deseos persistente; la definición de un historial de compras
+se decidirá más adelante, ya que el MVP no recibe confirmación automática de las
+transacciones realizadas en la plataforma externa.
+
+El gestor de la tienda publicará inicialmente los productos tanto en Retro Bazar
+como en su cuenta de Wallapop y mantendrá manualmente el enlace y la disponibilidad.
+La arquitectura deberá tratar Wallapop como un canal sustituible, para poder
+incorporar posteriormente carrito, checkout, pagos y pedidos propios sin rehacer
+el catálogo ni las cuentas de usuario.
+
+### Integración inicial con Wallapop
+
+A fecha de septiembre de 2026 no se ha localizado una API pública oficial ni un
+portal para desarrolladores que permita a una aplicación externa gestionar
+anuncios, consultar ventas o iniciar pagos de Wallapop. Por ello, el MVP utilizará
+únicamente enlaces públicos introducidos manualmente por el administrador.
+
+No se utilizarán endpoints privados, ingeniería inversa, scraping ni bots. Las
+[condiciones de uso de Wallapop](https://about.wallapop.com/condiciones-de-uso/)
+prohíben la extracción sistemática de contenido y las herramientas externas no
+autorizadas. Una sincronización automática solo se estudiará si Wallapop ofrece
+en el futuro una API oficial o concede autorización expresa.
+
+El botón de salida deberá indicar claramente «Comprar en Wallapop» y comunicar
+que la compra, el pago, el envío y cualquier disputa se gestionan allí. Wallapop
+indica que el comprador debe usar el botón «Comprar» del anuncio para escoger el
+método de envío y pago dentro de su servicio, según su documentación sobre
+[Wallapop Envíos](https://ayuda.wallapop.com/hc/es-es/articles/360002049077-C%C3%B3mo-funciona-Wallapop-Env%C3%ADos).
 
 ## Tecnologías
 
@@ -271,9 +324,13 @@ en lugar de ejecutar siempre una secuencia fija programada.
    detección de duplicados, propuesta editable y confirmación humana.
 6. **Autenticación y autorización.** Añadir usuarios, login y roles; proteger las
    rutas administrativas de Angular y los endpoints `/api/admin/**`.
-7. **Evolución del e-commerce.** Incorporar carrito y pedidos cuando el catálogo y
-   la administración estén consolidados.
-8. **Preparación para publicación.** Configurar los entornos de Angular, añadir
+7. **Listas de deseos.** Permitir que cada usuario mantenga una selección personal
+   persistente y sincronizada entre sesiones y dispositivos.
+8. **Canal de compra externo.** Asociar cada producto con su anuncio e incorporar
+   la salida explícita «Comprar en Wallapop», manteniendo manualmente su estado.
+9. **Evolución del e-commerce.** Sustituir o complementar el canal externo con
+   carrito, checkout, pagos, pedidos e historial de compras propios.
+10. **Preparación para publicación.** Configurar los entornos de Angular, añadir
    Dockerfiles para backend y frontend, ampliar Docker Compose y preparar el
    despliegue público.
 

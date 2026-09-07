@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AdminProductService } from './admin-product.service';
-import { Product, ProductCategory } from './product.model';
+import { AdminProductService } from '../../data-access/admin-product.service';
+import { Product, ProductCategory } from '../../../../catalog/models/product.model';
 
 @Component({
   selector: 'rb-admin-products',
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './admin-products.component.html',
-  styleUrls: ['./catalog.component.css', './admin-products.component.css']
+  styleUrls: ['../../../../catalog/pages/catalog/catalog.component.css', './admin-products.component.css']
 })
 export class AdminProductsComponent {
   private readonly adminProducts = inject(AdminProductService);

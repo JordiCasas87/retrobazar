@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, of, switchMap } from 'rxjs';
-import { AdminProductService } from './admin-product.service';
-import { CreateProductRequest, Product, ProductCategory, UpdateProductRequest } from './product.model';
+import { AdminProductService } from '../../data-access/admin-product.service';
+import { createImageUrlControl, createProductForm, productRequestFromForm } from '../../forms/product-form';
+import { PRODUCT_CATEGORY_OPTIONS } from '../../../../catalog/models/product.constants';
+import { CreateProductRequest, Product, UpdateProductRequest } from '../../../../catalog/models/product.model';
 
 interface ApiValidationError {
   fieldErrors?: Array<{ field: string; message: string }>;
@@ -31,25 +33,9 @@ export class CreateProductComponent {
   readonly submitError = signal('');
   readonly fieldErrors = signal<Record<string, string>>({});
   readonly fallbackImage = 'assets/product-placeholder-retro-bazar-v6.png';
-  readonly categories: Array<{ value: ProductCategory; label: string }> = [
-    { value: 'GAMING', label: 'Retro gaming' },
-    { value: 'GADGETS', label: 'Gadgets de escritorio' },
-    { value: 'SETUP_ACCESSORIES', label: 'Setup y accesorios' },
-    { value: 'OTHERS', label: 'Otros hallazgos' }
-  ];
+  readonly categories = PRODUCT_CATEGORY_OPTIONS;
 
-  readonly form = new FormGroup({
-    name: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.maxLength(255)] }),
-    brand: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.maxLength(255)] }),
-    description: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.maxLength(2000)] }),
-    price: new FormControl<number | null>(null, [Validators.required, Validators.min(0.01)]),
-    stock: new FormControl<number | null>(0, [Validators.required, Validators.min(0)]),
-    category: new FormControl<ProductCategory>('GAMING', { nonNullable: true, validators: [Validators.required] }),
-    imageUrls: new FormArray<FormControl<string>>([
-      new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.pattern(this.urlPattern)] })
-    ]),
-    active: new FormControl(true, { nonNullable: true })
-  });
+  readonly form = createProductForm(this.urlPattern);
 
   constructor() {
     if (this.productId) this.loadProduct(this.productId);
@@ -61,10 +47,7 @@ export class CreateProductComponent {
 
   addImageUrl(): void {
     if (this.imageUrls.length >= 5) return;
-    this.imageUrls.push(new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.pattern(this.urlPattern)]
-    }));
+    this.imageUrls.push(createImageUrlControl(this.urlPattern));
   }
 
   removeImageUrl(index: number): void {
@@ -80,17 +63,7 @@ export class CreateProductComponent {
       return;
     }
 
-    const value = this.form.getRawValue();
-    const request: CreateProductRequest = {
-      name: value.name.trim(),
-      brand: value.brand.trim(),
-      description: value.description.trim(),
-      price: value.price!,
-      stock: value.stock!,
-      category: value.category,
-      imageUrls: value.imageUrls.map((url) => url.trim()),
-      active: value.active
-    };
+    const request = productRequestFromForm(this.form);
 
     this.submitting.set(true);
     const saveRequest = this.productId
@@ -129,8 +102,8 @@ export class CreateProductComponent {
           active: product.active
         });
         this.imageUrls.clear();
-        product.imageUrls.forEach((url) => this.imageUrls.push(this.createImageControl(url)));
-        if (!product.imageUrls.length) this.imageUrls.push(this.createImageControl(''));
+        product.imageUrls.forEach((url) => this.imageUrls.push(createImageUrlControl(this.urlPattern, url)));
+        if (!product.imageUrls.length) this.imageUrls.push(createImageUrlControl(this.urlPattern));
         this.loadingProduct.set(false);
       },
       error: () => {
@@ -157,12 +130,5 @@ export class CreateProductComponent {
         return request.active ? this.adminProducts.activate(id) : this.adminProducts.deactivate(id);
       })
     );
-  }
-
-  private createImageControl(value: string): FormControl<string> {
-    return new FormControl(value, {
-      nonNullable: true,
-      validators: [Validators.required, Validators.pattern(this.urlPattern)]
-    });
   }
 }
