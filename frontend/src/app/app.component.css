@@ -1,5 +1,5 @@
 :host { display: block; }
-.announcement { min-height: 38px; padding: 8px 24px; display: flex; align-items: center; justify-content: space-between; background: var(--ink); color: #fff; font-size: 14px; letter-spacing: .1em; text-transform: uppercase; }
+.announcement { min-height: 38px; padding: 8px clamp(28px, 2.4vw, 52px); display: flex; align-items: center; justify-content: space-between; background: var(--ink); color: #fff; font-size: 14px; letter-spacing: .1em; text-transform: uppercase; }
 .site-header { height: 92px; padding: 0 clamp(28px, 2.4vw, 52px); display: grid; grid-template-columns: 1fr auto; align-items: center; border-bottom: 1px solid rgba(255,255,255,.16); background: rgba(16,16,16,.94); color: #fff; position: sticky; top: 0; z-index: 20; backdrop-filter: blur(14px); }
 .wordmark { display: flex; align-items: center; gap: 14px; justify-self: start; font-size: clamp(18px, 1vw, 22px); font-weight: 700; letter-spacing: .13em; }
 .wordmark img { width: 48px; height: 48px; border-radius: 2px; object-fit: cover; }
@@ -54,20 +54,21 @@
 .neutral { background: linear-gradient(135deg, #c8ccd0 0%, #e1e2df 52%, #aeb6bc 100%); }
 .category-number { font-size: clamp(15px, .78vw, 17px); letter-spacing: .1em; }
 .category-name { font-size: clamp(23px, 2.5vw, 38px); letter-spacing: -.04em; }
-.products-section { padding: clamp(90px, 10vw, 150px) 28px 80px; background: #d8d6cf; }
+.products-section { padding: clamp(90px, 10vw, 150px) 28px 80px; background: #e7efef; }
 .section-heading { margin-bottom: 44px; display: flex; justify-content: space-between; align-items: end; gap: 30px; }
 .section-heading h2 { font-size: clamp(46px, 5vw, 76px); }
 .catalog-link { padding: 12px 0; display: flex; align-items: center; gap: 36px; border-bottom: 1px solid var(--ink); font-size: clamp(16px, .85vw, 18px); white-space: nowrap; }
 .product-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.product-card { overflow: hidden; border: 1px solid rgba(16,16,16,.11); border-radius: 18px; background: #fff; box-shadow: 0 8px 22px rgba(25,43,45,.06); }
 .product-image { aspect-ratio: 1; position: relative; display: grid; place-items: center; overflow: hidden; background: #fff; }
 .product-image img { width: 100%; height: 100%; object-fit: contain; transition: transform .6s ease; }
 .product-image:hover img { transform: scale(1.025); }
 .product-badge { position: absolute; top: 14px; left: 14px; padding: 8px 10px; background: var(--ink); color: #fff; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; }
-.product-info { padding: 15px 2px 0; display: flex; justify-content: space-between; gap: 12px; }
+.product-info { padding: 18px 18px 0; display: flex; justify-content: space-between; gap: 12px; }
 .product-info p { margin: 0 0 6px; color: #55544f; font-size: 15px; text-transform: uppercase; letter-spacing: .06em; }
 .product-info h3 { margin: 0; font-size: clamp(17px, .9vw, 20px); font-weight: 550; }
 .product-info strong { font-size: clamp(16px, .82vw, 18px); font-weight: 500; white-space: nowrap; }
-.product-description { margin: 12px 2px 0; max-width: 360px; color: #55544f; font-size: clamp(16px, .82vw, 18px); line-height: 1.55; }
+.product-description { margin: 12px 18px 20px; max-width: 360px; color: #52615f; font-size: clamp(16px, .82vw, 18px); line-height: 1.55; }
 .data-note { margin: 32px 0 0; color: #55544f; font-size: 15px; letter-spacing: .05em; text-transform: uppercase; }
 .empty-state { grid-column: 1 / -1; padding: 70px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .catalog-status { min-height: 420px; padding: 60px 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; border-top: 1px solid rgba(16,16,16,.2); border-bottom: 1px solid rgba(16,16,16,.2); }
@@ -113,7 +114,7 @@ footer { padding: 80px 28px 22px; background: var(--ink); color: #fff; }
   .mobile-only { display: block; justify-self: start; width: 24px; }
   .icon-button span { display: block; width: 20px; height: 1px; margin: 5px 0; background: currentColor; }
   .wordmark { justify-self: center; }
-  .wordmark img { width: 34px; height: 34px; }
+  .wordmark img { width: 44px; height: 44px; }
   .wordmark span, .desktop-nav, .desktop-action, .header-actions .text-button { display: none; }
   .mobile-menu { position: absolute; z-index: 19; top: 100%; left: 0; right: 0; padding: 22px; display: flex; flex-direction: column; background: var(--ink); color: #fff; border-top: 1px solid rgba(255,255,255,.15); box-shadow: 0 18px 34px rgba(0,0,0,.28); }
   .mobile-menu-main { display: flex; flex-direction: column; }
@@ -138,7 +139,7 @@ footer { padding: 80px 28px 22px; background: var(--ink); color: #fff; }
 }
 
 @media (max-width: 600px) {
-  .announcement { justify-content: center; text-align: center; }
+  .announcement { padding: 8px 18px; justify-content: flex-start; text-align: left; }
   .announcement-extra { display: none; }
   .search-panel form { align-items: stretch; flex-wrap: wrap; }
   .search-panel input { flex-basis: 100%; }

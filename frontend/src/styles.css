@@ -1,10 +1,10 @@
 :root {
   --ink: #101010;
-  --paper: #f1f0eb;
+  --paper: #f4f8f7;
   --line: rgba(16, 16, 16, .2);
   --cyan: #39d6f4;
   --amber: #ff8a24;
-  --muted: #6e6d68;
+  --muted: #60706f;
   font-family: "Helvetica Neue", "Nimbus Sans", Arial, sans-serif;
   color: var(--ink);
   background: var(--paper);
