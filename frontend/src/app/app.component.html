@@ -8,7 +8,7 @@
     <span></span><span></span>
   </button>
   <a class="wordmark" routerLink="/" aria-label="Retro Bazar, inicio">
-    <img src="assets/logo-retro-bazar.png" alt="">
+    <img src="assets/logo-retro-bazar-icon.png" alt="">
     <span>RETRO BAZAR</span>
   </a>
   <div class="header-actions">
@@ -16,10 +16,10 @@
       <a routerLink="/">Inicio</a>
       <a href="/#manifiesto" (click)="showIdea($event)">Nuestra idea</a>
       <a routerLink="/catalogo">Catálogo</a>
-      <a routerLink="/admin/productos">Administrar</a>
     </nav>
     <button class="text-button" type="button" (click)="toggleSearch()">Buscar</button>
     <button class="text-button desktop-action" type="button">Cuenta</button>
+    <a class="text-button desktop-action" routerLink="/admin/productos">Administrar</a>
     <button class="bag-button" type="button" aria-label="Abrir carrito">Carrito <span>0</span></button>
   </div>
 
