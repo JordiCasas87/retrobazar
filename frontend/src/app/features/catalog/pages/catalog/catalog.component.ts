@@ -2,8 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
-import { CatalogService } from './catalog.service';
-import { Product, ProductCategory } from './product.model';
+import { CatalogService } from '../../data-access/catalog.service';
+import { isProductCategory, productCategoryLabel } from '../../models/product.constants';
+import { Product, ProductCategory } from '../../models/product.model';
 
 @Component({
   selector: 'rb-catalog',
@@ -96,12 +97,7 @@ export class CatalogComponent {
   }
 
   categoryLabel(category: ProductCategory): string {
-    return {
-      GADGETS: 'Gadgets de escritorio',
-      GAMING: 'Retro gaming',
-      SETUP_ACCESSORIES: 'Setup y accesorios',
-      OTHERS: 'Otros hallazgos'
-    }[category];
+    return productCategoryLabel(category);
   }
 
   private loadProducts(request: Observable<Product[]>): void {
@@ -129,8 +125,7 @@ export class CatalogComponent {
   }
 
   private parseCategory(value: string | null): ProductCategory | null {
-    const categories: ProductCategory[] = ['GADGETS', 'GAMING', 'SETUP_ACCESSORIES', 'OTHERS'];
-    return categories.find((category) => category === value) ?? null;
+    return isProductCategory(value) ? value : null;
   }
 
   private parsePage(value: string | null): number {

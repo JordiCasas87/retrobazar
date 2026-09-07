@@ -2,8 +2,8 @@ import { CommonModule, Location } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { switchMap } from 'rxjs';
-import { CatalogService } from './catalog.service';
-import { Product } from './product.model';
+import { CatalogService } from '../../data-access/catalog.service';
+import { Product } from '../../models/product.model';
 
 @Component({
   selector: 'rb-product-detail',

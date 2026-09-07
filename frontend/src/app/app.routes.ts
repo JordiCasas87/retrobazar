@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { CatalogComponent } from './catalog.component';
-import { HomeComponent } from './home.component';
-import { ProductDetailComponent } from './product-detail.component';
-import { AdminProductsComponent } from './admin-products.component';
-import { CreateProductComponent } from './create-product.component';
+import { CatalogComponent } from './features/catalog/pages/catalog/catalog.component';
+import { ProductDetailComponent } from './features/catalog/pages/product-detail/product-detail.component';
+import { AdminProductsComponent } from './features/admin/products/pages/product-list/admin-products.component';
+import { CreateProductComponent } from './features/admin/products/pages/product-form/create-product.component';
+import { HomeComponent } from './features/home/pages/home/home.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', component: HomeComponent },

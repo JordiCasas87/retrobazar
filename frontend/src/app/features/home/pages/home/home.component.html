@@ -4,9 +4,7 @@
     <div class="hero-shade"></div>
     <div class="hero-copy">
       <p class="eyebrow">Colección 01 / 2026</p>
-      <h1 class="hero-title-desktop" aria-label="El futuro también fue retro"
-          (mousemove)="scatterHeroLetters($event)"
-          (mouseleave)="restoreHeroLetters($event)">
+      <h1 class="hero-title-desktop" aria-label="El futuro también fue retro" rbHeroScatter>
         @for (line of heroLines; track $index) {
           <span class="hero-line" aria-hidden="true">
             @for (letter of line; track $index) {
@@ -15,9 +13,7 @@
           </span>
         }
       </h1>
-      <h1 class="hero-title-mobile" aria-label="El futuro también fue retro"
-          (mousemove)="scatterHeroLetters($event)"
-          (mouseleave)="restoreHeroLetters($event)">
+      <h1 class="hero-title-mobile" aria-label="El futuro también fue retro" rbHeroScatter>
         @for (line of mobileHeroLines; track $index) {
           <span class="hero-line" aria-hidden="true">
             @for (letter of line; track $index) {

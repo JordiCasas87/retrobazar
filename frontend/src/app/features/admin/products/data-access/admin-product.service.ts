@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CreateProductRequest, Product, UpdateProductRequest } from './product.model';
+import { API_BASE_URL } from '../../../../core/config/api.config';
+import { CreateProductRequest, Product, UpdateProductRequest } from '../../../catalog/models/product.model';
 
 @Injectable({ providedIn: 'root' })
 export class AdminProductService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8080/api/admin/products';
+  private readonly apiUrl = `${API_BASE_URL}/admin/products`;
 
   list(): Observable<Product[]> {
     return this.http.get<Product[]>(this.apiUrl);
