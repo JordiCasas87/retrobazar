@@ -77,6 +77,37 @@ indica que el comprador debe usar el botón «Comprar» del anuncio para escoger
 método de envío y pago dentro de su servicio, según su documentación sobre
 [Wallapop Envíos](https://ayuda.wallapop.com/hc/es-es/articles/360002049077-C%C3%B3mo-funciona-Wallapop-Env%C3%ADos).
 
+## Vista de la aplicación
+
+### Portada
+
+<p align="center">
+  <img src="docs/images/retro-bazar-home.png" alt="Portada de Retro Bazar en escritorio" width="100%">
+</p>
+
+### Catálogo y selección
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="docs/images/retro-bazar-home-products.png" alt="Selección de productos de Retro Bazar">
+    </td>
+    <td width="50%">
+      <img src="docs/images/retro-bazar-catalog.png" alt="Catálogo completo de Retro Bazar">
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><strong>Selección destacada</strong></td>
+    <td align="center"><strong>Catálogo, filtros y búsqueda</strong></td>
+  </tr>
+</table>
+
+### Experiencia responsive
+
+<p align="center">
+  <img src="docs/images/retro-bazar-mobile.png" alt="Retro Bazar adaptado a dispositivos móviles" width="100%">
+</p>
+
 ## Tecnologías
 
 ### Backend
@@ -128,6 +159,12 @@ retro-bazar/
 │   └── src/app/
 └── README.md
 ```
+
+<p align="center">
+  <img src="docs/images/hexagonal-architecture.png" alt="Arquitectura hexagonal del catálogo en IntelliJ IDEA" width="100%">
+</p>
+
+<p align="center"><em>Puertos, casos de uso y adaptadores del módulo de catálogo.</em></p>
 
 ## Requisitos para desarrollo local
 
