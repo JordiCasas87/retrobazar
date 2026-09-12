@@ -133,13 +133,18 @@ método de envío y pago dentro de su servicio, según su documentación sobre
 
 ## Arquitectura
 
-El backend utiliza arquitectura hexagonal dentro de un monolito modular. El
-módulo `catalog` se divide en:
+El backend utiliza arquitectura hexagonal dentro de un monolito modular. Cada
+módulo funcional se divide progresivamente en:
 
 - **Dominio:** entidades y reglas del negocio independientes de Spring.
 - **Aplicación:** casos de uso, comandos y puertos de entrada y salida.
 - **Infraestructura:** controladores REST, persistencia, seguridad y
   configuración externa.
+
+Los módulos previstos para la primera versión son `catalog`, `productagent`,
+`user`, `wishlist`, `cart` y `order`. El módulo `event` queda documentado como
+una posible ampliación. `shared` contiene soporte técnico común y no representa
+un módulo de negocio.
 
 La infraestructura web común contiene el gestor global que transforma las
 excepciones de aplicación y los errores HTTP en respuestas consistentes.
@@ -149,11 +154,14 @@ retro-bazar/
 ├── backend/
 │   └── src/
 │       ├── main/java/com/retrobazar/
-│       │   ├── catalog/
-│       │   │   ├── domain/
-│       │   │   ├── application/
-│       │   │   └── infrastructure/
-│       │   └── infrastructure/web/error/
+│       │   ├── catalog/        # Productos, categorías, precios y stock
+│       │   ├── productagent/   # Valoración y mejora de fichas con IA
+│       │   ├── user/           # Cuentas, autenticación, perfil y roles
+│       │   ├── wishlist/       # Productos favoritos de cada usuario
+│       │   ├── cart/           # Carrito persistente y cantidades
+│       │   ├── order/          # Confirmación e historial de pedidos
+│       │   ├── event/          # Posible gestión futura de ferias
+│       │   └── shared/web/error/
 │       └── test/
 ├── frontend/
 │   └── src/app/

@@ -1,4 +1,4 @@
-package com.retrobazar.infrastructure.web.error;
+package com.retrobazar.shared.web.error.dto;
 
 import java.time.Instant;
 import java.util.List;
