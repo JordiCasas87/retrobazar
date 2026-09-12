@@ -1,6 +1,8 @@
-package com.retrobazar.infrastructure.web.error;
+package com.retrobazar.shared.web.error;
 
 import com.retrobazar.catalog.application.exception.ProductNotFoundException;
+import com.retrobazar.shared.web.error.dto.ApiErrorResponseDto;
+import com.retrobazar.shared.web.error.dto.FieldValidationErrorDto;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
