@@ -21,61 +21,45 @@ El repositorio contiene actualmente:
 - Una interfaz responsive preparada como MVP visual.
 - Diez productos de demostración distribuidos en cuatro categorías.
 
-La siguiente fase incorporará usuarios, autenticación y listas de deseos. El
-checkout, los pedidos y los pagos propios quedan fuera del MVP inicial, que
-delegará temporalmente la transacción en Wallapop mediante un enlace específico
-asociado a cada producto.
+Las siguientes fases incorporarán el agente de producto, cuentas de usuario,
+listas de deseos, carrito y pedidos pendientes de pago. También se estudia una
+salida opcional a Wallapop y un módulo para gestionar ventas en ferias.
 
 ## Visión del producto y alcance del MVP
 
-Retro Bazar se plantea como un e-commerce evolutivo, no como un agregador de
-anuncios. La aplicación es responsable de la experiencia de tienda: catálogo,
-búsqueda, detalle de producto, administración, cuentas de usuario y listas de
-deseos. En su primera versión, Wallapop actúa únicamente como canal externo para
-finalizar la compra, el pago y el envío.
+Retro Bazar se plantea como un e-commerce evolutivo. La aplicación reunirá el
+catálogo, la administración, las cuentas de usuario, los favoritos, el carrito y
+los pedidos.
 
-El flujo previsto para el MVP es:
+El flujo principal previsto es:
 
 ```text
 Descubrir en Retro Bazar
         ↓
-Consultar y guardar productos en una lista personal
+Guardar productos o añadirlos al carrito
         ↓
-Abrir «Comprar en Wallapop» en el producto seleccionado
+Confirmar un pedido
         ↓
-Completar la transacción dentro de Wallapop
+Esperar el contacto del gestor para acordar el pago
 ```
 
-Las cuentas de Retro Bazar y Wallapop serán independientes. Retro Bazar no
-solicitará ni almacenará credenciales de Wallapop. Cada usuario registrado tendrá
-su propia lista de deseos persistente; la definición de un historial de compras
-se decidirá más adelante, ya que el MVP no recibe confirmación automática de las
-transacciones realizadas en la plataforma externa.
+Al confirmar el carrito, el pedido se guardará como `PENDING_PAYMENT`. Retro
+Bazar no procesará todavía el pago: un comercial contactará con el cliente para
+acordarlo. La cuenta permitirá consultar favoritos, carrito e historial de
+pedidos.
 
-El gestor de la tienda publicará inicialmente los productos tanto en Retro Bazar
-como en su cuenta de Wallapop y mantendrá manualmente el enlace y la disponibilidad.
-La arquitectura deberá tratar Wallapop como un canal sustituible, para poder
-incorporar posteriormente carrito, checkout, pagos y pedidos propios sin rehacer
-el catálogo ni las cuentas de usuario.
+### Opciones de compra previstas
 
-### Integración inicial con Wallapop
+- **Pedido en Retro Bazar:** el cliente confirma el carrito y se registra un
+  pedido pendiente de pago.
+- **Salida a Wallapop:** opcionalmente, un producto podrá enlazar al anuncio del
+  gestor de la tienda mediante «Comprar en Wallapop».
 
-A fecha de septiembre de 2026 no se ha localizado una API pública oficial ni un
-portal para desarrolladores que permita a una aplicación externa gestionar
-anuncios, consultar ventas o iniciar pagos de Wallapop. Por ello, el MVP utilizará
-únicamente enlaces públicos introducidos manualmente por el administrador.
-
-No se utilizarán endpoints privados, ingeniería inversa, scraping ni bots. Las
-[condiciones de uso de Wallapop](https://about.wallapop.com/condiciones-de-uso/)
-prohíben la extracción sistemática de contenido y las herramientas externas no
-autorizadas. Una sincronización automática solo se estudiará si Wallapop ofrece
-en el futuro una API oficial o concede autorización expresa.
-
-El botón de salida deberá indicar claramente «Comprar en Wallapop» y comunicar
-que la compra, el pago, el envío y cualquier disputa se gestionan allí. Wallapop
-indica que el comprador debe usar el botón «Comprar» del anuncio para escoger el
-método de envío y pago dentro de su servicio, según su documentación sobre
-[Wallapop Envíos](https://ayuda.wallapop.com/hc/es-es/articles/360002049077-C%C3%B3mo-funciona-Wallapop-Env%C3%ADos).
+La integración con Wallapop utilizaría únicamente enlaces públicos mantenidos
+por el administrador. Retro Bazar no solicitará credenciales de Wallapop ni
+automatizará la plataforma mediante scraping o APIs privadas. El pago, el envío
+y las disputas de esa opción se gestionarían fuera de Retro Bazar, de acuerdo
+con las [condiciones de uso de Wallapop](https://about.wallapop.com/condiciones-de-uso/).
 
 ## Vista de la aplicación
 
@@ -302,52 +286,37 @@ npm run build
 
 ## Agente de IA para el alta de productos
 
-La primera incorporación de IA prevista será un agente integrado en el flujo
-administrativo de creación de productos. Su objetivo será preparar una ficha de
-producto coherente, detectar posibles duplicados y reducir el trabajo manual sin
-tomar decisiones irreversibles.
+El formulario administrativo ofrecerá la acción «Valorar con IA». A partir del
+título, descripción, precio e imágenes introducidos, el agente propondrá una
+ficha mejorada antes de crear el producto.
 
-La implementación utilizará Spring AI en el backend y tendrá inicialmente a
-Gemini como proveedor del modelo. No será una única petición para generar texto:
-el agente recibirá un objetivo, decidirá qué herramientas autorizadas necesita y
-podrá utilizarlas en varias etapas antes de producir el resultado.
+La implementación prevista utilizará Spring AI y Gemini. El agente podrá buscar
+referencias públicas de precio y comparar el artículo con productos existentes
+en el catálogo.
 
 ### Flujo previsto
 
-1. El administrador aporta fotografías y los datos disponibles del producto.
-2. El agente analiza la información recibida y determina qué consultas necesita.
-3. Utiliza herramientas internas para buscar coincidencias, consultar detalles y
-   comparar precios del catálogo.
-4. Advierte si encuentra un producto igual o suficientemente similar.
-5. Devuelve un borrador estructurado con nombre, categoría, descripción y precio
-   orientativo, acompañado de sus advertencias y referencias.
-6. El administrador revisa, modifica y confirma el borrador mediante el flujo
-   normal de creación de productos.
+1. El administrador completa el formulario y añade una o varias imágenes.
+2. El agente analiza la información y busca referencias.
+3. Un diálogo compara los valores originales con la propuesta.
+4. El administrador decide si aplica el nuevo título, descripción y precio.
+5. El producto solo se guarda al confirmar el formulario habitual.
 
-### Herramientas iniciales
+La valoración mostrará un precio orientativo, sus referencias y posibles
+coincidencias del catálogo. El agente no tendrá acceso directo a la base de datos
+ni podrá crear, modificar o eliminar productos.
 
-- `searchCatalog`: busca coincidencias por nombre, marca o descripción.
-- `getProductDetails`: obtiene la información completa de un producto encontrado.
-- `getCategoryPriceStatistics`: calcula el rango y el promedio de precios de una
-  categoría utilizando únicamente datos del catálogo.
+## Gestión futura de eventos
 
-Estas herramientas serán métodos controlados del backend, conectados con los
-casos de uso existentes. El agente no tendrá acceso a SQL libre ni a operaciones
-arbitrarias sobre la base de datos.
+El módulo `event` es una posible ampliación y no está confirmado para la primera
+versión. Permitirá preparar la asistencia de la tienda a ferias o mercadillos.
 
-### Límites y trazabilidad
+El propietario podrá crear un evento con imagen, ubicación y fechas; seleccionar
+los productos y cantidades que llevará; registrar ventas presenciales; y
+consultar las unidades vendidas, el stock restante y los ingresos obtenidos.
 
-- El agente no podrá crear, modificar ni eliminar productos directamente.
-- Toda propuesta requerirá confirmación humana antes de persistirse.
-- La respuesta tendrá una estructura validable en lugar de texto libre.
-- Se conservarán los pasos, herramientas utilizadas y resultados relevantes de
-  cada ejecución para facilitar pruebas, diagnóstico y explicación.
-- Las sugerencias de precio se identificarán como orientativas y se basarán en
-  los datos disponibles, sin presentarse como precios de mercado verificados.
-
-Una primera versión se considerará agéntica cuando el modelo pueda seleccionar
-de forma controlada qué herramientas utilizar y en qué orden según el producto,
-en lugar de ejecutar siempre una secuencia fija programada.
+La política para reservar, descontar y devolver el stock general se decidirá al
+diseñar este módulo.
 
 ## Hoja de ruta
 
@@ -364,21 +333,23 @@ en lugar de ejecutar siempre una secuencia fija programada.
    imágenes se mantienen desde el panel mediante URLs públicas. `data.sql` se
    conserva como catálogo inicial de referencia, pero no se ejecuta
    automáticamente sobre la base de datos local.
-5. **Agente de IA.** Integrar en el alta de productos el agente definido en la
-   sección anterior, con análisis de imágenes, herramientas del catálogo,
-   detección de duplicados, propuesta editable y confirmación humana.
+5. **Agente de producto.** Valorar los datos e imágenes del formulario, consultar
+   referencias, detectar posibles coincidencias y ofrecer una propuesta editable.
 6. **Autenticación y autorización.** Añadir usuarios, login y roles; proteger las
    rutas administrativas de Angular y los endpoints `/api/admin/**`.
 7. **Listas de deseos.** Permitir que cada usuario mantenga una selección personal
    persistente y sincronizada entre sesiones y dispositivos.
-8. **Canal de compra externo.** Asociar cada producto con su anuncio e incorporar
-   la salida explícita «Comprar en Wallapop», manteniendo manualmente su estado.
-9. **Evolución del e-commerce.** Sustituir o complementar el canal externo con
-   carrito, checkout, pagos, pedidos e historial de compras propios.
-10. **Preparación para publicación.** Configurar los entornos de Angular, añadir
+8. **Carrito y pedidos.** Mantener un carrito por usuario y registrar pedidos
+   pendientes de pago, con gestión posterior por parte de la tienda.
+9. **Canal externo opcional.** Permitir que determinados productos enlacen al
+   anuncio correspondiente de la cuenta de Wallapop del gestor.
+10. **Eventos — por decidir.** Gestionar el stock y las ventas presenciales en
+    ferias, si entra finalmente en el alcance de la primera versión.
+11. **Preparación para publicación.** Configurar los entornos de Angular, añadir
    Dockerfiles para backend y frontend, ampliar Docker Compose y preparar el
    despliegue público.
 
 ## Alcance
 
-El proyecto es una demostración técnica y no procesa pagos ni envíos reales.
+El proyecto es una demostración técnica. Inicialmente registrará pedidos
+pendientes de pago, pero no procesará pagos ni envíos reales.
