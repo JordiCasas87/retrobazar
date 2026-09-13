@@ -2,7 +2,7 @@ package com.retrobazar.productagent.domain;
 
 import java.math.BigDecimal;
 
-public record ProductReference(
+public record InternetProductReference(
         String title,
         String url,
         BigDecimal price
