@@ -7,9 +7,11 @@ import com.retrobazar.productagent.application.port.in.AnalyzeProductWithAiUseCa
 import com.retrobazar.productagent.application.port.out.ProductAgentPort;
 import com.retrobazar.productagent.domain.CatalogProductMatch;
 import com.retrobazar.productagent.domain.ProductAgentProposal;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class AnalyzeProductWithAiService implements AnalyzeProductWithAiUseCase {
 
     private final SearchProductsUseCase searchProductsUseCase;
