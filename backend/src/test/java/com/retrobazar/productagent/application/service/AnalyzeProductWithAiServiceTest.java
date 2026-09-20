@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,14 +21,21 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 class AnalyzeProductWithAiServiceTest {
 
     @Test
-    void shouldSearchTheCatalogAndSendMatchesToTheAgent() {
+    void shouldIdentifyTheProductBeforeSearchingAndAnalyzeAgainWithMatches() {
         AnalyzeProductCommand command = command();
         Product catalogProduct = product();
         FakeSearchProductsUseCase searchProductsUseCase =
                 new FakeSearchProductsUseCase(List.of(catalogProduct));
-        ProductAgentProposal expectedProposal = proposal();
+        ProductAgentProposal initialProposal = proposal(
+                "Nintendo Game Boy Color",
+                List.of()
+        );
+        ProductAgentProposal expectedProposal = proposal(
+                "Nintendo Game Boy Color Atomic Purple",
+                List.of()
+        );
         FakeProductAgentPort productAgentPort =
-                new FakeProductAgentPort(expectedProposal);
+                new FakeProductAgentPort(initialProposal, expectedProposal);
         AnalyzeProductWithAiService service = new AnalyzeProductWithAiService(
                 searchProductsUseCase,
                 productAgentPort
@@ -42,18 +50,24 @@ class AnalyzeProductWithAiServiceTest {
                 catalogProduct.getImageUrls().getFirst()
         );
 
-        assertEquals("Game Boy Color Nintendo", searchProductsUseCase.receivedText);
-        assertSame(command, productAgentPort.receivedCommand);
-        assertEquals(List.of(expectedMatch), productAgentPort.receivedMatches);
+        assertEquals("Nintendo Game Boy Color", searchProductsUseCase.receivedText);
+        assertEquals(2, productAgentPort.receivedCommands.size());
+        assertSame(command, productAgentPort.receivedCommands.get(0));
+        assertSame(command, productAgentPort.receivedCommands.get(1));
+        assertEquals(List.of(), productAgentPort.receivedMatches.get(0));
+        assertEquals(List.of(expectedMatch), productAgentPort.receivedMatches.get(1));
         assertSame(expectedProposal, result);
     }
 
     @Test
-    void shouldSendAnEmptyMatchListWhenTheCatalogHasNoMatches() {
+    void shouldReturnTheInitialProposalWhenTheCatalogHasNoMatches() {
         AnalyzeProductCommand command = command();
         FakeSearchProductsUseCase searchProductsUseCase =
                 new FakeSearchProductsUseCase(List.of());
-        ProductAgentProposal expectedProposal = proposal();
+        ProductAgentProposal expectedProposal = proposal(
+                "Nintendo Game Boy Color",
+                List.of()
+        );
         FakeProductAgentPort productAgentPort =
                 new FakeProductAgentPort(expectedProposal);
         AnalyzeProductWithAiService service = new AnalyzeProductWithAiService(
@@ -63,7 +77,9 @@ class AnalyzeProductWithAiServiceTest {
 
         ProductAgentProposal result = service.analyze(command);
 
-        assertEquals(List.of(), productAgentPort.receivedMatches);
+        assertEquals("Nintendo Game Boy Color", searchProductsUseCase.receivedText);
+        assertEquals(1, productAgentPort.receivedMatches.size());
+        assertEquals(List.of(), productAgentPort.receivedMatches.getFirst());
         assertSame(expectedProposal, result);
     }
 
@@ -93,13 +109,16 @@ class AnalyzeProductWithAiServiceTest {
         );
     }
 
-    private static ProductAgentProposal proposal() {
+    private static ProductAgentProposal proposal(
+            String suggestedTitle,
+            List<CatalogProductMatch> catalogMatches
+    ) {
         return new ProductAgentProposal(
-                "Nintendo Game Boy Color Atomic Purple",
+                suggestedTitle,
                 "Consola portátil Nintendo revisada y en buen estado",
                 new BigDecimal("74.99"),
                 List.of(),
-                List.of()
+                catalogMatches
         );
     }
 
@@ -123,12 +142,13 @@ class AnalyzeProductWithAiServiceTest {
 
     private static final class FakeProductAgentPort implements ProductAgentPort {
 
-        private final ProductAgentProposal proposalToReturn;
-        private AnalyzeProductCommand receivedCommand;
-        private List<CatalogProductMatch> receivedMatches;
+        private final List<ProductAgentProposal> proposalsToReturn;
+        private final List<AnalyzeProductCommand> receivedCommands = new ArrayList<>();
+        private final List<List<CatalogProductMatch>> receivedMatches = new ArrayList<>();
+        private int invocationIndex;
 
-        private FakeProductAgentPort(ProductAgentProposal proposalToReturn) {
-            this.proposalToReturn = proposalToReturn;
+        private FakeProductAgentPort(ProductAgentProposal... proposalsToReturn) {
+            this.proposalsToReturn = List.of(proposalsToReturn);
         }
 
         @Override
@@ -136,9 +156,9 @@ class AnalyzeProductWithAiServiceTest {
                 AnalyzeProductCommand command,
                 List<CatalogProductMatch> catalogMatches
         ) {
-            receivedCommand = command;
-            receivedMatches = catalogMatches;
-            return proposalToReturn;
+            receivedCommands.add(command);
+            receivedMatches.add(catalogMatches);
+            return proposalsToReturn.get(invocationIndex++);
         }
     }
 }

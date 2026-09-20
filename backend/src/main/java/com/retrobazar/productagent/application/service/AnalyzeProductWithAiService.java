@@ -27,13 +27,17 @@ public class AnalyzeProductWithAiService implements AnalyzeProductWithAiUseCase 
 
     @Override
     public ProductAgentProposal analyze(AnalyzeProductCommand command) {
-        String searchText = command.title() + " " + command.brand();
+        ProductAgentProposal initialProposal = productAgentPort.analyze(command, List.of());
 
         List<CatalogProductMatch> catalogMatches = searchProductsUseCase
-                .search(searchText)
+                .search(initialProposal.suggestedTitle())
                 .stream()
                 .map(AnalyzeProductWithAiService::toCatalogProductMatch)
                 .toList();
+
+        if (catalogMatches.isEmpty()) {
+            return initialProposal;
+        }
 
         return productAgentPort.analyze(command, catalogMatches);
     }
