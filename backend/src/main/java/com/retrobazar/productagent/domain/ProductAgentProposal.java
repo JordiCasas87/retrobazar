@@ -7,11 +7,7 @@ public record ProductAgentProposal(
         String suggestedTitle,
         String suggestedDescription,
         BigDecimal suggestedPrice,
-        BigDecimal minimumReferencePrice,
-        BigDecimal maximumReferencePrice,
-        ConfidenceLevel confidence,
-        String explanation,
-        List<ProductReference> references,
-        List<SimilarCatalogProduct> similarCatalogProducts
+        List<InternetProductReference> internetReferences,
+        List<CatalogProductMatch> possibleCatalogMatches
 ) {
 }

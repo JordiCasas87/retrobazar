@@ -178,6 +178,8 @@ El backend reconoce estas variables de entorno:
 | `DB_USERNAME` | `root` | Usuario de la base de datos |
 | `DB_PASSWORD` | `retro_bazar_local` | Contraseña local de la base de datos |
 | `FRONTEND_ORIGIN` | `http://localhost:4200` | Origen permitido por CORS |
+| `GEMINI_API_KEY` | Sin valor | Clave privada de Gemini utilizada por el agente de producto |
+| `GEMINI_MODEL` | `gemini-3.6-flash` | Modelo de Gemini utilizado por Spring AI |
 
 [`backend/.env.example`](backend/.env.example) documenta estas variables sin
 incluir credenciales reales. Spring Boot no carga archivos `.env`
@@ -290,21 +292,32 @@ El formulario administrativo ofrecerá la acción «Valorar con IA». A partir d
 título, descripción, precio e imágenes introducidos, el agente propondrá una
 ficha mejorada antes de crear el producto.
 
-La implementación prevista utilizará Spring AI y Gemini. El agente podrá buscar
-referencias públicas de precio y comparar el artículo con productos existentes
-en el catálogo.
+La implementación utiliza Spring AI y Gemini. En el primer MVP, el agente
+analiza los datos y las imágenes y compara el artículo con productos existentes
+en el catálogo de Retro Bazar.
+
+La búsqueda externa con Google Search Grounding queda desactivada porque no está
+disponible mediante la API en el nivel gratuito de Gemini 3.6 Flash. Podrá
+incorporarse posteriormente si el proyecto activa la facturación de Gemini. La
+primera versión no pide al administrador que aporte enlaces externos.
 
 ### Flujo previsto
 
 1. El administrador completa el formulario y añade una o varias imágenes.
-2. El agente analiza la información y busca referencias.
+2. El agente analiza la información y consulta coincidencias del catálogo.
 3. Un diálogo compara los valores originales con la propuesta.
 4. El administrador decide si aplica el nuevo título, descripción y precio.
 5. El producto solo se guarda al confirmar el formulario habitual.
 
-La valoración mostrará un precio orientativo, sus referencias y posibles
-coincidencias del catálogo. El agente no tendrá acceso directo a la base de datos
-ni podrá crear, modificar o eliminar productos.
+La valoración mostrará un precio orientativo y posibles coincidencias del
+catálogo. El agente no tendrá acceso directo a la base de datos ni podrá crear,
+modificar o eliminar productos. Las referencias públicas de Internet se
+añadirán únicamente si se habilita Google Search Grounding en una fase posterior.
+
+La detección de productos similares utiliza una búsqueda textual a partir del
+título identificado por Gemini. Puede no encontrar coincidencias si el catálogo
+utiliza términos diferentes. Una búsqueda semántica o términos específicos de
+búsqueda quedan como mejoras posteriores al MVP.
 
 ## Gestión futura de eventos
 
@@ -333,8 +346,10 @@ diseñar este módulo.
    imágenes se mantienen desde el panel mediante URLs públicas. `data.sql` se
    conserva como catálogo inicial de referencia, pero no se ejecuta
    automáticamente sobre la base de datos local.
-5. **Agente de producto.** Valorar los datos e imágenes del formulario, consultar
-   referencias, detectar posibles coincidencias y ofrecer una propuesta editable.
+5. **Agente de producto.** Valorar los datos e imágenes del formulario, detectar
+   posibles coincidencias del catálogo y ofrecer una propuesta editable. La
+   búsqueda externa queda como ampliación posterior sujeta a la disponibilidad
+   y facturación de Google Search Grounding.
 6. **Autenticación y autorización.** Añadir usuarios, login y roles; proteger las
    rutas administrativas de Angular y los endpoints `/api/admin/**`.
 7. **Listas de deseos.** Permitir que cada usuario mantenga una selección personal
