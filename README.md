@@ -89,7 +89,7 @@ con las [condiciones de uso de Wallapop](https://about.wallapop.com/condiciones-
 ### Experiencia responsive
 
 <p align="center">
-  <img src="docs/images/retro-bazar-mobile.png" alt="Retro Bazar adaptado a dispositivos móviles" width="100%">
+  <img src="docs/images/retro-bazar-mobile.png" alt="Retro Bazar adaptado a dispositivos móviles" width="620">
 </p>
 
 ## Tecnologías
@@ -153,7 +153,7 @@ retro-bazar/
 ```
 
 <p align="center">
-  <img src="docs/images/hexagonal-architecture.png" alt="Arquitectura hexagonal del catálogo en IntelliJ IDEA" width="100%">
+  <img src="docs/images/hexagonal-architecture.png" alt="Arquitectura hexagonal del catálogo en IntelliJ IDEA" width="620">
 </p>
 
 <p align="center"><em>Puertos, casos de uso y adaptadores del módulo de catálogo.</em></p>
@@ -318,6 +318,35 @@ añadirán únicamente si se habilita Google Search Grounding en una fase poster
 La detección de productos realmente similares queda como mejora posterior al
 MVP. Requerirá una estrategia de similitud semántica distinta de la consulta
 determinista por marca utilizada en esta primera versión.
+
+### Primer MVP del agente
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <img src="docs/images/capturaIA2.png" alt="Acción para generar una propuesta de producto con IA" width="420">
+    </td>
+    <td width="50%" align="center">
+      <img src="docs/images/CapturaIA1.png" alt="Análisis de la imagen del producto en curso" width="420">
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><strong>Acción disponible en el formulario</strong></td>
+    <td align="center"><strong>Análisis de la imagen</strong></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <img src="docs/images/swaggerIA3.png" alt="Petición al agente de producto desde Swagger" width="420">
+    </td>
+    <td width="50%" align="center">
+      <img src="docs/images/swaggerIA1.png" alt="Respuesta del agente de producto en Swagger" width="420">
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><strong>Petición desde Swagger</strong></td>
+    <td align="center"><strong>Respuesta estructurada del agente</strong></td>
+  </tr>
+</table>
 
 ## Gestión futura de eventos
 
