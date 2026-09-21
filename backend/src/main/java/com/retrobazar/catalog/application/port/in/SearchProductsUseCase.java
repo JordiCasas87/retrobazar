@@ -7,4 +7,6 @@ import java.util.List;
 public interface SearchProductsUseCase {
 
     List<Product> search(String text);
+
+    List<Product> searchByBrand(String brand);
 }

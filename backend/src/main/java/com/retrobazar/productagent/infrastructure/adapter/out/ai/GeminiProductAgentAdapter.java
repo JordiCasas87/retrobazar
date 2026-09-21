@@ -2,7 +2,6 @@ package com.retrobazar.productagent.infrastructure.adapter.out.ai;
 
 import com.retrobazar.productagent.application.command.AnalyzeProductCommand;
 import com.retrobazar.productagent.application.port.out.ProductAgentPort;
-import com.retrobazar.productagent.domain.CatalogProductMatch;
 import com.retrobazar.productagent.domain.ProductAgentProposal;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.content.Media;
@@ -28,10 +27,7 @@ public class GeminiProductAgentAdapter implements ProductAgentPort {
     }
 
     @Override
-    public ProductAgentProposal analyze(
-            AnalyzeProductCommand command,
-            List<CatalogProductMatch> catalogMatches
-    ) {
+    public ProductAgentProposal analyze(AnalyzeProductCommand command) {
         List<Media> images = command.imageUrls().stream()
                 .map(GeminiProductAgentAdapter::toImageMedia)
                 .toList();
@@ -39,7 +35,7 @@ public class GeminiProductAgentAdapter implements ProductAgentPort {
         ProductAgentProposal proposal = chatClient.prompt()
                 .system(SYSTEM_PROMPT)
                 .user(user -> user
-                        .text(buildProductContext(command, catalogMatches))
+                        .text(buildProductContext(command))
                         .media(images.toArray(Media[]::new)))
                 .call()
                 .entity(ProductAgentProposal.class, spec -> spec.validateSchema());
@@ -47,10 +43,7 @@ public class GeminiProductAgentAdapter implements ProductAgentPort {
         return Objects.requireNonNull(proposal, "Gemini returned an empty product proposal");
     }
 
-    private static String buildProductContext(
-            AnalyzeProductCommand command,
-            List<CatalogProductMatch> catalogMatches
-    ) {
+    private static String buildProductContext(AnalyzeProductCommand command) {
         return """
                 Producto introducido por el usuario:
                 - Título: %s
@@ -59,28 +52,13 @@ public class GeminiProductAgentAdapter implements ProductAgentPort {
                 - Precio actual: %s EUR
                 - Categoría: %s
 
-                Posibles coincidencias encontradas en el catálogo de Retro Bazar:
-                %s
                 """.formatted(
                 command.title(),
                 command.brand(),
                 command.description(),
                 command.currentPrice(),
-                command.category(),
-                formatCatalogMatches(catalogMatches)
+                command.category()
         );
-    }
-
-    private static String formatCatalogMatches(List<CatalogProductMatch> catalogMatches) {
-        if (catalogMatches.isEmpty()) {
-            return "No se encontraron coincidencias en el catálogo.";
-        }
-
-        return catalogMatches.stream()
-                .map(match -> "- %s | %s EUR | id: %s"
-                        .formatted(match.title(), match.price(), match.productId()))
-                .reduce((first, second) -> first + System.lineSeparator() + second)
-                .orElseThrow();
     }
 
     private static Media toImageMedia(String imageUrl) {

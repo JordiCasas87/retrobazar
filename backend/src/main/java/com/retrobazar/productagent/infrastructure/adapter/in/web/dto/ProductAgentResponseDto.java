@@ -1,6 +1,6 @@
 package com.retrobazar.productagent.infrastructure.adapter.in.web.dto;
 
-import com.retrobazar.productagent.domain.CatalogProductMatch;
+import com.retrobazar.productagent.domain.SameBrandProduct;
 import com.retrobazar.productagent.domain.InternetProductReference;
 import com.retrobazar.productagent.domain.ProductAgentProposal;
 
@@ -12,7 +12,7 @@ public record ProductAgentResponseDto(
         String suggestedDescription,
         BigDecimal suggestedPrice,
         List<InternetProductReference> internetReferences,
-        List<CatalogProductMatch> possibleCatalogMatches
+        List<SameBrandProduct> sameBrandProducts
 ) {
 
     public static ProductAgentResponseDto fromProposal(ProductAgentProposal proposal) {
@@ -21,7 +21,7 @@ public record ProductAgentResponseDto(
                 proposal.suggestedDescription(),
                 proposal.suggestedPrice(),
                 proposal.internetReferences(),
-                proposal.possibleCatalogMatches()
+                proposal.sameBrandProducts()
         );
     }
 }

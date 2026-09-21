@@ -5,7 +5,7 @@ import com.retrobazar.catalog.domain.Product;
 import com.retrobazar.productagent.application.command.AnalyzeProductCommand;
 import com.retrobazar.productagent.application.port.in.AnalyzeProductWithAiUseCase;
 import com.retrobazar.productagent.application.port.out.ProductAgentPort;
-import com.retrobazar.productagent.domain.CatalogProductMatch;
+import com.retrobazar.productagent.domain.SameBrandProduct;
 import com.retrobazar.productagent.domain.ProductAgentProposal;
 import org.springframework.stereotype.Service;
 
@@ -27,23 +27,25 @@ public class AnalyzeProductWithAiService implements AnalyzeProductWithAiUseCase 
 
     @Override
     public ProductAgentProposal analyze(AnalyzeProductCommand command) {
-        ProductAgentProposal initialProposal = productAgentPort.analyze(command, List.of());
-
-        List<CatalogProductMatch> catalogMatches = searchProductsUseCase
-                .search(initialProposal.suggestedTitle())
+        List<SameBrandProduct> sameBrandProducts = searchProductsUseCase
+                .searchByBrand(command.brand())
                 .stream()
-                .map(AnalyzeProductWithAiService::toCatalogProductMatch)
+                .map(AnalyzeProductWithAiService::toSameBrandProduct)
                 .toList();
 
-        if (catalogMatches.isEmpty()) {
-            return initialProposal;
-        }
+        ProductAgentProposal aiProposal = productAgentPort.analyze(command);
 
-        return productAgentPort.analyze(command, catalogMatches);
+        return new ProductAgentProposal(
+                aiProposal.suggestedTitle(),
+                aiProposal.suggestedDescription(),
+                aiProposal.suggestedPrice(),
+                aiProposal.internetReferences(),
+                sameBrandProducts
+        );
     }
 
-    private static CatalogProductMatch toCatalogProductMatch(Product product) {
-        return new CatalogProductMatch(
+    private static SameBrandProduct toSameBrandProduct(Product product) {
+        return new SameBrandProduct(
                 product.getId(),
                 product.getName(),
                 product.getPrice(),

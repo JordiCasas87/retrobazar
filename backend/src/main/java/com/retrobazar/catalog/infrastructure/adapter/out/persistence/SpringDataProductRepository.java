@@ -14,5 +14,6 @@ public interface SpringDataProductRepository
 
     List<ProductJpaEntity> findByActiveTrue();
     List<ProductJpaEntity> findByCategoryAndActiveTrue(ProductCategory category);
+    List<ProductJpaEntity> findByBrandIgnoreCaseAndActiveTrue(String brand);
 
 }

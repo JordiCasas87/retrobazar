@@ -69,4 +69,26 @@ class SearchProductsServiceTest {
 
         verifyNoInteractions(productRepositoryPort);
     }
+
+    @Test
+    void shouldSearchActiveProductsByTrimmedBrand() {
+        Product product = mock(Product.class);
+        when(productRepositoryPort.findAllActiveByBrand("Nintendo"))
+                .thenReturn(List.of(product));
+
+        List<Product> result = searchProductsService.searchByBrand("  Nintendo  ");
+
+        assertEquals(List.of(product), result);
+        verify(productRepositoryPort).findAllActiveByBrand("Nintendo");
+    }
+
+    @Test
+    void shouldRejectABlankBrand() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> searchProductsService.searchByBrand("   ")
+        );
+
+        verifyNoInteractions(productRepositoryPort);
+    }
 }

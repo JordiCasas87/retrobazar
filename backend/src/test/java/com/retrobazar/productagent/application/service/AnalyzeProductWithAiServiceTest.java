@@ -5,7 +5,7 @@ import com.retrobazar.catalog.domain.Product;
 import com.retrobazar.catalog.domain.ProductCategory;
 import com.retrobazar.productagent.application.command.AnalyzeProductCommand;
 import com.retrobazar.productagent.application.port.out.ProductAgentPort;
-import com.retrobazar.productagent.domain.CatalogProductMatch;
+import com.retrobazar.productagent.domain.SameBrandProduct;
 import com.retrobazar.productagent.domain.ProductAgentProposal;
 import org.junit.jupiter.api.Test;
 
@@ -21,21 +21,17 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 class AnalyzeProductWithAiServiceTest {
 
     @Test
-    void shouldIdentifyTheProductBeforeSearchingAndAnalyzeAgainWithMatches() {
+    void shouldSearchByTheFormBrandAndAnalyzeWithSameBrandProducts() {
         AnalyzeProductCommand command = command();
         Product catalogProduct = product();
         FakeSearchProductsUseCase searchProductsUseCase =
                 new FakeSearchProductsUseCase(List.of(catalogProduct));
-        ProductAgentProposal initialProposal = proposal(
-                "Nintendo Game Boy Color",
-                List.of()
-        );
         ProductAgentProposal expectedProposal = proposal(
                 "Nintendo Game Boy Color Atomic Purple",
                 List.of()
         );
         FakeProductAgentPort productAgentPort =
-                new FakeProductAgentPort(initialProposal, expectedProposal);
+                new FakeProductAgentPort(expectedProposal);
         AnalyzeProductWithAiService service = new AnalyzeProductWithAiService(
                 searchProductsUseCase,
                 productAgentPort
@@ -43,24 +39,24 @@ class AnalyzeProductWithAiServiceTest {
 
         ProductAgentProposal result = service.analyze(command);
 
-        CatalogProductMatch expectedMatch = new CatalogProductMatch(
+        SameBrandProduct expectedProduct = new SameBrandProduct(
                 catalogProduct.getId(),
                 catalogProduct.getName(),
                 catalogProduct.getPrice(),
                 catalogProduct.getImageUrls().getFirst()
         );
 
-        assertEquals("Nintendo Game Boy Color", searchProductsUseCase.receivedText);
-        assertEquals(2, productAgentPort.receivedCommands.size());
+        assertEquals("Nintendo", searchProductsUseCase.receivedBrand);
+        assertEquals(1, productAgentPort.receivedCommands.size());
         assertSame(command, productAgentPort.receivedCommands.get(0));
-        assertSame(command, productAgentPort.receivedCommands.get(1));
-        assertEquals(List.of(), productAgentPort.receivedMatches.get(0));
-        assertEquals(List.of(expectedMatch), productAgentPort.receivedMatches.get(1));
-        assertSame(expectedProposal, result);
+        assertEquals(List.of(expectedProduct), result.sameBrandProducts());
+        assertEquals(expectedProposal.suggestedTitle(), result.suggestedTitle());
+        assertEquals(expectedProposal.suggestedDescription(), result.suggestedDescription());
+        assertEquals(expectedProposal.suggestedPrice(), result.suggestedPrice());
     }
 
     @Test
-    void shouldReturnTheInitialProposalWhenTheCatalogHasNoMatches() {
+    void shouldAnalyzeWithAnEmptyListWhenTheBrandHasNoProducts() {
         AnalyzeProductCommand command = command();
         FakeSearchProductsUseCase searchProductsUseCase =
                 new FakeSearchProductsUseCase(List.of());
@@ -77,10 +73,9 @@ class AnalyzeProductWithAiServiceTest {
 
         ProductAgentProposal result = service.analyze(command);
 
-        assertEquals("Nintendo Game Boy Color", searchProductsUseCase.receivedText);
-        assertEquals(1, productAgentPort.receivedMatches.size());
-        assertEquals(List.of(), productAgentPort.receivedMatches.getFirst());
-        assertSame(expectedProposal, result);
+        assertEquals("Nintendo", searchProductsUseCase.receivedBrand);
+        assertEquals(List.of(), result.sameBrandProducts());
+        assertEquals(expectedProposal.suggestedTitle(), result.suggestedTitle());
     }
 
     private static AnalyzeProductCommand command() {
@@ -111,14 +106,14 @@ class AnalyzeProductWithAiServiceTest {
 
     private static ProductAgentProposal proposal(
             String suggestedTitle,
-            List<CatalogProductMatch> catalogMatches
+            List<SameBrandProduct> sameBrandProducts
     ) {
         return new ProductAgentProposal(
                 suggestedTitle,
                 "Consola portátil Nintendo revisada y en buen estado",
                 new BigDecimal("74.99"),
                 List.of(),
-                catalogMatches
+                sameBrandProducts
         );
     }
 
@@ -127,7 +122,7 @@ class AnalyzeProductWithAiServiceTest {
             implements SearchProductsUseCase {
 
         private final List<Product> productsToReturn;
-        private String receivedText;
+        private String receivedBrand;
 
         private FakeSearchProductsUseCase(List<Product> productsToReturn) {
             this.productsToReturn = productsToReturn;
@@ -135,7 +130,12 @@ class AnalyzeProductWithAiServiceTest {
 
         @Override
         public List<Product> search(String text) {
-            receivedText = text;
+            throw new AssertionError("Text search should not be used");
+        }
+
+        @Override
+        public List<Product> searchByBrand(String brand) {
+            receivedBrand = brand;
             return productsToReturn;
         }
     }
@@ -144,7 +144,6 @@ class AnalyzeProductWithAiServiceTest {
 
         private final List<ProductAgentProposal> proposalsToReturn;
         private final List<AnalyzeProductCommand> receivedCommands = new ArrayList<>();
-        private final List<List<CatalogProductMatch>> receivedMatches = new ArrayList<>();
         private int invocationIndex;
 
         private FakeProductAgentPort(ProductAgentProposal... proposalsToReturn) {
@@ -152,12 +151,8 @@ class AnalyzeProductWithAiServiceTest {
         }
 
         @Override
-        public ProductAgentProposal analyze(
-                AnalyzeProductCommand command,
-                List<CatalogProductMatch> catalogMatches
-        ) {
+        public ProductAgentProposal analyze(AnalyzeProductCommand command) {
             receivedCommands.add(command);
-            receivedMatches.add(catalogMatches);
             return proposalsToReturn.get(invocationIndex++);
         }
     }

@@ -54,6 +54,15 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
 
     @Override
     @Transactional(readOnly = true)
+    public List<Product> findAllActiveByBrand(String brand) {
+        return springDataProductRepository.findByBrandIgnoreCaseAndActiveTrue(brand)
+                .stream()
+                .map(this::toDomain)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Product> searchActiveProducts(List<String> words) {
         Specification<ProductJpaEntity> specification = (root, query, criteriaBuilder) -> {
             Predicate searchConditions = criteriaBuilder.isTrue(root.get("active"));
