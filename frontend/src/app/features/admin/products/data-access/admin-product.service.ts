@@ -2,7 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_BASE_URL } from '../../../../core/config/api.config';
-import { CreateProductRequest, Product, UpdateProductRequest } from '../../../catalog/models/product.model';
+import {
+  CreateProductRequest,
+  Product,
+  ProductAgentRequest,
+  ProductAgentResponse,
+  UpdateProductRequest
+} from '../../../catalog/models/product.model';
 
 @Injectable({ providedIn: 'root' })
 export class AdminProductService {
@@ -15,6 +21,10 @@ export class AdminProductService {
 
   create(request: CreateProductRequest): Observable<Product> {
     return this.http.post<Product>(this.apiUrl, request);
+  }
+
+  analyzeWithAgent(request: ProductAgentRequest): Observable<ProductAgentResponse> {
+    return this.http.post<ProductAgentResponse>(`${API_BASE_URL}/admin/product-agent/analyze`, request);
   }
 
   byId(id: string): Observable<Product> {

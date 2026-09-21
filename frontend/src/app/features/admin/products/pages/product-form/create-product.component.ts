@@ -2,11 +2,16 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Observable, of, switchMap } from 'rxjs';
+import { Observable, of, Subscription, switchMap } from 'rxjs';
 import { AdminProductService } from '../../data-access/admin-product.service';
 import { createImageUrlControl, createProductForm, productRequestFromForm } from '../../forms/product-form';
 import { PRODUCT_CATEGORY_OPTIONS } from '../../../../catalog/models/product.constants';
-import { CreateProductRequest, Product, UpdateProductRequest } from '../../../../catalog/models/product.model';
+import {
+  CreateProductRequest,
+  Product,
+  ProductAgentResponse,
+  UpdateProductRequest
+} from '../../../../catalog/models/product.model';
 
 interface ApiValidationError {
   fieldErrors?: Array<{ field: string; message: string }>;
@@ -26,12 +31,20 @@ export class CreateProductComponent {
   private readonly urlPattern = /^https?:\/\/.+/i;
   private readonly productId = this.route.snapshot.paramMap.get('id');
   private originalActive = true;
+  private agentAnalysisSubscription?: Subscription;
 
   readonly editing = signal(Boolean(this.productId));
   readonly loadingProduct = signal(Boolean(this.productId));
   readonly submitting = signal(false);
   readonly submitError = signal('');
   readonly fieldErrors = signal<Record<string, string>>({});
+  readonly agentModalOpen = signal(false);
+  readonly agentLoading = signal(false);
+  readonly agentError = signal('');
+  readonly agentProposal = signal<ProductAgentResponse | null>(null);
+  readonly agentTitleDraft = signal('');
+  readonly agentDescriptionDraft = signal('');
+  readonly agentPriceDraft = signal<number | null>(null);
   readonly fallbackImage = 'assets/product-placeholder-retro-bazar-v6.png';
   readonly categories = PRODUCT_CATEGORY_OPTIONS;
 
@@ -53,6 +66,70 @@ export class CreateProductComponent {
   removeImageUrl(index: number): void {
     if (this.imageUrls.length === 1) return;
     this.imageUrls.removeAt(index);
+  }
+
+  openAgentModal(): void {
+    this.agentError.set('');
+    this.agentProposal.set(null);
+
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.agentError.set('Completa todos los campos obligatorios antes de pedir una propuesta.');
+      this.agentModalOpen.set(true);
+      return;
+    }
+
+    this.agentModalOpen.set(true);
+    this.agentLoading.set(true);
+
+    const value = this.form.getRawValue();
+    this.agentAnalysisSubscription?.unsubscribe();
+    this.agentAnalysisSubscription = this.adminProducts.analyzeWithAgent({
+      title: value.name.trim(),
+      brand: value.brand.trim(),
+      description: value.description.trim(),
+      currentPrice: value.price!,
+      category: value.category,
+      imageUrls: value.imageUrls.map((url) => url.trim())
+    }).subscribe({
+      next: (proposal) => {
+        this.agentProposal.set(proposal);
+        this.agentTitleDraft.set(proposal.suggestedTitle);
+        this.agentDescriptionDraft.set(proposal.suggestedDescription);
+        this.agentPriceDraft.set(proposal.suggestedPrice);
+        this.agentLoading.set(false);
+      },
+      error: () => {
+        this.agentLoading.set(false);
+        this.agentError.set('No hemos podido analizar la imagen. Puedes continuar manualmente o intentarlo de nuevo.');
+      }
+    });
+  }
+
+  cancelAgentAnalysis(): void {
+    this.agentAnalysisSubscription?.unsubscribe();
+    this.agentAnalysisSubscription = undefined;
+    this.agentLoading.set(false);
+    this.agentProposal.set(null);
+    this.agentError.set('');
+    this.agentModalOpen.set(false);
+  }
+
+  closeAgentModal(): void {
+    if (this.agentLoading()) return;
+    this.agentModalOpen.set(false);
+  }
+
+  applyAgentProposal(): void {
+    const proposal = this.agentProposal();
+    if (!proposal) return;
+
+    this.form.patchValue({
+      name: this.agentTitleDraft(),
+      description: this.agentDescriptionDraft(),
+      price: this.agentPriceDraft()
+    });
+    this.agentModalOpen.set(false);
   }
 
   submit(): void {

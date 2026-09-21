@@ -83,6 +83,29 @@
         }
       </fieldset>
 
+      <section class="agent-launch" aria-labelledby="agent-launch-title">
+        <div class="agent-launch-copy">
+          <p class="agent-eyebrow">Asistente de producto / IA</p>
+          <h2 id="agent-launch-title">Convierte tu foto en una ficha lista para publicar.</h2>
+          <p>Analizaremos la imagen y prepararemos una propuesta de título, descripción y precio para que la revises.</p>
+          <div class="agent-launch-meta"><span>IMAGE RECOGNITION</span><span>CATALOG MATCH</span><span>PRICE SIGNAL</span></div>
+        </div>
+        <div class="agent-launch-action">
+          <div class="agent-launch-visual" aria-hidden="true">
+            <span class="launch-scan launch-scan-one"></span>
+            <span class="launch-scan launch-scan-two"></span>
+            <span class="launch-frame"></span>
+            <span class="launch-crosshair"></span>
+            <span class="launch-data">RB / 01<br>READY</span>
+          </div>
+          <button class="agent-launch-button" type="button" (click)="openAgentModal()">
+            <span aria-hidden="true">✦</span>
+            Generar propuesta con IA
+            <b aria-hidden="true">→</b>
+          </button>
+        </div>
+      </section>
+
       @if (submitError()) {
         <p class="submit-error" role="alert">{{ submitError() }}</p>
       }
@@ -94,4 +117,106 @@
       </form>
     }
   </section>
+
+  @if (agentModalOpen()) {
+    <div class="agent-overlay" role="presentation">
+      <section class="agent-modal" role="dialog" aria-modal="true" aria-labelledby="agent-modal-title">
+        <header class="agent-modal-header">
+          <div>
+            <p class="agent-eyebrow">RB-01 / Product scanner</p>
+            <h2 id="agent-modal-title">{{ agentLoading() ? 'Leyendo tu producto' : (agentProposal() ? 'Ficha de análisis' : 'No hemos podido continuar') }}</h2>
+          </div>
+          <div class="agent-status"><span></span> {{ agentLoading() ? 'SCAN ACTIVE' : (agentProposal() ? 'SCAN COMPLETE' : 'SCAN ERROR') }}</div>
+          @if (!agentLoading()) {
+            <button class="agent-close" type="button" aria-label="Cerrar" (click)="closeAgentModal()">×</button>
+          }
+        </header>
+
+        @if (agentLoading()) {
+          <div class="agent-scanner" aria-live="polite">
+            <div class="scanner-image-wrap">
+              <img [src]="imageUrls.controls[0].value || fallbackImage" alt="Imagen del producto en análisis" (error)="useFallback($event)">
+              <span class="scanner-grid" aria-hidden="true"></span>
+              <span class="scanner-corners" aria-hidden="true"></span>
+              <span class="scanner-reticle" aria-hidden="true"><i></i></span>
+              <span class="scanner-beam" aria-hidden="true"></span>
+              <span class="scanner-pixels" aria-hidden="true"></span>
+              <span class="scanner-noise" aria-hidden="true"></span>
+              <span class="scanline" aria-hidden="true"></span>
+              <span class="scanlines" aria-hidden="true"></span>
+              <span class="scanner-coordinates" aria-hidden="true">X 042 / Y 117 / Z 008</span>
+            </div>
+            <div class="scanner-copy">
+              <div class="scanner-readout"><span>VISUAL MEMORY</span><strong>ANALYZING</strong></div>
+              <strong>Digitalizando pieza…</strong>
+              <p>Reconociendo detalles y preparando una descripción comercial.</p>
+              <div class="scanner-progress" aria-hidden="true"><span></span></div>
+            </div>
+          </div>
+        } @else if (agentProposal()) {
+          <div class="agent-result">
+            <div class="agent-result-image">
+              <img [src]="imageUrls.controls[0].value || fallbackImage" alt="Imagen del producto analizado" (error)="useFallback($event)">
+              <span>ANÁLISIS IA</span>
+            </div>
+            <div class="agent-fields">
+              <div class="agent-section-heading"><span>01 / PROPUESTA PRINCIPAL</span><p>Revisa y ajusta los datos antes de aplicarlos.</p></div>
+              <label>
+                <span>Título sugerido</span>
+                <input [value]="agentTitleDraft()" (input)="agentTitleDraft.set($any($event.target).value)">
+              </label>
+              <label>
+                <span>Descripción sugerida</span>
+                <textarea [value]="agentDescriptionDraft()" (input)="agentDescriptionDraft.set($any($event.target).value)" rows="7"></textarea>
+              </label>
+              <label>
+                <span>Precio sugerido (€)</span>
+                <input type="number" [value]="agentPriceDraft()" (input)="agentPriceDraft.set(+$any($event.target).value)">
+              </label>
+            </div>
+          </div>
+          <section class="same-brand-section" aria-labelledby="same-brand-title">
+            <div class="same-brand-heading">
+              <div>
+                <span>02 / REFERENCIAS DE CATÁLOGO</span>
+                <h3 id="same-brand-title">Otros productos de la misma marca</h3>
+              </div>
+              <strong>{{ agentProposal()?.sameBrandProducts?.length || 0 }} encontrados</strong>
+            </div>
+            @if (agentProposal()?.sameBrandProducts?.length) {
+              <div class="same-brand-grid">
+                @for (product of agentProposal()?.sameBrandProducts; track product.productId) {
+                  <article class="brand-product-card">
+                    <div class="brand-product-image">
+                      <img [src]="product.imageUrl || fallbackImage" [alt]="product.title" (error)="useFallback($event)">
+                    </div>
+                    <div><h4>{{ product.title }}</h4><strong>{{ product.price | number:'1.2-2' }} €</strong></div>
+                  </article>
+                }
+              </div>
+            } @else {
+              <p class="empty-references">No hay referencias coincidentes en el catálogo todavía.</p>
+            }
+          </section>
+        } @else {
+          <div class="agent-error" role="alert">
+            <p>{{ agentError() }}</p>
+          </div>
+        }
+
+        @if (agentLoading()) {
+          <footer class="agent-modal-actions agent-loading-actions">
+            <button type="button" class="agent-cancel" (click)="cancelAgentAnalysis()">Cancelar análisis</button>
+          </footer>
+        } @else {
+          <footer class="agent-modal-actions">
+            <button type="button" class="agent-secondary" (click)="closeAgentModal()">Cerrar</button>
+            @if (agentProposal()) {
+              <button type="button" class="agent-primary" (click)="applyAgentProposal()">Aplicar propuesta</button>
+            }
+          </footer>
+        }
+      </section>
+    </div>
+  }
 </main>
