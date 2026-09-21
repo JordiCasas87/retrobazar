@@ -293,8 +293,8 @@ título, descripción, precio e imágenes introducidos, el agente propondrá una
 ficha mejorada antes de crear el producto.
 
 La implementación utiliza Spring AI y Gemini. En el primer MVP, el agente
-analiza los datos y las imágenes y compara el artículo con productos existentes
-en el catálogo de Retro Bazar.
+analiza los datos y las imágenes y muestra los productos activos de la misma
+marca que ya existen en el catálogo de Retro Bazar.
 
 La búsqueda externa con Google Search Grounding queda desactivada porque no está
 disponible mediante la API en el nivel gratuito de Gemini 3.6 Flash. Podrá
@@ -304,20 +304,20 @@ primera versión no pide al administrador que aporte enlaces externos.
 ### Flujo previsto
 
 1. El administrador completa el formulario y añade una o varias imágenes.
-2. El agente analiza la información y consulta coincidencias del catálogo.
+2. El backend consulta los productos activos de la misma marca.
 3. Un diálogo compara los valores originales con la propuesta.
 4. El administrador decide si aplica el nuevo título, descripción y precio.
 5. El producto solo se guarda al confirmar el formulario habitual.
 
-La valoración mostrará un precio orientativo y posibles coincidencias del
-catálogo. El agente no tendrá acceso directo a la base de datos ni podrá crear,
-modificar o eliminar productos. Las referencias públicas de Internet se
+La valoración mostrará un precio orientativo y productos de la misma marca del
+catálogo. Estos productos no se presentan como coincidencias ni como artículos
+necesariamente similares. El agente no tendrá acceso directo a la base de datos
+ni podrá crear, modificar o eliminar productos. Las referencias públicas de Internet se
 añadirán únicamente si se habilita Google Search Grounding en una fase posterior.
 
-La detección de productos similares utiliza una búsqueda textual a partir del
-título identificado por Gemini. Puede no encontrar coincidencias si el catálogo
-utiliza términos diferentes. Una búsqueda semántica o términos específicos de
-búsqueda quedan como mejoras posteriores al MVP.
+La detección de productos realmente similares queda como mejora posterior al
+MVP. Requerirá una estrategia de similitud semántica distinta de la consulta
+determinista por marca utilizada en esta primera versión.
 
 ## Gestión futura de eventos
 
@@ -346,8 +346,8 @@ diseñar este módulo.
    imágenes se mantienen desde el panel mediante URLs públicas. `data.sql` se
    conserva como catálogo inicial de referencia, pero no se ejecuta
    automáticamente sobre la base de datos local.
-5. **Agente de producto.** Valorar los datos e imágenes del formulario, detectar
-   posibles coincidencias del catálogo y ofrecer una propuesta editable. La
+5. **Agente de producto.** Valorar los datos e imágenes del formulario, mostrar
+   productos activos de la misma marca y ofrecer una propuesta editable. La
    búsqueda externa queda como ampliación posterior sujeta a la disponibilidad
    y facturación de Google Search Grounding.
 6. **Autenticación y autorización.** Añadir usuarios, login y roles; proteger las

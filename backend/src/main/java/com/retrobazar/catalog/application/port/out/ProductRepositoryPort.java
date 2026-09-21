@@ -12,6 +12,7 @@ public interface ProductRepositoryPort {
     List<Product> findAll();
     List<Product> findAllActive();
     List<Product> findAllActiveByCategory(ProductCategory category);
+    List<Product> findAllActiveByBrand(String brand);
     List<Product> searchActiveProducts(List<String> words);
     Product save(Product newProduct);
     Optional<Product> findById(UUID id);

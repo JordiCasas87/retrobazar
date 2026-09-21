@@ -56,4 +56,13 @@ public class SearchProductsService implements SearchProductsUseCase {
 
         return productRepositoryPort.searchActiveProducts(words);
     }
+
+    @Override
+    public List<Product> searchByBrand(String brand) {
+        if (brand == null || brand.isBlank()) {
+            throw new IllegalArgumentException("brand cannot be blank");
+        }
+
+        return productRepositoryPort.findAllActiveByBrand(brand.trim());
+    }
 }

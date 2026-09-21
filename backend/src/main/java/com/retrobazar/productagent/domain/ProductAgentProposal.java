@@ -8,6 +8,6 @@ public record ProductAgentProposal(
         String suggestedDescription,
         BigDecimal suggestedPrice,
         List<InternetProductReference> internetReferences,
-        List<CatalogProductMatch> possibleCatalogMatches
+        List<SameBrandProduct> sameBrandProducts
 ) {
 }
