@@ -25,3 +25,33 @@ export interface CreateProductRequest {
 }
 
 export type UpdateProductRequest = Omit<CreateProductRequest, 'active'>;
+
+export interface ProductAgentRequest {
+  title: string;
+  brand: string;
+  description: string;
+  currentPrice: number;
+  category: ProductCategory;
+  imageUrls: string[];
+}
+
+export interface SameBrandProduct {
+  productId: string;
+  title: string;
+  price: number;
+  imageUrl: string;
+}
+
+export interface InternetProductReference {
+  title: string;
+  url: string;
+  price: number;
+}
+
+export interface ProductAgentResponse {
+  suggestedTitle: string;
+  suggestedDescription: string;
+  suggestedPrice: number;
+  internetReferences: InternetProductReference[];
+  sameBrandProducts: SameBrandProduct[];
+}
