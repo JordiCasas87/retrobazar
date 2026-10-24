@@ -3,6 +3,7 @@ package com.retrobazar.shared.web.error;
 import com.retrobazar.catalog.application.exception.ProductNotFoundException;
 import com.retrobazar.shared.web.error.dto.ApiErrorResponseDto;
 import com.retrobazar.shared.web.error.dto.FieldValidationErrorDto;
+import com.retrobazar.user.application.exception.EmailAlreadyRegisteredException;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpInputMessage;
@@ -66,6 +67,33 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
+    void shouldReturnEmailAlreadyRegisteredConflict() {
+        String email = "jordi@example.com";
+        String requestPath = "/api/auth/register";
+        MockHttpServletRequest registerRequest = new MockHttpServletRequest(
+                "POST",
+                requestPath
+        );
+
+        ResponseEntity<ApiErrorResponseDto> response =
+                handler.handleEmailAlreadyRegisteredException(
+                        new EmailAlreadyRegisteredException(email),
+                        registerRequest
+                );
+
+        assertResponse(
+                response,
+                HttpStatus.CONFLICT,
+                "EMAIL_ALREADY_REGISTERED",
+                requestPath
+        );
+        assertEquals(
+                "A user with email '" + email + "' is already registered",
+                response.getBody().message()
+        );
+    }
+
+    @Test
     void shouldReturnMalformedRequestWithoutExposingInternalDetails() {
         HttpInputMessage inputMessage = new MockHttpInputMessage(new byte[0]);
         HttpMessageNotReadableException exception =
@@ -107,11 +135,20 @@ class GlobalExceptionHandlerTest {
             HttpStatus expectedStatus,
             String expectedCode
     ) {
+        assertResponse(response, expectedStatus, expectedCode, REQUEST_PATH);
+    }
+
+    private void assertResponse(
+            ResponseEntity<ApiErrorResponseDto> response,
+            HttpStatus expectedStatus,
+            String expectedCode,
+            String expectedPath
+    ) {
         assertEquals(expectedStatus, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(expectedStatus.value(), response.getBody().status());
         assertEquals(expectedCode, response.getBody().code());
-        assertEquals(REQUEST_PATH, response.getBody().path());
+        assertEquals(expectedPath, response.getBody().path());
         assertNotNull(response.getBody().timestamp());
         assertNotNull(response.getBody().fieldErrors());
     }

@@ -3,6 +3,7 @@ package com.retrobazar.shared.web.error;
 import com.retrobazar.catalog.application.exception.ProductNotFoundException;
 import com.retrobazar.shared.web.error.dto.ApiErrorResponseDto;
 import com.retrobazar.shared.web.error.dto.FieldValidationErrorDto;
+import com.retrobazar.user.application.exception.EmailAlreadyRegisteredException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +54,20 @@ public class GlobalExceptionHandler {
         return buildResponse(
                 HttpStatus.NOT_FOUND,
                 "PRODUCT_NOT_FOUND",
+                exception.getMessage(),
+                request,
+                List.of()
+        );
+    }
+
+    @ExceptionHandler(EmailAlreadyRegisteredException.class)
+    public ResponseEntity<ApiErrorResponseDto> handleEmailAlreadyRegisteredException(
+            EmailAlreadyRegisteredException exception,
+            HttpServletRequest request
+    ) {
+        return buildResponse(
+                HttpStatus.CONFLICT,
+                "EMAIL_ALREADY_REGISTERED",
                 exception.getMessage(),
                 request,
                 List.of()
