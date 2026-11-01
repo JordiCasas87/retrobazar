@@ -10,19 +10,22 @@ public class User {
     private final String email;
     private final String passwordHash;
     private final UserRole role;
+    private final boolean newProductEmailNotificationsEnabled;
 
     public User(
             UUID id,
             String name,
             String email,
             String passwordHash,
-            UserRole role
+            UserRole role,
+            boolean newProductEmailNotificationsEnabled
     ) {
         this.id = Objects.requireNonNull(id, "id cannot be null");
         this.name = requireText(name, "name");
         this.email = requireText(email, "email");
         this.passwordHash = requireText(passwordHash, "passwordHash");
         this.role = Objects.requireNonNull(role, "role cannot be null");
+        this.newProductEmailNotificationsEnabled = newProductEmailNotificationsEnabled;
     }
 
     public UUID getId() {
@@ -43,6 +46,10 @@ public class User {
 
     public UserRole getRole() {
         return role;
+    }
+
+    public boolean isNewProductEmailNotificationsEnabled() {
+        return newProductEmailNotificationsEnabled;
     }
 
     private static String requireText(String value, String fieldName) {

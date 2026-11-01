@@ -7,6 +7,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class UserTest {
 
@@ -20,7 +21,8 @@ class UserTest {
                 "Jordi Casas",
                 "jordi@example.com",
                 "encoded-password",
-                UserRole.CUSTOMER
+                UserRole.CUSTOMER,
+                true
         );
 
         assertAll(
@@ -28,7 +30,8 @@ class UserTest {
                 () -> assertEquals("Jordi Casas", user.getName()),
                 () -> assertEquals("jordi@example.com", user.getEmail()),
                 () -> assertEquals("encoded-password", user.getPasswordHash()),
-                () -> assertEquals(UserRole.CUSTOMER, user.getRole())
+                () -> assertEquals(UserRole.CUSTOMER, user.getRole()),
+                () -> assertTrue(user.isNewProductEmailNotificationsEnabled())
         );
     }
 
@@ -65,6 +68,6 @@ class UserTest {
             String passwordHash,
             UserRole role
     ) {
-        return new User(id, name, email, passwordHash, role);
+        return new User(id, name, email, passwordHash, role, false);
     }
 }

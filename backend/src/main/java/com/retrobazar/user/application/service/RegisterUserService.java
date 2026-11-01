@@ -40,7 +40,8 @@ public class RegisterUserService implements RegisterUserUseCase {
                 command.name(),
                 normalizedEmail,
                 passwordHash,
-                UserRole.CUSTOMER
+                UserRole.CUSTOMER,
+                command.newProductEmailNotificationsEnabled()
         );
 
         return userRepositoryPort.save(user);

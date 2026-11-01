@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AuthControllerTest {
 
@@ -27,7 +28,8 @@ class AuthControllerTest {
                 "Jordi Casas",
                 "jordi@example.com",
                 "hashed-password",
-                UserRole.CUSTOMER
+                UserRole.CUSTOMER,
+                true
         );
         FakeRegisterUserUseCase registerUserUseCase =
                 new FakeRegisterUserUseCase(registeredUser);
@@ -35,7 +37,8 @@ class AuthControllerTest {
         RegisterUserRequestDto request = new RegisterUserRequestDto(
                 "Jordi Casas",
                 "jordi@example.com",
-                "Banana123"
+                "Banana123",
+                true
         );
 
         ResponseEntity<UserResponseDto> response = controller.registerUser(request);
@@ -46,16 +49,27 @@ class AuthControllerTest {
         assertEquals("Jordi Casas", response.getBody().name());
         assertEquals("jordi@example.com", response.getBody().email());
         assertEquals(UserRole.CUSTOMER, response.getBody().role());
+        assertTrue(response.getBody().newProductEmailNotificationsEnabled());
 
         assertNotNull(registerUserUseCase.receivedCommand);
         assertEquals("Jordi Casas", registerUserUseCase.receivedCommand.name());
         assertEquals("jordi@example.com", registerUserUseCase.receivedCommand.email());
         assertEquals("Banana123", registerUserUseCase.receivedCommand.password());
+        assertTrue(registerUserUseCase.receivedCommand.newProductEmailNotificationsEnabled());
 
         List<String> responseFields = Arrays.stream(UserResponseDto.class.getRecordComponents())
                 .map(component -> component.getName())
                 .toList();
-        assertEquals(List.of("id", "name", "email", "role"), responseFields);
+        assertEquals(
+                List.of(
+                        "id",
+                        "name",
+                        "email",
+                        "role",
+                        "newProductEmailNotificationsEnabled"
+                ),
+                responseFields
+        );
     }
 
     private static final class FakeRegisterUserUseCase implements RegisterUserUseCase {

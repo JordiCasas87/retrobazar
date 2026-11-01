@@ -32,7 +32,8 @@ class RegisterUserRequestDtoValidationTest {
         RegisterUserRequestDto request = new RegisterUserRequestDto(
                 "Jordi Casas",
                 "jordi@example.com",
-                "Banana123"
+                "Banana123",
+                true
         );
 
         Set<ConstraintViolation<RegisterUserRequestDto>> violations =
@@ -43,6 +44,7 @@ class RegisterUserRequestDtoValidationTest {
         assertEquals("Jordi Casas", command.name());
         assertEquals("jordi@example.com", command.email());
         assertEquals("Banana123", command.password());
+        assertTrue(command.newProductEmailNotificationsEnabled());
     }
 
     @Test
@@ -50,7 +52,8 @@ class RegisterUserRequestDtoValidationTest {
         RegisterUserRequestDto request = new RegisterUserRequestDto(
                 " ",
                 "invalid-email",
-                " "
+                " ",
+                false
         );
 
         assertViolation(request, "name", NotBlank.class);
@@ -63,7 +66,8 @@ class RegisterUserRequestDtoValidationTest {
         RegisterUserRequestDto request = new RegisterUserRequestDto(
                 "n".repeat(256),
                 "e".repeat(244) + "@example.com",
-                "p".repeat(73)
+                "p".repeat(73),
+                false
         );
 
         assertViolation(request, "name", Size.class);
@@ -73,7 +77,8 @@ class RegisterUserRequestDtoValidationTest {
                 new RegisterUserRequestDto(
                         "Jordi Casas",
                         "jordi@example.com",
-                        "short"
+                        "short",
+                        false
                 ),
                 "password",
                 Size.class

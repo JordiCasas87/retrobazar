@@ -39,7 +39,8 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
                 user.getName(),
                 user.getEmail(),
                 user.getPasswordHash(),
-                user.getRole()
+                user.getRole(),
+                user.isNewProductEmailNotificationsEnabled()
         );
     }
 
@@ -49,7 +50,8 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
                 userEntity.getName(),
                 userEntity.getEmail(),
                 userEntity.getPasswordHash(),
-                userEntity.getRole()
+                userEntity.getRole(),
+                userEntity.isNewProductEmailNotificationsEnabled()
         );
     }
 }

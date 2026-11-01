@@ -51,12 +51,14 @@ class UserPersistenceAdapterTest {
         assertEquals("jordi@example.com", savedUser.getEmail());
         assertEquals("hashed-password", savedUser.getPasswordHash());
         assertEquals(UserRole.CUSTOMER, savedUser.getRole());
+        assertTrue(savedUser.isNewProductEmailNotificationsEnabled());
 
         assertEquals(user.getId(), storedUser.getId());
         assertEquals("Jordi Casas", storedUser.getName());
         assertEquals("jordi@example.com", storedUser.getEmail());
         assertEquals("hashed-password", storedUser.getPasswordHash());
         assertEquals(UserRole.CUSTOMER, storedUser.getRole());
+        assertTrue(storedUser.isNewProductEmailNotificationsEnabled());
     }
 
     @Test
@@ -84,7 +86,8 @@ class UserPersistenceAdapterTest {
                 "Jordi Casas",
                 email,
                 "hashed-password",
-                UserRole.CUSTOMER
+                UserRole.CUSTOMER,
+                true
         );
     }
 }
