@@ -9,6 +9,7 @@ import com.retrobazar.user.domain.UserRole;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -111,6 +112,11 @@ class RegisterUserServiceTest {
 
         @Override
         public Optional<User> findByEmail(String email) {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<User> findById(UUID id) {
             return Optional.empty();
         }
 

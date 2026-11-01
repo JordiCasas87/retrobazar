@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Apuntes del programador (A.P.):
@@ -32,6 +33,13 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
     @Transactional(readOnly = true)
     public Optional<User> findByEmail(String email) {
         return springDataUserRepository.findByEmail(email)
+                .map(this::toDomain);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<User> findById(UUID id) {
+        return springDataUserRepository.findById(id)
                 .map(this::toDomain);
     }
 
