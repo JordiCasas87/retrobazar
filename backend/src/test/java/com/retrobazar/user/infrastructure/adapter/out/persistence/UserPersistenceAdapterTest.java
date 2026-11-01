@@ -84,6 +84,23 @@ class UserPersistenceAdapterTest {
     }
 
     @Test
+    void shouldFindUserById() {
+        User user = createUser("jordi@example.com");
+        userPersistenceAdapter.save(user);
+
+        User foundUser = userPersistenceAdapter.findById(user.getId())
+                .orElseThrow();
+
+        assertEquals(user.getId(), foundUser.getId());
+        assertEquals("Jordi Casas", foundUser.getName());
+        assertEquals("jordi@example.com", foundUser.getEmail());
+        assertEquals("hashed-password", foundUser.getPasswordHash());
+        assertEquals(UserRole.CUSTOMER, foundUser.getRole());
+        assertTrue(foundUser.isNewProductEmailNotificationsEnabled());
+        assertTrue(userPersistenceAdapter.findById(UUID.randomUUID()).isEmpty());
+    }
+
+    @Test
     void shouldRejectDuplicatedEmail() {
         userPersistenceAdapter.save(createUser("jordi@example.com"));
         userPersistenceAdapter.save(createUser("jordi@example.com"));
