@@ -4,6 +4,7 @@ import com.retrobazar.catalog.application.exception.ProductNotFoundException;
 import com.retrobazar.shared.web.error.dto.ApiErrorResponseDto;
 import com.retrobazar.shared.web.error.dto.FieldValidationErrorDto;
 import com.retrobazar.user.application.exception.EmailAlreadyRegisteredException;
+import com.retrobazar.user.application.exception.InvalidCredentialsException;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpInputMessage;
@@ -91,6 +92,29 @@ class GlobalExceptionHandlerTest {
                 "A user with email '" + email + "' is already registered",
                 response.getBody().message()
         );
+    }
+
+    @Test
+    void shouldReturnUnauthorizedForInvalidCredentials() {
+        String requestPath = "/api/auth/login";
+        MockHttpServletRequest loginRequest = new MockHttpServletRequest(
+                "POST",
+                requestPath
+        );
+
+        ResponseEntity<ApiErrorResponseDto> response =
+                handler.handleInvalidCredentialsException(
+                        new InvalidCredentialsException(),
+                        loginRequest
+                );
+
+        assertResponse(
+                response,
+                HttpStatus.UNAUTHORIZED,
+                "INVALID_CREDENTIALS",
+                requestPath
+        );
+        assertEquals("Invalid email or password", response.getBody().message());
     }
 
     @Test
