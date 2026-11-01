@@ -9,7 +9,8 @@ public record UserResponseDto(
         UUID id,
         String name,
         String email,
-        UserRole role
+        UserRole role,
+        boolean newProductEmailNotificationsEnabled
 ) {
 
     public static UserResponseDto fromUser(User user) {
@@ -17,7 +18,8 @@ public record UserResponseDto(
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                user.getRole()
+                user.getRole(),
+                user.isNewProductEmailNotificationsEnabled()
         );
     }
 }

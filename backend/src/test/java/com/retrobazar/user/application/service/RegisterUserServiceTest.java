@@ -9,10 +9,12 @@ import com.retrobazar.user.domain.UserRole;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RegisterUserServiceTest {
 
@@ -27,7 +29,8 @@ class RegisterUserServiceTest {
         RegisterUserCommand command = new RegisterUserCommand(
                 "Jordi Casas",
                 "  Jordi@Example.COM ",
-                "plain-password"
+                "plain-password",
+                true
         );
 
         User result = service.registerUser(command);
@@ -39,7 +42,27 @@ class RegisterUserServiceTest {
         assertEquals("jordi@example.com", result.getEmail());
         assertEquals("encoded-password", result.getPasswordHash());
         assertEquals(UserRole.CUSTOMER, result.getRole());
+        assertTrue(result.isNewProductEmailNotificationsEnabled());
         assertSame(userRepository.savedUser, result);
+    }
+
+    @Test
+    void shouldRegisterACustomerWithoutEmailNotifications() {
+        FakeUserRepository userRepository = new FakeUserRepository(false);
+        RegisterUserService service = new RegisterUserService(
+                userRepository,
+                new FakePasswordEncoder("encoded-password")
+        );
+        RegisterUserCommand command = new RegisterUserCommand(
+                "Jordi Casas",
+                "jordi@example.com",
+                "plain-password",
+                false
+        );
+
+        User result = service.registerUser(command);
+
+        assertFalse(result.isNewProductEmailNotificationsEnabled());
     }
 
     @Test
@@ -53,7 +76,8 @@ class RegisterUserServiceTest {
         RegisterUserCommand command = new RegisterUserCommand(
                 "Jordi Casas",
                 "jordi@example.com",
-                "plain-password"
+                "plain-password",
+                false
         );
 
         assertThrows(

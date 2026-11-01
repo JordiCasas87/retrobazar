@@ -8,10 +8,16 @@ import jakarta.validation.constraints.Size;
 public record RegisterUserRequestDto(
         @NotBlank @Size(max = 255) String name,
         @NotBlank @Email @Size(max = 255) String email,
-        @NotBlank @Size(min = 8, max = 72) String password
+        @NotBlank @Size(min = 8, max = 72) String password,
+        boolean newProductEmailNotificationsEnabled
 ) {
 
     public RegisterUserCommand toCommand() {
-        return new RegisterUserCommand(name, email, password);
+        return new RegisterUserCommand(
+                name,
+                email,
+                password,
+                newProductEmailNotificationsEnabled
+        );
     }
 }

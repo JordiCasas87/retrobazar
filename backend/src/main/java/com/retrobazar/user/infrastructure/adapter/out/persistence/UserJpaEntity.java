@@ -35,6 +35,9 @@ public class UserJpaEntity {
     @Column(nullable = false)
     private UserRole role;
 
+    @Column(name = "new_product_email_notifications_enabled", nullable = false)
+    private boolean newProductEmailNotificationsEnabled;
+
     protected UserJpaEntity() {
     }
 
@@ -43,13 +46,15 @@ public class UserJpaEntity {
             String name,
             String email,
             String passwordHash,
-            UserRole role
+            UserRole role,
+            boolean newProductEmailNotificationsEnabled
     ) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.passwordHash = passwordHash;
         this.role = role;
+        this.newProductEmailNotificationsEnabled = newProductEmailNotificationsEnabled;
     }
 
     public UUID getId() {
@@ -70,5 +75,9 @@ public class UserJpaEntity {
 
     public UserRole getRole() {
         return role;
+    }
+
+    public boolean isNewProductEmailNotificationsEnabled() {
+        return newProductEmailNotificationsEnabled;
     }
 }
