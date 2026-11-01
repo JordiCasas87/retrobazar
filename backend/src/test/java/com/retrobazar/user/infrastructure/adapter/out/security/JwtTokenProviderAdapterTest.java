@@ -4,6 +4,9 @@ import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.retrobazar.user.domain.User;
 import com.retrobazar.user.domain.UserRole;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.convert.ApplicationConversionService;
+import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -20,11 +23,30 @@ import java.time.ZoneOffset;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class JwtTokenProviderAdapterTest {
 
     private static final String SECRET = "a-secure-test-secret-with-at-least-32-characters";
     private static final Instant NOW = Instant.parse("2026-11-01T10:00:00Z");
+
+    @Test
+    void shouldBeCreatedBySpringWithConfiguredProperties() {
+        try (AnnotationConfigApplicationContext context =
+                     new AnnotationConfigApplicationContext()) {
+            TestPropertyValues.of(
+                    "app.security.jwt.secret=" + SECRET,
+                    "app.security.jwt.expiration=PT1H"
+            ).applyTo(context);
+            context.getBeanFactory().setConversionService(
+                    ApplicationConversionService.getSharedInstance()
+            );
+            context.register(JwtTokenProviderAdapter.class);
+            context.refresh();
+
+            assertNotNull(context.getBean(JwtTokenProviderAdapter.class));
+        }
+    }
 
     @Test
     void shouldGenerateASignedTokenWithUserIdentityRoleAndExpiration() {
