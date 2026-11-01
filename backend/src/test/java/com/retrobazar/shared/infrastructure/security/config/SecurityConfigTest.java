@@ -1,4 +1,4 @@
-package com.retrobazar.catalog.infrastructure.config;
+package com.retrobazar.shared.infrastructure.security.config;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
