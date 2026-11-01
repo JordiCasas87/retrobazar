@@ -70,6 +70,20 @@ class UserPersistenceAdapterTest {
     }
 
     @Test
+    void shouldFindUserByEmail() {
+        User user = createUser("jordi@example.com");
+        userPersistenceAdapter.save(user);
+
+        User foundUser = userPersistenceAdapter.findByEmail("jordi@example.com")
+                .orElseThrow();
+
+        assertEquals(user.getId(), foundUser.getId());
+        assertEquals("jordi@example.com", foundUser.getEmail());
+        assertTrue(foundUser.isNewProductEmailNotificationsEnabled());
+        assertTrue(userPersistenceAdapter.findByEmail("other@example.com").isEmpty());
+    }
+
+    @Test
     void shouldRejectDuplicatedEmail() {
         userPersistenceAdapter.save(createUser("jordi@example.com"));
         userPersistenceAdapter.save(createUser("jordi@example.com"));
