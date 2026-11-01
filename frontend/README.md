@@ -10,7 +10,7 @@ El primer MVP debe presentar una experiencia de tienda moderna, responsive y suf
 
 El MVP incluirá:
 
-- Cabecera con logotipo, buscador, navegación y accesos de cuenta y carrito.
+- Cabecera con logotipo, buscador, navegación y acceso a la cuenta.
 - Sección principal con una identidad visual retro-futurista.
 - Categorías destacadas.
 - Cuadrícula de productos obtenidos desde el backend.
@@ -28,7 +28,7 @@ El MVP incluirá:
 - **TypeScript** para el código de aplicación.
 - **Angular Router** para la navegación entre vistas.
 - **HttpClient** para consumir la API REST.
-- **Signals** para el estado local del catálogo y del carrito.
+- **Signals** para el estado local del catálogo y la autenticación.
 - **RxJS** para gestionar las peticiones HTTP y sus estados asíncronos.
 - **Tailwind CSS** para acelerar la construcción de la interfaz visual.
 - **Angular CDK** para overlays, diálogos y patrones accesibles cuando sean necesarios.
@@ -55,27 +55,21 @@ Principios visuales:
 
 La dirección visual se mantendrá en variables de diseño para poder ajustar colores, espaciado, tipografía y sombras desde un punto central.
 
-## Arquitectura prevista
+## Arquitectura actual
 
 La aplicación se organizará por funcionalidades, manteniendo separadas la presentación, el acceso a datos y el estado local:
 
 ```text
 src/app/
 ├── core/
-│   ├── config/          # Configuración de API y entorno
-│   ├── models/          # Interfaces y tipos compartidos
-│   └── services/        # Servicios HTTP y servicios globales
-├── shared/
-│   ├── components/      # Componentes reutilizables
-│   └── ui/              # Botones, estados, iconos y elementos visuales
-├── catalog/
-│   ├── pages/           # Catálogo y detalle de producto
-│   ├── components/      # Tarjeta, filtros y categorías
-│   └── data-access/     # Consultas y estado del catálogo
-├── cart/
-│   ├── pages/           # Vista del carrito
-│   └── data-access/     # Estado y operaciones del carrito
-└── app.routes.ts        # Rutas de la aplicación
+│   ├── config/          # URL relativa de la API y proxy de desarrollo
+│   └── guards/          # Protección de rutas administrativas
+├── features/
+│   ├── admin/           # Gestión de productos y asistente con IA
+│   ├── auth/            # Registro, login, sesión y cuenta
+│   ├── catalog/         # Catálogo y detalle de producto
+│   └── home/            # Portada y selección destacada
+└── app.routes.ts        # Rutas públicas y protegidas
 ```
 
 La lógica de negocio del catálogo no se duplicará en los componentes visuales. Los componentes recibirán datos y emitirán eventos; los servicios y stores locales coordinarán las peticiones y el estado.
@@ -96,6 +90,9 @@ Endpoints disponibles actualmente:
 | Filtrar por categoría | `GET` | `/api/products/category/{category}` |
 | Buscar productos | `GET` | `/api/products/search?text={text}` |
 | Consultar producto | `GET` | `/api/products/{id}` |
+| Crear una cuenta | `POST` | `/api/auth/register` |
+| Iniciar sesión | `POST` | `/api/auth/login` |
+| Consultar el perfil | `GET` | `/api/users/me` |
 
 Las categorías actuales del backend son:
 
@@ -106,7 +103,9 @@ Las categorías actuales del backend son:
 
 El modelo de producto contiene `id`, `name`, `brand`, `description`, `price`, `stock`, `category`, `imageUrls`, `active` y `createdAt`.
 
-La URL de la API debe configurarse mediante entornos de Angular y no escribirse directamente dentro de los componentes.
+El frontend consume la ruta relativa `/api`. En desarrollo, Angular la reenvía
+a `http://localhost:8080` mediante `proxy.conf.json`; ningún componente contiene
+una URL absoluta del backend.
 
 ## Estados de interfaz
 
@@ -139,7 +138,7 @@ Las funciones aún no implementadas deben comunicarse de forma clara:
 - Usar la etiqueta `Próximamente` en funciones planificadas.
 - Mostrar un aviso breve si el usuario pulsa una acción todavía no disponible.
 - Evitar enlaces que apunten a páginas inexistentes.
-- No simular confirmaciones de compra, autenticación o pedidos como si ya fueran reales.
+- No simular compras, pagos o consultas como si ya fueran reales.
 
 ## Funcionalidades del MVP
 
@@ -161,12 +160,11 @@ Las funciones aún no implementadas deben comunicarse de forma clara:
 
 ### Demostrativas o pendientes
 
-- [ ] Carrito persistido en el navegador.
-- [ ] Registro e inicio de sesión.
-- [ ] Cuenta de cliente.
-- [ ] Creación de pedidos.
-- [ ] Pago y envío reales.
+- [x] Registro e inicio de sesión.
+- [x] Cuenta de cliente.
 - [ ] Favoritos.
+- [ ] Consultas asociadas a productos.
+- [ ] Enlaces de venta y estados de Wallapop.
 - [ ] Filtros avanzados por precio, stock o marca.
 
 Las funciones pendientes deben conservar el lenguaje visual del producto, pero nunca deben generar expectativas falsas sobre su disponibilidad.
@@ -181,8 +179,7 @@ Las funciones pendientes deben conservar el lenguaje visual del producto, pero n
 | `/admin/productos` | Demo | Gestión y paginación de productos |
 | `/admin/productos/nuevo` | Demo | Alta de productos con URLs públicas de imagen |
 | `/admin/productos/:id/editar` | Demo | Edición de productos existentes |
-| `/carrito` | En desarrollo | Preparada para el carrito local |
-| `/cuenta` | Próximamente | Acceso de cuenta deshabilitado hasta implementar autenticación |
+| `/cuenta` | MVP | Registro, inicio de sesión y perfil del usuario |
 
 ## Criterios de calidad
 
@@ -201,13 +198,13 @@ Para que el frontend resulte convincente como portfolio se priorizará:
 
 ## Desarrollo local
 
-Requisitos previstos:
+Requisitos:
 
 - Node.js LTS.
 - npm.
 - Backend ejecutándose en `http://localhost:8080`.
 
-Comandos previstos:
+Comandos:
 
 ```bash
 cd frontend
@@ -215,7 +212,8 @@ npm install
 npm start
 ```
 
-La aplicación se servirá inicialmente en `http://localhost:4200`.
+La aplicación se sirve en `http://localhost:4200` y reenvía `/api` al backend
+mediante el proxy de desarrollo.
 
 Para validar el frontend antes de publicar:
 

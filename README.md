@@ -3,57 +3,65 @@
 
   # Retro Bazar
 
-  **E-commerce de productos retro, gaming, gadgets y accesorios para setups.**
+  **Catálogo digital de productos retro, gaming, gadgets y accesorios para setups.**
 </div>
 
 ## Estado del proyecto
 
-Retro Bazar es un monolito modular en desarrollo. La primera versión funcional
-del catálogo ya permite consultar productos reales desde una interfaz Angular
-conectada a una API REST desarrollada con Spring Boot.
+Retro Bazar es un monolito modular en desarrollo y un proyecto de portfolio con
+vocación de producto real. La aplicación permite descubrir y administrar piezas
+retro desde una interfaz Angular conectada a una API REST desarrollada con
+Spring Boot.
 
 El repositorio contiene actualmente:
 
 - Un catálogo público con listado, búsqueda, filtros por categoría y detalle.
-- Gestión administrativa de productos mediante la API.
+- Registro, inicio de sesión, perfil de usuario y autorización por roles.
+- Gestión administrativa de productos desde una zona protegida.
 - Activación, desactivación y eliminación de productos.
+- Asistente con IA para analizar imágenes y proponer una ficha editable.
 - Validación de peticiones y respuestas de error estructuradas.
-- Una interfaz responsive preparada como MVP visual.
-- Diez productos de demostración distribuidos en cuatro categorías.
+- Una interfaz responsive para escritorio y dispositivos móviles.
+- Proxy de desarrollo para consumir la API desde Angular y compartir una
+  demostración temporal mediante un túnel seguro.
 
-Las siguientes fases incorporarán el agente de producto, cuentas de usuario,
-listas de deseos, carrito y pedidos pendientes de pago. También se estudia una
-salida opcional a Wallapop y un módulo para gestionar ventas en ferias.
+Las siguientes fases se centrarán en las consultas asociadas a productos, los
+enlaces de venta en Wallapop y las listas de deseos. El carrito y los pagos
+internos no forman parte del alcance actual para evitar competir con el canal de
+venta externo.
 
 ## Visión del producto y alcance del MVP
 
-Retro Bazar se plantea como un e-commerce evolutivo. La aplicación reunirá el
-catálogo, la administración, las cuentas de usuario, los favoritos, el carrito y
-los pedidos.
+Retro Bazar se plantea como el escaparate propio de una selección de productos.
+La aplicación reúne catálogo, administración, cuentas de usuario y, en las
+siguientes fases, favoritos y consultas por producto. La compra se completará
+en Wallapop cuando exista un anuncio disponible.
 
 El flujo principal previsto es:
 
 ```text
 Descubrir en Retro Bazar
         ↓
-Guardar productos o añadirlos al carrito
+Consultar la ficha o guardar el producto
         ↓
-Confirmar un pedido
+Preguntar por su disponibilidad o abrir el anuncio
         ↓
-Esperar el contacto del gestor para acordar el pago
+Completar la compra en Wallapop
 ```
 
-Al confirmar el carrito, el pedido se guardará como `PENDING_PAYMENT`. Retro
-Bazar no procesará todavía el pago: un comercial contactará con el cliente para
-acordarlo. La cuenta permitirá consultar favoritos, carrito e historial de
-pedidos.
+Retro Bazar no solicitará datos de pago ni gestionará envíos. La cuenta
+permitirá mantener favoritos y reutilizar los datos de contacto al enviar una
+consulta.
 
-### Opciones de compra previstas
+### Canales de contacto y venta previstos
 
-- **Pedido en Retro Bazar:** el cliente confirma el carrito y se registra un
-  pedido pendiente de pago.
-- **Salida a Wallapop:** opcionalmente, un producto podrá enlazar al anuncio del
-  gestor de la tienda mediante «Comprar en Wallapop».
+- **Consulta sobre el producto:** cualquier visitante podrá preguntar por su
+  estado, disponibilidad o publicación mediante un formulario asociado a la
+  ficha.
+- **Salida a Wallapop:** cuando exista un anuncio, la ficha enlazará al canal de
+  venta mediante «Ver en Wallapop».
+- **Favoritos:** los usuarios registrados podrán guardar productos y recuperar
+  su selección en otras sesiones y dispositivos.
 
 La integración con Wallapop utilizaría únicamente enlaces públicos mantenidos
 por el administrador. Retro Bazar no solicitará credenciales de Wallapop ni
@@ -66,25 +74,20 @@ con las [condiciones de uso de Wallapop](https://about.wallapop.com/condiciones-
 ### Portada
 
 <p align="center">
-  <img src="docs/images/retro-bazar-home.png" alt="Portada de Retro Bazar en escritorio" width="100%">
+  <img src="docs/images/readme-captures/retro-bazar-home-2026.jpg" alt="Portada actual de Retro Bazar en escritorio" width="100%">
 </p>
 
-### Catálogo y selección
+### Catálogo
 
-<table>
-  <tr>
-    <td width="50%">
-      <img src="docs/images/retro-bazar-home-products.png" alt="Selección de productos de Retro Bazar">
-    </td>
-    <td width="50%">
-      <img src="docs/images/retro-bazar-catalog.png" alt="Catálogo completo de Retro Bazar">
-    </td>
-  </tr>
-  <tr>
-    <td align="center"><strong>Selección destacada</strong></td>
-    <td align="center"><strong>Catálogo, filtros y búsqueda</strong></td>
-  </tr>
-</table>
+<p align="center">
+  <img src="docs/images/readme-captures/retro-bazar-catalog-2026.jpg" alt="Catálogo actual de Retro Bazar con filtros y búsqueda" width="100%">
+</p>
+
+### Tu cuenta
+
+<p align="center">
+  <img src="docs/images/readme-captures/retro-bazar-account-2026.jpg" alt="Acceso y registro de la cuenta de Retro Bazar" width="100%">
+</p>
 
 ### Experiencia responsive
 
@@ -125,10 +128,11 @@ módulo funcional se divide progresivamente en:
 - **Infraestructura:** controladores REST, persistencia, seguridad y
   configuración externa.
 
-Los módulos previstos para la primera versión son `catalog`, `productagent`,
-`user`, `wishlist`, `cart` y `order`. El módulo `event` queda documentado como
-una posible ampliación. `shared` contiene soporte técnico común y no representa
-un módulo de negocio.
+Los módulos implementados son `catalog`, `productagent` y `user`. `wishlist` es
+la siguiente ampliación prevista. Los módulos `cart`, `order` y `event` se
+conservan como documentación de posibles evoluciones, pero no forman parte del
+alcance actual. `shared` contiene soporte técnico común y no representa un
+módulo de negocio.
 
 La infraestructura web común contiene el gestor global que transforma las
 excepciones de aplicación y los errores HTTP en respuestas consistentes.
@@ -141,9 +145,9 @@ retro-bazar/
 │       │   ├── catalog/        # Productos, categorías, precios y stock
 │       │   ├── productagent/   # Valoración y mejora de fichas con IA
 │       │   ├── user/           # Cuentas, autenticación, perfil y roles
-│       │   ├── wishlist/       # Productos favoritos de cada usuario
-│       │   ├── cart/           # Carrito persistente y cantidades
-│       │   ├── order/          # Confirmación e historial de pedidos
+│       │   ├── wishlist/       # Desarrollo futuro de favoritos
+│       │   ├── cart/           # Posible ampliación, fuera del alcance actual
+│       │   ├── order/          # Posible ampliación, fuera del alcance actual
 │       │   ├── event/          # Posible gestión futura de ferias
 │       │   └── shared/web/error/
 │       └── test/
@@ -244,6 +248,14 @@ La aplicación se sirve en `http://localhost:4200`.
 | Buscar productos | `GET` | `/api/products/search?text={text}` |
 | Consultar un producto activo | `GET` | `/api/products/{id}` |
 
+### Autenticación y cuenta
+
+| Acción | Método | Endpoint |
+|---|---|---|
+| Crear una cuenta | `POST` | `/api/auth/register` |
+| Iniciar sesión | `POST` | `/api/auth/login` |
+| Consultar el perfil autenticado | `GET` | `/api/users/me` |
+
 ### Endpoints administrativos
 
 | Acción | Método | Endpoint |
@@ -255,6 +267,7 @@ La aplicación se sirve en `http://localhost:4200`.
 | Eliminar un producto | `DELETE` | `/api/admin/products/{id}` |
 | Activar un producto | `PATCH` | `/api/admin/products/{id}/activate` |
 | Desactivar un producto | `PATCH` | `/api/admin/products/{id}/deactivate` |
+| Analizar una ficha con IA | `POST` | `/api/admin/product-agent/analyze` |
 
 La documentación interactiva está disponible con el backend iniciado en:
 
@@ -262,8 +275,9 @@ La documentación interactiva está disponible con el backend iniciado en:
 http://localhost:8080/swagger-ui/index.html
 ```
 
-Los endpoints administrativos permanecen temporalmente abiertos hasta que se
-implemente el módulo de usuarios y autorización por roles.
+Los endpoints administrativos requieren un token JWT con rol `ADMIN`. Angular
+protege también las rutas del panel, aunque la autorización definitiva siempre
+se aplica en el backend.
 
 ## Pruebas
 
@@ -275,9 +289,9 @@ cd backend
 ```
 
 Las pruebas unitarias no requieren Docker. La prueba de carga completa del
-contexto utiliza Testcontainers y necesita un entorno Docker disponible. Esta
-infraestructura se completará en una fase posterior. Para el desarrollo habitual,
-la aplicación se ejecuta contra el MySQL levantado mediante Docker Compose.
+contexto utiliza Testcontainers y necesita un entorno Docker disponible. Para el
+desarrollo habitual, la aplicación se ejecuta contra el MySQL levantado mediante
+Docker Compose.
 
 Comprobar el frontend:
 
@@ -288,11 +302,11 @@ npm run build
 
 ## Agente de IA para el alta de productos
 
-El formulario administrativo ofrecerá la acción «Valorar con IA». A partir del
+El formulario administrativo ofrece la acción «Valorar con IA». A partir del
 título, descripción, precio e imágenes introducidos, el agente propondrá una
 ficha mejorada antes de crear el producto.
 
-La implementación utiliza Spring AI y Gemini. En el primer MVP, el agente
+La implementación utiliza Spring AI y Gemini. En el MVP actual, el agente
 analiza los datos y las imágenes y muestra los productos activos de la misma
 marca que ya existen en el catálogo de Retro Bazar.
 
@@ -301,7 +315,7 @@ disponible mediante la API en el nivel gratuito de Gemini 3.6 Flash. Podrá
 incorporarse posteriormente si el proyecto activa la facturación de Gemini. La
 primera versión no pide al administrador que aporte enlaces externos.
 
-### Flujo previsto
+### Flujo actual
 
 1. El administrador completa el formulario y añade una o varias imágenes.
 2. El backend consulta los productos activos de la misma marca.
@@ -368,32 +382,36 @@ diseñar este módulo.
 2. **Catálogo público — completado.** `/catalogo` ofrece búsqueda, filtros por
    categoría y paginación de diez productos en Angular. La portada mantiene una
    selección reducida y enlaza al catálogo completo.
-3. **Administración abierta de demostración — completado.** El panel permite
-   listar con filtros y paginación, crear, editar, activar, desactivar y eliminar
-   productos utilizando los endpoints actuales.
+3. **Administración protegida — completado.** El panel permite listar con
+   filtros y paginación, crear, editar, activar, desactivar y eliminar productos.
+   Las rutas y endpoints administrativos requieren el rol `ADMIN`.
 4. **Catálogo administrable — completado.** Los productos, descripciones e
    imágenes se mantienen desde el panel mediante URLs públicas. `data.sql` se
    conserva como catálogo inicial de referencia, pero no se ejecuta
    automáticamente sobre la base de datos local.
-5. **Agente de producto.** Valorar los datos e imágenes del formulario, mostrar
-   productos activos de la misma marca y ofrecer una propuesta editable. La
+5. **Agente de producto — completado.** Valora los datos e imágenes del formulario, muestra
+   productos activos de la misma marca y ofrece una propuesta editable. La
    búsqueda externa queda como ampliación posterior sujeta a la disponibilidad
    y facturación de Google Search Grounding.
-6. **Autenticación y autorización.** Añadir usuarios, login y roles; proteger las
-   rutas administrativas de Angular y los endpoints `/api/admin/**`.
-7. **Listas de deseos.** Permitir que cada usuario mantenga una selección personal
-   persistente y sincronizada entre sesiones y dispositivos.
-8. **Carrito y pedidos.** Mantener un carrito por usuario y registrar pedidos
-   pendientes de pago, con gestión posterior por parte de la tienda.
-9. **Canal externo opcional.** Permitir que determinados productos enlacen al
-   anuncio correspondiente de la cuenta de Wallapop del gestor.
-10. **Eventos — por decidir.** Gestionar el stock y las ventas presenciales en
+6. **Autenticación y autorización — completado.** Incluye registro, login, perfil,
+   roles, JWT, guardas de Angular y protección de `/api/admin/**`.
+7. **Estabilización y calidad.** Consolidar variables de entorno, actualizar la
+   documentación, ampliar las pruebas del frontend y revisar accesibilidad.
+8. **Consultas por producto.** Permitir preguntas sobre disponibilidad, estado o
+   publicación; asociarlas al producto y gestionarlas desde administración.
+9. **Canal de venta en Wallapop.** Añadir el enlace público del anuncio y estados
+   como disponible, reservado o vendido. Retro Bazar no gestionará pagos.
+10. **Listas de deseos.** Mantener una selección personal persistente y
+    sincronizada entre sesiones y dispositivos.
+11. **Eventos — por decidir.** Gestionar el stock y las ventas presenciales en
     ferias, si entra finalmente en el alcance de la primera versión.
-11. **Preparación para publicación.** Configurar los entornos de Angular, añadir
-   Dockerfiles para backend y frontend, ampliar Docker Compose y preparar el
-   despliegue público.
+12. **Preparación para publicación.** Configurar los entornos de Angular, añadir
+    Dockerfiles para backend y frontend, ampliar Docker Compose y preparar el
+    despliegue público.
 
 ## Alcance
 
-El proyecto es una demostración técnica. Inicialmente registrará pedidos
-pendientes de pago, pero no procesará pagos ni envíos reales.
+El proyecto es una demostración técnica y un escaparate para una posible tienda
+real. No procesará pagos ni envíos: las ventas se completarán mediante enlaces
+públicos de Wallapop. El carrito y los pedidos internos quedan fuera del alcance
+actual.
