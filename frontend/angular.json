@@ -32,6 +32,9 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "proxyConfig": "proxy.conf.json"
+          },
           "configurations": {
             "production": { "buildTarget": "retro-bazar:build:production" },
             "development": { "buildTarget": "retro-bazar:build:development" }
