@@ -100,7 +100,9 @@ export class AccountComponent {
         this.loginError.set(
           error.status === 401
             ? 'El email o la contraseña no son correctos.'
-            : 'No hemos podido iniciar sesión. Inténtalo de nuevo.'
+            : error.status === 0
+              ? 'No hemos podido conectar con el servidor (error de red).'
+              : `No hemos podido iniciar sesión (error ${error.status}). Inténtalo de nuevo.`
         );
       }
     });
