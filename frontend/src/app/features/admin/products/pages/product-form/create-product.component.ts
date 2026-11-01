@@ -45,7 +45,7 @@ export class CreateProductComponent {
   readonly agentTitleDraft = signal('');
   readonly agentDescriptionDraft = signal('');
   readonly agentPriceDraft = signal<number | null>(null);
-  readonly fallbackImage = 'assets/product-placeholder-retro-bazar-v6.png';
+  readonly fallbackImage = 'assets/product-placeholder-retro-bazar-v6.jpg';
   readonly categories = PRODUCT_CATEGORY_OPTIONS;
 
   readonly form = createProductForm(this.urlPattern);

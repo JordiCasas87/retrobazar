@@ -21,7 +21,7 @@ export class ProductDetailComponent {
   readonly loading = signal(true);
   readonly error = signal(false);
   readonly activeImage = signal(0);
-  readonly fallbackImage = 'assets/product-placeholder-retro-bazar-v6.png';
+  readonly fallbackImage = 'assets/product-placeholder-retro-bazar-v6.jpg';
 
   constructor() {
     this.route.paramMap.pipe(

@@ -25,7 +25,7 @@ export class CatalogComponent {
   readonly selectedCategory = signal<ProductCategory | 'ALL'>('ALL');
   readonly searchText = signal('');
   readonly currentPage = signal(1);
-  readonly fallbackImage = 'assets/product-placeholder-retro-bazar-v6.png';
+  readonly fallbackImage = 'assets/product-placeholder-retro-bazar-v6.jpg';
 
   readonly title = computed(() => {
     if (this.searchText()) return `Resultados para “${this.searchText()}”`;

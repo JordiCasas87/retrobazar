@@ -25,14 +25,14 @@ export class HomeComponent {
   readonly productsFlipping = signal(false);
   readonly activeHero = signal(0);
   readonly carouselEnabled = computed(() => this.products().slice(0, 10).length > 5);
-  readonly productFallbackImage = 'assets/product-placeholder-retro-bazar-v6.png';
+  readonly productFallbackImage = 'assets/product-placeholder-retro-bazar-v6.jpg';
   readonly heroSlides = [
     {
       src: 'assets/hero-retro-products-v2.jpg',
       alt: 'Selección de productos retro: consola portátil, teclado, cámaras, robot y pantalla'
     },
     {
-      src: 'assets/zelda-hero.png',
+      src: 'assets/zelda-hero.jpg',
       alt: 'Composición retro inspirada en The Legend of Zelda'
     }
   ];

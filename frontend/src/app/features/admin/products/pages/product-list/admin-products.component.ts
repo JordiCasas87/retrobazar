@@ -23,7 +23,7 @@ export class AdminProductsComponent {
   readonly deletingId = signal<string | null>(null);
   readonly viewMode = signal<'cards' | 'list'>('cards');
   readonly feedback = signal('');
-  readonly fallbackImage = 'assets/product-placeholder-retro-bazar-v6.png';
+  readonly fallbackImage = 'assets/product-placeholder-retro-bazar-v6.jpg';
 
   readonly filteredProducts = computed(() => {
     const category = this.selectedCategory();
