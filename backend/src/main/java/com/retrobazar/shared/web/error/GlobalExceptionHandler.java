@@ -4,6 +4,7 @@ import com.retrobazar.catalog.application.exception.ProductNotFoundException;
 import com.retrobazar.shared.web.error.dto.ApiErrorResponseDto;
 import com.retrobazar.shared.web.error.dto.FieldValidationErrorDto;
 import com.retrobazar.user.application.exception.EmailAlreadyRegisteredException;
+import com.retrobazar.user.application.exception.InvalidCredentialsException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +69,20 @@ public class GlobalExceptionHandler {
         return buildResponse(
                 HttpStatus.CONFLICT,
                 "EMAIL_ALREADY_REGISTERED",
+                exception.getMessage(),
+                request,
+                List.of()
+        );
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ApiErrorResponseDto> handleInvalidCredentialsException(
+            InvalidCredentialsException exception,
+            HttpServletRequest request
+    ) {
+        return buildResponse(
+                HttpStatus.UNAUTHORIZED,
+                "INVALID_CREDENTIALS",
                 exception.getMessage(),
                 request,
                 List.of()

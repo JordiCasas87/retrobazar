@@ -8,6 +8,8 @@ import com.retrobazar.user.domain.User;
 import com.retrobazar.user.domain.UserRole;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -108,6 +110,11 @@ class RegisterUserServiceTest {
         }
 
         @Override
+        public Optional<User> findByEmail(String email) {
+            return Optional.empty();
+        }
+
+        @Override
         public User save(User user) {
             savedUser = user;
             return user;
@@ -127,6 +134,11 @@ class RegisterUserServiceTest {
         public String encode(String rawPassword) {
             receivedPassword = rawPassword;
             return encodedPassword;
+        }
+
+        @Override
+        public boolean matches(String rawPassword, String passwordHash) {
+            return false;
         }
     }
 }

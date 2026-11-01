@@ -1,9 +1,13 @@
 package com.retrobazar.user.infrastructure.adapter.in.web;
 
+import com.retrobazar.user.application.command.LoginUserCommand;
 import com.retrobazar.user.application.command.RegisterUserCommand;
+import com.retrobazar.user.application.port.in.LoginUserUseCase;
 import com.retrobazar.user.application.port.in.RegisterUserUseCase;
 import com.retrobazar.user.domain.User;
 import com.retrobazar.user.domain.UserRole;
+import com.retrobazar.user.infrastructure.adapter.in.web.dto.LoginRequestDto;
+import com.retrobazar.user.infrastructure.adapter.in.web.dto.LoginResponseDto;
 import com.retrobazar.user.infrastructure.adapter.in.web.dto.RegisterUserRequestDto;
 import com.retrobazar.user.infrastructure.adapter.in.web.dto.UserResponseDto;
 import org.junit.jupiter.api.Test;
@@ -33,7 +37,10 @@ class AuthControllerTest {
         );
         FakeRegisterUserUseCase registerUserUseCase =
                 new FakeRegisterUserUseCase(registeredUser);
-        AuthController controller = new AuthController(registerUserUseCase);
+        AuthController controller = new AuthController(
+                registerUserUseCase,
+                command -> "unused-token"
+        );
         RegisterUserRequestDto request = new RegisterUserRequestDto(
                 "Jordi Casas",
                 "jordi@example.com",
@@ -72,6 +79,30 @@ class AuthControllerTest {
         );
     }
 
+    @Test
+    void shouldLoginUserAndReturnBearerToken() {
+        FakeLoginUserUseCase loginUserUseCase =
+                new FakeLoginUserUseCase("generated-jwt");
+        AuthController controller = new AuthController(
+                command -> null,
+                loginUserUseCase
+        );
+        LoginRequestDto request = new LoginRequestDto(
+                "jordi@example.com",
+                "Banana123"
+        );
+
+        ResponseEntity<LoginResponseDto> response = controller.login(request);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("generated-jwt", response.getBody().accessToken());
+        assertEquals("Bearer", response.getBody().tokenType());
+        assertNotNull(loginUserUseCase.receivedCommand);
+        assertEquals("jordi@example.com", loginUserUseCase.receivedCommand.email());
+        assertEquals("Banana123", loginUserUseCase.receivedCommand.password());
+    }
+
     private static final class FakeRegisterUserUseCase implements RegisterUserUseCase {
 
         private final User userToReturn;
@@ -85,6 +116,22 @@ class AuthControllerTest {
         public User registerUser(RegisterUserCommand command) {
             receivedCommand = command;
             return userToReturn;
+        }
+    }
+
+    private static final class FakeLoginUserUseCase implements LoginUserUseCase {
+
+        private final String tokenToReturn;
+        private LoginUserCommand receivedCommand;
+
+        private FakeLoginUserUseCase(String tokenToReturn) {
+            this.tokenToReturn = tokenToReturn;
+        }
+
+        @Override
+        public String login(LoginUserCommand command) {
+            receivedCommand = command;
+            return tokenToReturn;
         }
     }
 }

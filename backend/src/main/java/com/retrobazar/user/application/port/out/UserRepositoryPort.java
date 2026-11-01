@@ -2,6 +2,8 @@ package com.retrobazar.user.application.port.out;
 
 import com.retrobazar.user.domain.User;
 
+import java.util.Optional;
+
 /**
  * Apuntes del programador (A.P.):
  * Este puerto define las operaciones de persistencia que necesita la capa application,
@@ -10,6 +12,8 @@ import com.retrobazar.user.domain.User;
 public interface UserRepositoryPort {
 
     boolean existsByEmail(String email);
+
+    Optional<User> findByEmail(String email);
 
     User save(User user);
 }

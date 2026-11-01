@@ -5,6 +5,8 @@ import com.retrobazar.user.domain.User;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 /**
  * Apuntes del programador (A.P.):
  * Este adaptador implementa el puerto de persistencia de la capa application.
@@ -24,6 +26,13 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
     @Transactional(readOnly = true)
     public boolean existsByEmail(String email) {
         return springDataUserRepository.existsByEmail(email);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<User> findByEmail(String email) {
+        return springDataUserRepository.findByEmail(email)
+                .map(this::toDomain);
     }
 
     @Override

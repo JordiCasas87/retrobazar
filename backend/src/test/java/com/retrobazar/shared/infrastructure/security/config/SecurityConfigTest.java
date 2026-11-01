@@ -9,6 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SecurityConfigTest {
 
@@ -32,5 +33,15 @@ class SecurityConfigTest {
                 configuration.getAllowedMethods()
         );
         assertEquals(List.of("*"), configuration.getAllowedHeaders());
+    }
+
+    @Test
+    void shouldRejectAJwtSecretShorterThan32Characters() {
+        SecurityConfig securityConfig = new SecurityConfig();
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> securityConfig.jwtDecoder("too-short")
+        );
     }
 }
