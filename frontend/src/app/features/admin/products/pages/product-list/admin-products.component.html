@@ -21,6 +21,14 @@
   </section>
 
   <section class="catalog-results">
+    <div class="admin-view-toolbar" aria-label="Formato de visualización">
+      <span>Vista</span>
+      <div>
+        <button type="button" [class.active]="viewMode() === 'cards'" (click)="setViewMode('cards')">Tarjetas</button>
+        <button type="button" [class.active]="viewMode() === 'list'" (click)="setViewMode('list')">Lista</button>
+      </div>
+    </div>
+
     <div class="results-heading">
       <p>{{ filteredProducts().length }} {{ filteredProducts().length === 1 ? 'producto' : 'productos' }}</p>
       @if (totalPages() > 1) {
@@ -38,32 +46,61 @@
     } @else if (error()) {
       <div class="catalog-state"><p>No hemos podido cargar los productos.</p><button type="button" (click)="loadProducts()">Reintentar</button></div>
     } @else {
-      <div class="catalog-grid">
-        @for (product of visibleProducts(); track product.id) {
-          <article class="catalog-card admin-card">
-            <div class="product-image">
-              <img [src]="product.imageUrls[0] || fallbackImage" [alt]="product.name" loading="lazy" (error)="useFallback($event)">
-              <span class="status-badge" [class.inactive]="!product.active">{{ product.active ? 'Activo' : 'Inactivo' }}</span>
-            </div>
-            <div class="product-info">
-              <div><p>{{ product.brand }}</p><h2>{{ product.name }}</h2></div>
-              <strong>{{ product.price | currency:'EUR':'symbol':'1.2-2':'es' }}</strong>
-            </div>
-            <p class="product-description">{{ product.description }}</p>
-            <div class="admin-card-footer">
-              <span>Stock: {{ product.stock }}</span>
-              <div class="admin-card-actions">
+      @if (viewMode() === 'cards') {
+        <div class="catalog-grid">
+          @for (product of visibleProducts(); track product.id) {
+            <article class="catalog-card admin-card">
+              <div class="product-image">
+                <img [src]="product.imageUrls[0] || fallbackImage" [alt]="product.name" loading="lazy" (error)="useFallback($event)">
+                <span class="status-badge" [class.inactive]="!product.active">{{ product.active ? 'Activo' : 'Inactivo' }}</span>
+              </div>
+              <div class="product-info">
+                <div><p>{{ product.brand }}</p><h2>{{ product.name }}</h2></div>
+                <strong>{{ product.price | currency:'EUR':'symbol':'1.2-2':'es' }}</strong>
+              </div>
+              <p class="product-description">{{ product.description }}</p>
+              <div class="admin-card-footer">
+                <span>Stock: {{ product.stock }}</span>
+                <div class="admin-card-actions">
+                  <a [routerLink]="['/admin/productos', product.id, 'editar']">Editar</a>
+                  <button type="button" [disabled]="deletingId() === product.id" (click)="deleteProduct(product)">
+                    {{ deletingId() === product.id ? 'Eliminando…' : 'Eliminar' }}
+                  </button>
+                </div>
+              </div>
+            </article>
+          } @empty {
+            <div class="empty-state"><p>No hay productos en esta categoría.</p></div>
+          }
+        </div>
+      } @else {
+        <div class="admin-list">
+          @for (product of visibleProducts(); track product.id) {
+            <article class="admin-list-row">
+              <div class="admin-list-image">
+                <img [src]="product.imageUrls[0] || fallbackImage" [alt]="product.name" loading="lazy" (error)="useFallback($event)">
+              </div>
+              <div class="admin-list-identity">
+                <span>{{ product.brand }}</span>
+                <h2>{{ product.name }}</h2>
+              </div>
+              <span class="admin-list-status" [class.inactive]="!product.active">{{ product.active ? 'Activo' : 'Inactivo' }}</span>
+              <div class="admin-list-meta">
+                <span>Stock: <strong>{{ product.stock }}</strong></span>
+                <span>{{ product.price | currency:'EUR':'symbol':'1.2-2':'es' }}</span>
+              </div>
+              <div class="admin-list-actions">
                 <a [routerLink]="['/admin/productos', product.id, 'editar']">Editar</a>
                 <button type="button" [disabled]="deletingId() === product.id" (click)="deleteProduct(product)">
                   {{ deletingId() === product.id ? 'Eliminando…' : 'Eliminar' }}
                 </button>
               </div>
-            </div>
-          </article>
-        } @empty {
-          <div class="empty-state"><p>No hay productos en esta categoría.</p></div>
-        }
-      </div>
+            </article>
+          } @empty {
+            <div class="empty-state"><p>No hay productos en esta categoría.</p></div>
+          }
+        </div>
+      }
 
       @if (totalPages() > 1) {
         <nav class="pagination" aria-label="Paginación de administración">

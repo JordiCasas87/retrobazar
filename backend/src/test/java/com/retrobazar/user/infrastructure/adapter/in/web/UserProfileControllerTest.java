@@ -36,13 +36,14 @@ class UserProfileControllerTest {
         assertEquals(userId, useCase.receivedUserId);
         assertEquals("Jordi Casas", response.name());
         assertEquals("jordi@example.com", response.email());
+        assertEquals(true, response.newProductEmailNotificationsEnabled());
 
         List<String> responseFields = Arrays.stream(
                         UserProfileResponseDto.class.getRecordComponents()
                 )
                 .map(component -> component.getName())
                 .toList();
-        assertEquals(List.of("name", "email"), responseFields);
+        assertEquals(List.of("name", "email", "newProductEmailNotificationsEnabled"), responseFields);
     }
 
     private Jwt createJwt(UUID userId) {

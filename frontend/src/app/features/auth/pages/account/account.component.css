@@ -1,0 +1,112 @@
+.account-page { width: 100%; max-width: 100%; min-height: 680px; overflow-x: clip; padding: clamp(42px, 5vw, 68px) max(28px, 8vw); background: radial-gradient(circle at 86% 12%, rgba(57,214,244,.28), transparent 32%), radial-gradient(circle at 8% 82%, rgba(255,138,36,.22), transparent 34%), radial-gradient(circle at 52% 48%, rgba(51,73,92,.28), transparent 40%), linear-gradient(145deg, #05080d 0%, #0b1118 48%, #121014 100%); }
+.account-intro { max-width: 720px; }
+.account-kicker { margin: 0 0 20px; color: rgba(232,184,74,.78); font-size: 14px; letter-spacing: .12em; text-transform: uppercase; }
+.account-intro h1 { margin: 0; max-width: 700px; color: #f4f2ec; font-size: clamp(42px, 4.8vw, 68px); font-weight: 500; letter-spacing: -.055em; line-height: .94; }
+.account-intro > p:not(.account-kicker):not(.account-success) { max-width: 620px; margin: 24px 0 0; color: rgba(244,242,236,.72); font-size: clamp(17px, .9vw, 19px); line-height: 1.55; }
+.account-intro .account-success { width: fit-content; margin-top: 18px; padding: 10px 14px; border: 1px solid rgba(57,214,244,.5); color: #8de9f7; font-size: 15px; }
+.profile-shell { width: min(1180px, 100%); max-width: 100%; min-width: 0; }
+.profile-heading { padding-bottom: 24px; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; border-bottom: 1px solid rgba(255,255,255,.17); }
+.profile-heading .account-kicker { margin-bottom: 16px; font-size: 12px; }
+.profile-heading h1 { margin: 0; color: #f4f2ec; font-size: clamp(34px, 4vw, 59px); font-weight: 500; letter-spacing: -.05em; line-height: .95; }
+.profile-heading h1 span { color: #e8b84a; }
+.profile-heading > div > p:last-child { margin: 14px 0 0; color: rgba(244,242,236,.68); font-size: 14px; }
+.profile-status { padding: 7px 10px; border: 1px solid rgba(57,214,244,.38); color: #8de9f7; font-size: 10px; letter-spacing: .09em; text-transform: uppercase; white-space: nowrap; }
+.profile-status i { width: 7px; height: 7px; margin-right: 7px; display: inline-block; border-radius: 50%; background: #39d6f4; box-shadow: 0 0 10px #39d6f4; }
+.profile-grid { margin-top: 28px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.profile-card { min-height: 180px; padding: 25px; border: 1px solid rgba(255,255,255,.16); border-radius: 15px 4px 15px 4px; background: linear-gradient(145deg, rgba(16,25,32,.88), rgba(27,23,25,.78)); color: #f4f2ec; box-shadow: 0 16px 35px rgba(0,0,0,.24), inset 0 0 28px rgba(57,214,244,.04); }
+.profile-card > span { color: #e8b84a; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+.profile-card h2 { margin: 16px 0 20px; font-size: clamp(23px, 2.2vw, 34px); font-weight: 550; letter-spacing: -.035em; }
+.profile-card p { margin: 0; color: rgba(244,242,236,.68); line-height: 1.55; }
+.profile-card dl { margin: 0; display: grid; gap: 14px; }
+.profile-card dl div { min-width: 0; padding-top: 11px; display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 18px; border-top: 1px solid rgba(255,255,255,.13); }
+.profile-card dt { color: rgba(244,242,236,.5); font-size: 12px; text-transform: uppercase; letter-spacing: .07em; }
+.profile-card dd { margin: 0; overflow-wrap: anywhere; }
+.profile-card .mailing-state { width: fit-content; margin-bottom: 12px; padding: 7px 9px; border: 1px solid rgba(255,138,36,.4); color: #ffc078; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+.profile-card .mailing-state.enabled { border-color: rgba(57,214,244,.45); color: #8de9f7; }
+.profile-upcoming { opacity: .78; }
+.profile-actions { margin-top: 28px; display: flex; align-items: center; gap: 28px; }
+.profile-actions a { padding: 13px 0; display: flex; gap: 38px; border-bottom: 1px solid #e8b84a; color: #e8b84a; font-weight: 600; }
+.profile-actions button { padding: 13px 16px; border: 1px solid rgba(255,255,255,.4); background: transparent; color: #f4f2ec; cursor: pointer; }
+.account-options { max-width: 860px; margin-top: clamp(32px, 3.5vw, 48px); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 3vw, 34px); }
+.account-options article { position: relative; z-index: 0; aspect-ratio: 228 / 256; background-position: center; background-repeat: no-repeat; background-size: 100% 100%; filter: drop-shadow(0 22px 24px rgba(0,0,0,.5)); transition: transform .3s cubic-bezier(.2,.8,.2,1), filter .3s ease; }
+.account-options .gameboy-cartridge { background-image: url('/assets/account-gameboy-cartridge.png'); }
+.account-options .nes-cartridge { background-image: url('/assets/account-nes-cartridge.png'); }
+.account-options article:hover { z-index: 2; transform: translateY(-7px) scale(1.04); filter: drop-shadow(0 32px 32px rgba(0,0,0,.62)); }
+.cartridge-label { position: absolute; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
+.gameboy-cartridge .cartridge-label { inset: 32% 14% 17%; padding: 9%; border: 1px solid rgba(57,214,244,.38); border-radius: 12px; background: linear-gradient(145deg, rgba(10,17,22,.96), rgba(30,28,27,.94)); }
+.nes-cartridge .cartridge-label { inset: 8% 13% 34% 40%; padding: 8%; border: 1px solid rgba(232,184,74,.5); border-radius: 4px; background: linear-gradient(145deg, rgba(12,18,22,.97), rgba(39,30,24,.95)); }
+.cartridge-label::before, .dialog-label::before { content: ''; position: absolute; z-index: -1; inset: 10%; background: url('/assets/logo-retro-bazar.png') center / contain no-repeat; opacity: .14; filter: blur(2px); }
+.cartridge-label > *, .dialog-label > * { position: relative; z-index: 1; }
+.account-options span { color: rgba(232,184,74,.82); font-size: 12px; letter-spacing: .1em; }
+.account-options h2 { margin: 14px 0 9px; font-size: clamp(21px, 2vw, 30px); font-weight: 600; letter-spacing: -.04em; line-height: 1; }
+.account-options .cartridge-label h2 { color: #f4f2ec; }
+.account-options p { margin: 0 0 18px; color: rgba(244,242,236,.76); font-size: clamp(13px, 1.05vw, 16px); line-height: 1.4; }
+.account-options button { padding: 11px 15px; border: 1px solid #e8b84a; background: rgba(3,6,9,.82); color: #e8b84a; cursor: pointer; font-size: clamp(13px, 1vw, 15px); }
+.account-options button:hover { background: #e8b84a; color: #101010; }
+
+.modal-backdrop { position: fixed; z-index: 100; inset: 0; padding: 24px; display: grid; place-items: center; overflow-y: auto; background: rgba(2,5,9,.82); backdrop-filter: blur(8px); }
+.account-dialog { position: relative; width: min(88vw, 560px); aspect-ratio: 228 / 256; flex: 0 0 auto; background-position: center; background-repeat: no-repeat; background-size: 100% 100%; filter: drop-shadow(0 34px 38px rgba(0,0,0,.7)); animation: dialog-enter .28s cubic-bezier(.2,.8,.2,1); }
+.gameboy-dialog { background-image: url('/assets/account-gameboy-cartridge.png'); }
+.nes-dialog { background-image: url('/assets/account-nes-cartridge.png'); }
+.dialog-close { position: absolute; z-index: 3; top: 3%; right: 4%; width: 38px; height: 38px; border: 1px solid rgba(255,255,255,.5); border-radius: 50%; background: rgba(5,8,13,.76); color: #fff; cursor: pointer; font-size: 27px; line-height: 1; }
+.dialog-label { position: absolute; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; align-items: stretch; color: #f4f2ec; }
+.gameboy-dialog .dialog-label { inset: 31% 14% 16%; padding: 7% 9%; border: 1px solid rgba(57,214,244,.4); border-radius: 12px; background: linear-gradient(145deg, rgba(10,17,22,.97), rgba(30,28,27,.96)); }
+.nes-dialog .dialog-label { inset: 4% 10% 28% 39%; padding: 7%; border: 1px solid rgba(232,184,74,.52); border-radius: 4px; background: linear-gradient(145deg, rgba(12,18,22,.98), rgba(39,30,24,.97)); }
+.dialog-label > p { margin: 0 0 8px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+.dialog-label h2 { margin: 0 0 13px; font-size: clamp(22px, 3vw, 30px); line-height: 1; }
+.dialog-label > label:not(.consent-field) { margin: 7px 0 4px; color: rgba(232,184,74,.9); font-size: 12px; font-weight: 600; }
+.dialog-label > input { width: 100%; min-height: 36px; padding: 7px 9px; border: 1px solid rgba(32,29,23,.45); border-radius: 2px; background: rgba(255,255,255,.64); color: #101010; outline: none; }
+.dialog-label > input:focus { border-color: #101010; box-shadow: 0 0 0 2px rgba(16,16,16,.12); }
+.dialog-label > button { width: fit-content; margin-top: 15px; padding: 10px 15px; border: 1px solid #e8b84a; background: rgba(3,6,9,.86); color: #e8b84a; cursor: pointer; font-size: 14px; }
+.dialog-label > button:disabled { cursor: wait; opacity: .62; }
+.form-error { margin-top: 9px; color: #ff9f80; font-size: 11px; line-height: 1.25; }
+.form-success { margin-top: 9px; color: #8de9f7; font-size: 11px; line-height: 1.25; }
+.consent-field { margin-top: 10px; display: flex; align-items: flex-start; gap: 7px; font-size: 11px; line-height: 1.25; }
+.consent-field input { flex: 0 0 auto; margin: 1px 0 0; }
+.register-form h2 { font-size: clamp(20px, 2.5vw, 27px); }
+.register-form > p { font-size: 9px; }
+.register-form > label:not(.consent-field) { margin-top: 4px; }
+.register-form > input { min-height: 31px; padding: 5px 7px; }
+.register-form > small { margin-top: 3px; color: rgba(244,242,236,.64); font-size: 9px; line-height: 1.2; }
+.register-form > button { margin-top: 10px; padding: 8px 12px; }
+
+@keyframes dialog-enter {
+  from { opacity: 0; transform: translateY(18px) scale(.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 850px) {
+  .account-options { max-width: 420px; grid-template-columns: 1fr; }
+}
+
+@media (max-width: 700px) {
+  .account-page { width: 100%; max-width: 100%; min-width: 0; padding-left: 16px; padding-right: 16px; }
+  .account-options { gap: 44px; }
+  .account-options h2 { font-size: clamp(20px, 6vw, 28px); }
+  .account-options p { font-size: clamp(12px, 3.5vw, 15px); }
+  .modal-backdrop { padding: 12px; }
+  .account-dialog { width: min(96vw, 500px); }
+  .dialog-close { width: 34px; height: 34px; font-size: 24px; }
+  .gameboy-dialog .dialog-label { inset: 29% 12% 10%; padding: 5% 7%; }
+  .nes-dialog .dialog-label { inset: 2% 7% 23% 37%; padding: 5%; }
+  .dialog-label > p { margin-bottom: 4px; font-size: 8px; }
+  .dialog-label h2, .register-form h2 { margin-bottom: 6px; font-size: clamp(17px, 5.5vw, 22px); }
+  .dialog-label > label:not(.consent-field), .register-form > label:not(.consent-field) { margin: 3px 0 2px; font-size: 10px; }
+  .dialog-label > input, .register-form > input { min-height: 32px; padding: 4px 6px; font-size: 16px; }
+  .dialog-label > button, .register-form > button { margin-top: 7px; padding: 7px 10px; font-size: 12px; }
+  .consent-field { margin-top: 5px; gap: 5px; font-size: 9px; }
+  .form-error { margin-top: 4px; font-size: 9px; }
+  .profile-shell, .profile-heading, .profile-heading > div { width: 100%; max-width: 100%; min-width: 0; }
+  .profile-heading { align-items: flex-start; flex-direction: column; }
+  .profile-heading h1 { max-width: 100%; overflow-wrap: anywhere; }
+  .profile-heading > div > p:last-child { width: 100%; max-width: 100%; white-space: normal; overflow-wrap: anywhere; line-height: 1.45; }
+  .profile-grid { width: 100%; max-width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr); }
+  .profile-card { width: auto; max-width: 100%; min-width: 0; min-height: 0; padding: 18px; overflow: hidden; }
+  .profile-card dl, .profile-card dl div, .profile-card dd { max-width: 100%; min-width: 0; }
+  .profile-card dl div { grid-template-columns: 72px minmax(0, 1fr); gap: 10px; }
+  .profile-card h2, .profile-card p, .profile-card dd { white-space: normal; overflow-wrap: anywhere; word-break: normal; }
+  .profile-card p { font-size: 14px; line-height: 1.45; }
+  .profile-card .mailing-state { max-width: 100%; overflow-wrap: anywhere; }
+  .profile-actions { align-items: stretch; flex-direction: column; }
+  .profile-actions a, .profile-actions button { justify-content: space-between; text-align: center; }
+}

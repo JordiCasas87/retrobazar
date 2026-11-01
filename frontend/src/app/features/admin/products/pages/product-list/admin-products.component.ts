@@ -21,6 +21,7 @@ export class AdminProductsComponent {
   readonly loading = signal(true);
   readonly error = signal(false);
   readonly deletingId = signal<string | null>(null);
+  readonly viewMode = signal<'cards' | 'list'>('cards');
   readonly feedback = signal('');
   readonly fallbackImage = 'assets/product-placeholder-retro-bazar-v6.png';
 
@@ -44,6 +45,10 @@ export class AdminProductsComponent {
   selectCategory(category: ProductCategory | 'ALL'): void {
     this.selectedCategory.set(category);
     this.currentPage.set(1);
+  }
+
+  setViewMode(mode: 'cards' | 'list'): void {
+    this.viewMode.set(mode);
   }
 
   goToPage(page: number): void {

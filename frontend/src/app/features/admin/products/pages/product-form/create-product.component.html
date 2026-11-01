@@ -5,11 +5,37 @@
   </header>
 
   <section class="create-layout">
-    <div class="create-intro">
-      <p class="kicker">{{ editing() ? 'Editar producto' : 'Nuevo producto' }}</p>
-      <h1>{{ editing() ? 'Modificar producto' : 'Crear producto' }}</h1>
-      <p>{{ editing() ? 'Actualiza la información del producto y guarda los cambios.' : 'Completa la información que aparecerá en el catálogo. Por ahora las imágenes se añaden mediante una URL pública.' }}</p>
-    </div>
+    <aside class="create-sidebar">
+      <div class="create-intro">
+        <p class="kicker">{{ editing() ? 'Editar producto' : 'Nuevo producto' }}</p>
+        <h1>{{ editing() ? 'Modificar producto' : 'Crear producto' }}</h1>
+        <p>{{ editing() ? 'Actualiza la información del producto y guarda los cambios.' : 'Completa la información que aparecerá en el catálogo. Por ahora las imágenes se añaden mediante una URL pública.' }}</p>
+      </div>
+
+      <section class="agent-launch" aria-labelledby="agent-launch-title">
+        <div class="agent-launch-copy">
+          <p class="agent-eyebrow">Asistente de producto / IA</p>
+          <h2 id="agent-launch-title">Convierte tu foto en una ficha lista para publicar.</h2>
+          <p>Analizaremos la imagen y prepararemos una propuesta de título, descripción y precio para que la revises.</p>
+          <p class="agent-launch-note">Versión actual: completa primero los campos obligatorios y añade al menos una imagen.</p>
+          <div class="agent-launch-meta"><span>IMAGE RECOGNITION</span><span>CATALOG MATCH</span><span>PRICE SIGNAL</span></div>
+        </div>
+        <div class="agent-launch-action">
+          <div class="agent-launch-visual" aria-hidden="true">
+            <span class="launch-scan launch-scan-one"></span>
+            <span class="launch-scan launch-scan-two"></span>
+            <span class="launch-frame"></span>
+            <span class="launch-crosshair"></span>
+            <span class="launch-data">RB / 01<br>READY</span>
+          </div>
+          <button class="agent-launch-button" type="button" (click)="openAgentModal()">
+            <span aria-hidden="true">✦</span>
+            Generar propuesta con IA
+            <b aria-hidden="true">→</b>
+          </button>
+        </div>
+      </section>
+    </aside>
 
     @if (loadingProduct()) {
       <div class="form-loading" aria-live="polite"><span></span><p>Cargando producto…</p></div>
@@ -82,29 +108,6 @@
           </div>
         }
       </fieldset>
-
-      <section class="agent-launch" aria-labelledby="agent-launch-title">
-        <div class="agent-launch-copy">
-          <p class="agent-eyebrow">Asistente de producto / IA</p>
-          <h2 id="agent-launch-title">Convierte tu foto en una ficha lista para publicar.</h2>
-          <p>Analizaremos la imagen y prepararemos una propuesta de título, descripción y precio para que la revises.</p>
-          <div class="agent-launch-meta"><span>IMAGE RECOGNITION</span><span>CATALOG MATCH</span><span>PRICE SIGNAL</span></div>
-        </div>
-        <div class="agent-launch-action">
-          <div class="agent-launch-visual" aria-hidden="true">
-            <span class="launch-scan launch-scan-one"></span>
-            <span class="launch-scan launch-scan-two"></span>
-            <span class="launch-frame"></span>
-            <span class="launch-crosshair"></span>
-            <span class="launch-data">RB / 01<br>READY</span>
-          </div>
-          <button class="agent-launch-button" type="button" (click)="openAgentModal()">
-            <span aria-hidden="true">✦</span>
-            Generar propuesta con IA
-            <b aria-hidden="true">→</b>
-          </button>
-        </div>
-      </section>
 
       @if (submitError()) {
         <p class="submit-error" role="alert">{{ submitError() }}</p>

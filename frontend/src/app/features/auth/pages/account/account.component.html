@@ -1,0 +1,138 @@
+<main class="account-page">
+  @if (auth.currentUser(); as user) {
+    <section class="profile-shell">
+      <header class="profile-heading">
+        <div>
+          <p class="account-kicker">Retro Bazar / Tu cuenta</p>
+          <h1>Hola, <span>{{ user.name }}</span>.</h1>
+          <p>Este es tu espacio dentro de la comunidad Retro Bazar.</p>
+        </div>
+        <span class="profile-status"><i></i> Sesión activa</span>
+      </header>
+
+      <div class="profile-grid">
+        <article class="profile-card profile-data">
+          <span>01 / Perfil</span>
+          <h2>Tus datos</h2>
+          <dl>
+            <div><dt>Nombre</dt><dd>{{ user.name }}</dd></div>
+            <div><dt>Email</dt><dd>{{ user.email }}</dd></div>
+          </dl>
+        </article>
+
+        <article class="profile-card profile-mailing">
+          <span>02 / Comunicaciones</span>
+          <h2>Novedades</h2>
+          <p class="mailing-state" [class.enabled]="user.newProductEmailNotificationsEnabled">
+            {{ user.newProductEmailNotificationsEnabled ? 'Suscripción activada' : 'Suscripción desactivada' }}
+          </p>
+          <p>{{ user.newProductEmailNotificationsEnabled ? 'Recibirás información sobre novedades y nuevos productos.' : 'No recibirás comunicaciones comerciales.' }}</p>
+        </article>
+
+        <article class="profile-card profile-upcoming">
+          <span>03 / Próximamente</span>
+          <h2>Tus favoritos</h2>
+          <p>Aquí podrás guardar las piezas que más te interesen cuando incorporemos la wishlist.</p>
+        </article>
+
+        <article class="profile-card profile-upcoming">
+          <span>04 / Próximamente</span>
+          <h2>Lo que estás buscando</h2>
+          <p>Podrás añadir palabras clave para contarnos qué productos retro quieres encontrar.</p>
+        </article>
+      </div>
+
+      <div class="profile-actions">
+        <a routerLink="/catalogo">Explorar el catálogo <span aria-hidden="true">→</span></a>
+        <button type="button" (click)="logout()">Cerrar sesión</button>
+      </div>
+    </section>
+  } @else {
+    <section class="account-intro">
+      <p class="account-kicker">Retro Bazar / Tu cuenta</p>
+      <h1>Únete a la comunidad retro.</h1>
+      <p>Accede a tu cuenta o crea una nueva para guardar tus favoritos y compartir qué piezas estás buscando.</p>
+      @if (loginSuccess()) {
+        <p class="account-success" role="status">{{ loginSuccess() }}</p>
+      }
+    </section>
+
+    <section class="account-options" aria-label="Opciones de cuenta">
+      <article class="gameboy-cartridge">
+        <div class="cartridge-label">
+          <span>01</span>
+          <h2>Ya tengo cuenta</h2>
+          <p>Inicia sesión para consultar tu perfil y, próximamente, tus favoritos.</p>
+          <button type="button" aria-haspopup="dialog" (click)="openModal('login')">Iniciar sesión</button>
+        </div>
+      </article>
+
+      <article class="nes-cartridge">
+        <div class="cartridge-label">
+          <span>02</span>
+          <h2>Quiero registrarme</h2>
+          <p>Crea tu cuenta y cuéntanos qué productos retro estás buscando.</p>
+          <button type="button" aria-haspopup="dialog" (click)="openModal('register')">Crear cuenta</button>
+        </div>
+      </article>
+    </section>
+  }
+</main>
+
+@if (activeModal(); as modal) {
+  <div class="modal-backdrop" (click)="closeFromBackdrop($event)">
+    <section
+      class="account-dialog"
+      [class.gameboy-dialog]="modal === 'login'"
+      [class.nes-dialog]="modal === 'register'"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-labelledby]="modal === 'login' ? 'login-title' : 'register-title'">
+      <button class="dialog-close" type="button" aria-label="Cerrar" (click)="closeModal()">×</button>
+
+      @if (modal === 'login') {
+        <form class="dialog-label login-form" [formGroup]="loginForm" (ngSubmit)="submitLogin()">
+          <p>Retro Bazar / Acceso</p>
+          <h2 id="login-title">Iniciar sesión</h2>
+          <label for="login-email">Email</label>
+          <input id="login-email" type="email" autocomplete="email" formControlName="email">
+          <label for="login-password">Contraseña</label>
+          <input id="login-password" type="password" autocomplete="current-password" formControlName="password">
+          @if (loginSuccess()) {
+            <div class="form-success" role="status">{{ loginSuccess() }}</div>
+          }
+          @if (loginError()) {
+            <div class="form-error" role="alert">{{ loginError() }}</div>
+          }
+          <button type="submit" [disabled]="loginLoading()">
+            {{ loginLoading() ? 'Entrando…' : 'Entrar' }}
+          </button>
+        </form>
+      } @else {
+        <form class="dialog-label register-form" [formGroup]="registerForm" (ngSubmit)="submitRegistration()">
+          <p>Retro Bazar / Registro</p>
+          <h2 id="register-title">Crear cuenta</h2>
+          <label for="register-name">¿Cómo te llamamos?</label>
+          <input id="register-name" type="text" autocomplete="name" formControlName="name">
+          <label for="register-email">Email</label>
+          <input id="register-email" type="email" autocomplete="email" formControlName="email">
+          <label for="register-password">Contraseña</label>
+          <input id="register-password" type="password" autocomplete="new-password" formControlName="password">
+          <small>Utiliza al menos 8 caracteres.</small>
+          <label for="register-confirm-password">Repite la contraseña</label>
+          <input id="register-confirm-password" type="password" autocomplete="new-password" formControlName="confirmPassword">
+          <label class="consent-field">
+            <input type="checkbox" formControlName="newProductEmailNotificationsEnabled">
+            <span>Quiero recibir novedades sobre nuevos productos.</span>
+          </label>
+          @if (registerError()) {
+            <div class="form-error" role="alert">{{ registerError() }}</div>
+          }
+          <button type="submit" [disabled]="registerLoading()">
+            {{ registerLoading() ? 'Creando…' : 'Crear cuenta' }}
+          </button>
+        </form>
+      }
+    </section>
+  </div>
+}

@@ -1,5 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AuthService } from './features/auth/data-access/auth.service';
 
 @Component({
   selector: 'rb-root',
@@ -10,9 +13,22 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 })
 export class AppComponent {
   private readonly router = inject(Router);
+  readonly auth = inject(AuthService);
   readonly menuOpen = signal(false);
   readonly searchOpen = signal(false);
+  readonly isHome = signal(this.isHomeUrl(this.router.url));
   readonly year = new Date().getFullYear();
+
+  constructor() {
+    this.auth.loadCurrentUser().pipe(takeUntilDestroyed()).subscribe();
+
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed()
+      )
+      .subscribe((event) => this.isHome.set(this.isHomeUrl(event.urlAfterRedirects)));
+  }
 
   toggleMenu(): void {
     const nextState = !this.menuOpen();
@@ -48,5 +64,16 @@ export class AppComponent {
     void this.router.navigate(['/catalogo'], {
       queryParams: search ? { search } : {}
     });
+  }
+
+  logout(): void {
+    this.auth.logout();
+    this.menuOpen.set(false);
+    this.searchOpen.set(false);
+    void this.router.navigate(['/']);
+  }
+
+  private isHomeUrl(url: string): boolean {
+    return url.split(/[?#]/)[0] === '/';
   }
 }
