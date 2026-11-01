@@ -3,6 +3,7 @@ package com.retrobazar.user.infrastructure.adapter.out.security;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.retrobazar.user.application.port.out.TokenProviderPort;
 import com.retrobazar.user.domain.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -26,6 +27,7 @@ public class JwtTokenProviderAdapter implements TokenProviderPort {
     private final Duration expiration;
     private final Clock clock;
 
+    @Autowired
     public JwtTokenProviderAdapter(
             @Value("${app.security.jwt.secret}") String secret,
             @Value("${app.security.jwt.expiration}") Duration expiration
