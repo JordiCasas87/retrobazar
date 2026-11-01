@@ -5,6 +5,7 @@ import com.retrobazar.shared.web.error.dto.ApiErrorResponseDto;
 import com.retrobazar.shared.web.error.dto.FieldValidationErrorDto;
 import com.retrobazar.user.application.exception.EmailAlreadyRegisteredException;
 import com.retrobazar.user.application.exception.InvalidCredentialsException;
+import com.retrobazar.user.application.exception.UserNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpInputMessage;
@@ -115,6 +116,30 @@ class GlobalExceptionHandlerTest {
                 requestPath
         );
         assertEquals("Invalid email or password", response.getBody().message());
+    }
+
+    @Test
+    void shouldReturnUserNotFoundError() {
+        UUID userId = UUID.fromString("2e1e71a3-7861-434c-9d72-82d91e652694");
+        String requestPath = "/api/users/me";
+        MockHttpServletRequest profileRequest = new MockHttpServletRequest(
+                "GET",
+                requestPath
+        );
+
+        ResponseEntity<ApiErrorResponseDto> response =
+                handler.handleUserNotFoundException(
+                        new UserNotFoundException(userId),
+                        profileRequest
+                );
+
+        assertResponse(
+                response,
+                HttpStatus.NOT_FOUND,
+                "USER_NOT_FOUND",
+                requestPath
+        );
+        assertEquals("User not found: " + userId, response.getBody().message());
     }
 
     @Test

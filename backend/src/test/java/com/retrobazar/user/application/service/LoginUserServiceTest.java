@@ -113,6 +113,11 @@ class LoginUserServiceTest {
         }
 
         @Override
+        public Optional<User> findById(UUID id) {
+            return Optional.empty();
+        }
+
+        @Override
         public User save(User user) {
             return user;
         }

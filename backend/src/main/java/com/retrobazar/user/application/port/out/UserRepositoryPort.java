@@ -3,6 +3,7 @@ package com.retrobazar.user.application.port.out;
 import com.retrobazar.user.domain.User;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Apuntes del programador (A.P.):
@@ -14,6 +15,8 @@ public interface UserRepositoryPort {
     boolean existsByEmail(String email);
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> findById(UUID id);
 
     User save(User user);
 }
