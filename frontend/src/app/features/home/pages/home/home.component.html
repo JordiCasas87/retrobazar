@@ -1,6 +1,13 @@
 <main id="inicio">
   <section class="hero">
-    <img src="assets/hero-retro-products-v2.jpg" alt="Selección de productos retro: consola portátil, teclado, cámaras, robot y pantalla">
+    @for (slide of heroSlides; track slide.src; let index = $index) {
+      <img
+        class="hero-image"
+        [class.active]="activeHero() === index"
+        [src]="slide.src"
+        [alt]="slide.alt"
+        [attr.aria-hidden]="activeHero() !== index">
+    }
     <div class="hero-shade"></div>
     <div class="hero-copy">
       <p class="eyebrow">Colección 01 / 2026</p>
@@ -55,7 +62,7 @@
     <div class="section-heading">
       <div>
         <p class="section-kicker">Nuestra primera colección</p>
-        <h2>Productos más buscados</h2>
+        <h2>Últimos productos</h2>
       </div>
       <a class="catalog-link" routerLink="/catalogo">Ver catálogo completo <span aria-hidden="true">→</span></a>
     </div>
@@ -71,29 +78,30 @@
         <button type="button" (click)="retryCatalog()">Reintentar</button>
       </div>
     } @else {
-      <div class="product-grid">
-        @for (product of visibleProducts(); track product.id; let index = $index) {
-          <article class="product-card">
-            <a class="product-image" [routerLink]="['/producto', product.id]" [attr.aria-label]="'Ver ' + product.name">
-              <img
-                [src]="product.imageUrls[0] || productFallbackImage"
-                [alt]="product.imageUrls[0] ? product.name : 'Imagen provisional de ' + product.name"
-                loading="lazy"
-                (error)="useProductFallback($event)">
-              @if (index === 0) { <span class="product-badge">Favorito</span> }
-            </a>
-            <div class="product-info">
-              <div>
-                <p>{{ product.brand }}</p>
-                <h3>{{ product.name }}</h3>
+      <div class="product-carousel">
+        <div class="product-grid" [class.has-carousel]="carouselEnabled()" [class.is-sliding]="productsFlipping()">
+          @for (product of visibleProducts(); track index; let index = $index) {
+            <article class="product-card">
+              <a class="product-image" [routerLink]="['/producto', product.id]" [attr.aria-label]="'Ver ' + product.name">
+                <img
+                  [src]="product.imageUrls[0] || productFallbackImage"
+                  [alt]="product.imageUrls[0] ? product.name : 'Imagen provisional de ' + product.name"
+                  loading="lazy"
+                  (error)="useProductFallback($event)">
+              </a>
+              <div class="product-info">
+                <div>
+                  <p>{{ product.brand }}</p>
+                  <h3>{{ product.name }}</h3>
+                </div>
+                <strong>{{ product.price | currency:'EUR':'symbol':'1.2-2':'es' }}</strong>
               </div>
-              <strong>{{ product.price | currency:'EUR':'symbol':'1.2-2':'es' }}</strong>
-            </div>
-            <p class="product-description">{{ product.description }}</p>
-          </article>
-        } @empty {
-          <p class="empty-state">Aún no hay piezas en esta colección. Prueba con otra categoría.</p>
-        }
+              <p class="product-description">{{ product.description }}</p>
+            </article>
+          } @empty {
+            <p class="empty-state">Aún no hay piezas en esta colección. Prueba con otra categoría.</p>
+          }
+        </div>
       </div>
     }
   </section>
@@ -102,11 +110,11 @@
     <div class="manifesto-visual">
       <img src="assets/logo-retro-bazar.png" alt="Retro Bazar">
       <span class="logo-orbit" aria-hidden="true"></span>
-      <small>IDENTIDAD / EST. 2026</small>
+      <small>NUESTRA FORMA DE ELEGIR / 2026</small>
     </div>
     <div class="manifesto-copy">
       <p class="section-kicker">Nuestra manera de elegir</p>
-      <h2>Un poco de nostalgia<br>con mucha utilidad.</h2>
+      <h2>Un poco de nostalgia con mucha utilidad.</h2>
       <p>Buscamos productos que merecen quedarse sobre la mesa: útiles, bien diseñados y con una personalidad difícil de confundir.</p>
       <a href="#categorias">Conocer la selección</a>
     </div>

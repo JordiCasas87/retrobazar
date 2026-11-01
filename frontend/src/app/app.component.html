@@ -1,16 +1,18 @@
-<div class="announcement">
-  <span>Objetos con historia. Tecnología con carácter.</span>
-  <span class="announcement-extra">Selección independiente · Unidades limitadas</span>
-</div>
+<div class="announcement" aria-hidden="true"></div>
 
 <header class="site-header">
   <button class="icon-button mobile-only" type="button" [attr.aria-label]="menuOpen() ? 'Cerrar menú' : 'Abrir menú'" [attr.aria-expanded]="menuOpen()" (click)="toggleMenu()">
     <span></span><span></span>
   </button>
-  <a class="wordmark" routerLink="/" aria-label="Retro Bazar, inicio">
-    <img src="assets/logo-retro-bazar-icon.png" alt="">
-    <span>RETRO BAZAR</span>
-  </a>
+  <div class="brand-area">
+    <a class="wordmark" routerLink="/" aria-label="Retro Bazar, inicio">
+      <img src="assets/logo-retro-bazar-icon.png" alt="">
+      <span>RETRO BAZAR</span>
+    </a>
+    @if (auth.currentUser(); as user) {
+      <p class="brand-greeting">Hola, <strong>{{ user.name }}</strong>. ¡Bienvenido!</p>
+    }
+  </div>
   <div class="header-actions">
     <nav class="desktop-nav" aria-label="Navegación principal">
       <a routerLink="/">Inicio</a>
@@ -18,9 +20,16 @@
       <a routerLink="/catalogo">Catálogo</a>
     </nav>
     <button class="text-button" type="button" (click)="toggleSearch()">Buscar</button>
-    <button class="text-button desktop-action" type="button">Cuenta</button>
-    <a class="text-button desktop-action" routerLink="/admin/productos">Administrar</a>
-    <button class="bag-button" type="button" aria-label="Abrir carrito">Carrito <span>0</span></button>
+    @if (auth.currentUser(); as user) {
+      @if (auth.currentRole() === 'ADMIN') {
+        <a class="text-button desktop-action" routerLink="/admin/productos">Tu tienda</a>
+      } @else {
+        <a class="text-button desktop-action" routerLink="/cuenta">Tu cuenta</a>
+      }
+      <button class="text-button desktop-action logout-button" type="button" (click)="logout()">Cerrar sesión</button>
+    } @else {
+      <a class="text-button desktop-action" routerLink="/cuenta">Tu cuenta</a>
+    }
   </div>
 
   @if (menuOpen()) {
@@ -29,12 +38,18 @@
         <a routerLink="/" (click)="toggleMenu()"><span>01</span>Inicio</a>
         <a href="/#manifiesto" (click)="showIdea($event)"><span>02</span>Nuestra idea</a>
         <a routerLink="/catalogo" (click)="toggleMenu()"><span>03</span>Catálogo</a>
-        <a routerLink="/admin/productos" (click)="toggleMenu()"><span>04</span>Administrar</a>
+        @if (auth.currentRole() === 'ADMIN') {
+          <a routerLink="/admin/productos" (click)="toggleMenu()"><span>04</span>Tu tienda</a>
+        } @else {
+          <a routerLink="/cuenta" (click)="toggleMenu()"><span>04</span>Tu cuenta</a>
+        }
       </div>
       <div class="mobile-menu-actions">
         <button type="button" (click)="openSearchFromMenu()">Buscar</button>
-        <button type="button" disabled>Cuenta <span>Próximamente</span></button>
-        <button type="button" disabled>Carrito <span>0 productos</span></button>
+        @if (auth.currentUser(); as user) {
+          <p class="mobile-session-greeting">Hola, {{ user.name }}. ¡Bienvenido!</p>
+          <button type="button" (click)="logout()">Cerrar sesión</button>
+        }
       </div>
       <p>Objetos con historia.<br>Tecnología con carácter.</p>
     </nav>
@@ -54,15 +69,16 @@
 
 <router-outlet></router-outlet>
 
-<footer>
-  <div class="footer-lead">
-    <p>Entra al bazar antes que nadie.</p>
-    <form (submit)="$event.preventDefault()">
-      <label class="sr-only" for="newsletter">Correo electrónico</label>
-      <input id="newsletter" type="email" placeholder="tu@email.com">
-      <button type="submit">Suscribirme</button>
-    </form>
-  </div>
+<footer [class.footer-compact]="!isHome()">
+  @if (isHome()) {
+    <div class="footer-lead">
+      <p>Entra al bazar antes que nadie.</p>
+      <div class="footer-signup">
+        <p>Crea tu cuenta y elige si quieres recibir novedades y descubrir los últimos productos de Retro Bazar.</p>
+        <a class="footer-signup-link" routerLink="/cuenta">Crear una cuenta <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  }
   <div class="footer-grid">
     <div class="footer-brand"><strong>RETRO<br>BAZAR</strong><span>Objetos de ayer.<br>Elegidos para hoy.</span></div>
     <div><h3>Explora</h3><a routerLink="/catalogo">Catálogo</a><a routerLink="/" fragment="categorias">Colecciones</a><a routerLink="/" fragment="manifiesto">Nuestra idea</a></div>
