@@ -1,4 +1,4 @@
-package com.retrobazar.catalog.infrastructure.config;
+package com.retrobazar.shared.infrastructure.security.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
