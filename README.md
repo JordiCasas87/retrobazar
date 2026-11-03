@@ -191,6 +191,8 @@ El backend reconoce estas variables de entorno:
 | `DB_USERNAME` | `root` | Usuario de la base de datos |
 | `DB_PASSWORD` | `retro_bazar_local` | Contraseña local de la base de datos |
 | `FRONTEND_ORIGIN` | `http://localhost:4200` | Origen permitido por CORS |
+| `JWT_SECRET` | Sin valor | Secreto obligatorio de al menos 32 caracteres para firmar los tokens JWT |
+| `JWT_EXPIRATION` | `PT1H` | Duración de los tokens de acceso |
 | `GEMINI_API_KEY` | Sin valor | Clave privada de Gemini utilizada por el agente de producto |
 | `GEMINI_MODEL` | `gemini-3.6-flash` | Modelo de Gemini utilizado por Spring AI |
 | `CLOUDINARY_CLOUD_NAME` | Sin valor | Nombre del entorno de producto de Cloudinary |
