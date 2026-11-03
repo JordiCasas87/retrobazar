@@ -19,6 +19,7 @@ El repositorio contiene actualmente:
 - Registro, inicio de sesión, perfil de usuario y autorización por roles.
 - Gestión administrativa de productos desde una zona protegida.
 - Activación, desactivación y eliminación de productos.
+- Biblioteca y subida de imágenes de producto mediante Cloudinary.
 - Asistente con IA para analizar imágenes y proponer una ficha editable.
 - Validación de peticiones y respuestas de error estructuradas.
 - Una interfaz responsive para escritorio y dispositivos móviles.
@@ -74,13 +75,19 @@ con las [condiciones de uso de Wallapop](https://about.wallapop.com/condiciones-
 ### Portada
 
 <p align="center">
-  <img src="docs/images/readme-captures/retro-bazar-home-2026.jpg" alt="Portada actual de Retro Bazar en escritorio" width="100%">
+  <img src="docs/images/readme-captures/retro-bazar-home-2026.png" alt="Portada actual de Retro Bazar en escritorio" width="100%">
 </p>
 
 ### Catálogo
 
 <p align="center">
-  <img src="docs/images/readme-captures/retro-bazar-catalog-2026.jpg" alt="Catálogo actual de Retro Bazar con filtros y búsqueda" width="100%">
+  <img src="docs/images/readme-captures/retro-bazar-catalog-products-2026.png" alt="Catálogo actual de Retro Bazar con productos reales, filtros y búsqueda" width="100%">
+</p>
+
+### Ficha de producto
+
+<p align="center">
+  <img src="docs/images/readme-captures/retro-bazar-product-detail-2026.jpg" alt="Ficha de un producto real con galería, descripción, precio y acciones de venta" width="100%">
 </p>
 
 ### Tu cuenta
@@ -92,7 +99,7 @@ con las [condiciones de uso de Wallapop](https://about.wallapop.com/condiciones-
 ### Experiencia responsive
 
 <p align="center">
-  <img src="docs/images/retro-bazar-mobile.png" alt="Retro Bazar adaptado a dispositivos móviles" width="620">
+  <img src="docs/images/readme-captures/retro-bazar-mobile-products-2026.png" alt="Portada, catálogo y cuenta de Retro Bazar adaptados a dispositivos móviles" width="100%">
 </p>
 
 ## Tecnologías
@@ -107,6 +114,7 @@ con las [condiciones de uso de Wallapop](https://about.wallapop.com/condiciones-
 - Bean Validation.
 - MySQL.
 - Springdoc OpenAPI y Swagger UI.
+- Cloudinary Java SDK.
 - Maven.
 - JUnit, Mockito y Testcontainers.
 
@@ -116,6 +124,7 @@ con las [condiciones de uso de Wallapop](https://about.wallapop.com/condiciones-
 - TypeScript.
 - Angular Router.
 - HttpClient, Signals y RxJS.
+- Imágenes responsivas servidas y optimizadas por Cloudinary.
 - HTML y CSS responsive.
 
 ## Arquitectura
@@ -184,11 +193,29 @@ El backend reconoce estas variables de entorno:
 | `FRONTEND_ORIGIN` | `http://localhost:4200` | Origen permitido por CORS |
 | `GEMINI_API_KEY` | Sin valor | Clave privada de Gemini utilizada por el agente de producto |
 | `GEMINI_MODEL` | `gemini-3.6-flash` | Modelo de Gemini utilizado por Spring AI |
+| `CLOUDINARY_CLOUD_NAME` | Sin valor | Nombre del entorno de producto de Cloudinary |
+| `CLOUDINARY_API_KEY` | Sin valor | Clave de acceso del backend a Cloudinary |
+| `CLOUDINARY_API_SECRET` | Sin valor | Secreto privado del backend para firmar las operaciones |
+| `CLOUDINARY_FOLDER` | `Retro Bazar Products` | Carpeta de la biblioteca utilizada para los productos |
 
 [`backend/.env.example`](backend/.env.example) documenta estas variables sin
-incluir credenciales reales. Spring Boot no carga archivos `.env`
-automáticamente: las variables deben configurarse en IntelliJ, en la terminal o
-mediante la herramienta utilizada para ejecutar la aplicación.
+incluir credenciales reales. El backend carga de forma opcional
+`backend/.env`; este archivo está excluido de Git y no debe contenerse en ningún
+commit. Las mismas variables también pueden configurarse desde IntelliJ, la
+terminal o el entorno de despliegue.
+
+### Imágenes de producto
+
+El módulo `catalog` define un puerto de almacenamiento y un adaptador de
+infraestructura para Cloudinary. Desde el formulario administrativo se pueden
+consultar las imágenes disponibles, seleccionar varias, decidir cuál será la
+portada y subir archivos nuevos sin copiar URLs manualmente.
+
+MySQL conserva para cada imagen la URL segura, el identificador de Cloudinary y
+su posición en la galería. Desactivar o eliminar una ficha no borra el archivo
+de Cloudinary, de modo que el material original puede reutilizarse o
+recuperarse. El frontend solicita variantes optimizadas y encuadradas para las
+tarjetas del catálogo y mantiene la imagen completa en la ficha del producto.
 
 Con Docker Desktop iniciado, levantar MySQL:
 
@@ -267,6 +294,8 @@ La aplicación se sirve en `http://localhost:4200`.
 | Eliminar un producto | `DELETE` | `/api/admin/products/{id}` |
 | Activar un producto | `PATCH` | `/api/admin/products/{id}/activate` |
 | Desactivar un producto | `PATCH` | `/api/admin/products/{id}/deactivate` |
+| Listar imágenes disponibles | `GET` | `/api/admin/product-images` |
+| Subir una imagen | `POST` | `/api/admin/product-images` (`multipart/form-data`) |
 | Analizar una ficha con IA | `POST` | `/api/admin/product-agent/analyze` |
 
 La documentación interactiva está disponible con el backend iniciado en:
@@ -385,10 +414,11 @@ diseñar este módulo.
 3. **Administración protegida — completado.** El panel permite listar con
    filtros y paginación, crear, editar, activar, desactivar y eliminar productos.
    Las rutas y endpoints administrativos requieren el rol `ADMIN`.
-4. **Catálogo administrable — completado.** Los productos, descripciones e
-   imágenes se mantienen desde el panel mediante URLs públicas. `data.sql` se
-   conserva como catálogo inicial de referencia, pero no se ejecuta
-   automáticamente sobre la base de datos local.
+4. **Catálogo administrable e imágenes — completado.** Los productos y sus
+   galerías se mantienen desde el panel. El backend integra Cloudinary mediante
+   un puerto y un adaptador, mientras MySQL guarda la URL, el identificador y el
+   orden de cada imagen. `data.sql` se conserva como referencia, pero no se
+   ejecuta automáticamente sobre la base de datos local.
 5. **Agente de producto — completado.** Valora los datos e imágenes del formulario, muestra
    productos activos de la misma marca y ofrece una propuesta editable. La
    búsqueda externa queda como ampliación posterior sujeta a la disponibilidad
