@@ -17,6 +17,7 @@ public record ProductResponseDto(
         int stock,
         ProductCategory category,
         List<String> imageUrls,
+        List<String> imageStorageKeys,
         boolean active,
         Instant createdAt
 ) {
@@ -31,6 +32,7 @@ public record ProductResponseDto(
                 product.getStock(),
                 product.getCategory(),
                 product.getImageUrls(),
+                product.getImageStorageKeys(),
                 product.isActive(),
                 product.getCreatedAt()
         );

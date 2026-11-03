@@ -30,7 +30,8 @@ public class UpdateProductService implements UpdateProductUseCase {
                 command.price(),
                 command.stock(),
                 command.category(),
-                command.imageUrls()
+                command.imageUrls(),
+                command.imageStorageKeys()
         );
 
         return productRepositoryPort.save(product);

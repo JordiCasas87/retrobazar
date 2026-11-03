@@ -30,6 +30,7 @@ public class CreateProductService implements CreateProductUseCase {
                 command.stock(),
                 command.category(),
                 command.imageUrls(),
+                command.imageStorageKeys(),
                 command.active(),
                 createdAt
         );

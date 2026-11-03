@@ -23,7 +23,19 @@ public record UpdateProductRequestDto(
         @NotNull @Size(min = 1, max = 5)
         List<@NotBlank @Size(max = 1000)
                 @Pattern(regexp = "^https?://.*$") String> imageUrls
+        ,
+        @NotNull @Size(min = 1, max = 5)
+        List<@Size(max = 500) String> imageStorageKeys
 ) {
+
+    public UpdateProductRequestDto(
+            String name, String brand, String description, BigDecimal price,
+            Integer stock, ProductCategory category, List<String> imageUrls
+    ) {
+        this(name, brand, description, price, stock, category, imageUrls,
+                imageUrls == null ? java.util.List.of()
+                        : java.util.Collections.nCopies(imageUrls.size(), null));
+    }
 
     public UpdateProductCommand toCommand() {
         return new UpdateProductCommand(
@@ -33,7 +45,8 @@ public record UpdateProductRequestDto(
                 price,
                 stock,
                 category,
-                imageUrls
+                imageUrls,
+                imageStorageKeys
         );
     }
 }

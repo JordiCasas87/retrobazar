@@ -84,7 +84,7 @@
             <article class="product-card">
               <a class="product-image" [routerLink]="['/producto', product.id]" [attr.aria-label]="'Ver ' + product.name">
                 <img
-                  [src]="product.imageUrls[0] || productFallbackImage"
+                  [src]="cardImage(product.imageUrls[0])"
                   [alt]="product.imageUrls[0] ? product.name : 'Imagen provisional de ' + product.name"
                   loading="lazy"
                   (error)="useProductFallback($event)">
@@ -96,7 +96,6 @@
                 </div>
                 <strong>{{ product.price | currency:'EUR':'symbol':'1.2-2':'es' }}</strong>
               </div>
-              <p class="product-description">{{ product.description }}</p>
             </article>
           } @empty {
             <p class="empty-state">Aún no hay piezas en esta colección. Prueba con otra categoría.</p>

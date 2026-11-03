@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { CatalogService } from '../../data-access/catalog.service';
 import { isProductCategory, productCategoryLabel } from '../../models/product.constants';
 import { Product, ProductCategory } from '../../models/product.model';
+import { productCardImageUrl } from '../../../../shared/media/cloudinary-image';
 
 @Component({
   selector: 'rb-catalog',
@@ -26,6 +27,10 @@ export class CatalogComponent {
   readonly searchText = signal('');
   readonly currentPage = signal(1);
   readonly fallbackImage = 'assets/product-placeholder-retro-bazar-v6.jpg';
+
+  cardImage(url: string | null | undefined): string {
+    return productCardImageUrl(url, this.fallbackImage);
+  }
 
   readonly title = computed(() => {
     if (this.searchText()) return `Resultados para “${this.searchText()}”`;

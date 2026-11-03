@@ -3,6 +3,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AdminProductService } from '../../data-access/admin-product.service';
 import { Product, ProductCategory } from '../../../../catalog/models/product.model';
+import { productCardImageUrl } from '../../../../../shared/media/cloudinary-image';
 
 @Component({
   selector: 'rb-admin-products',
@@ -24,6 +25,10 @@ export class AdminProductsComponent {
   readonly viewMode = signal<'cards' | 'list'>('cards');
   readonly feedback = signal('');
   readonly fallbackImage = 'assets/product-placeholder-retro-bazar-v6.jpg';
+
+  cardImage(url: string | null | undefined): string {
+    return productCardImageUrl(url, this.fallbackImage);
+  }
 
   readonly filteredProducts = computed(() => {
     const category = this.selectedCategory();

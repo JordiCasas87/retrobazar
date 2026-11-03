@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { CatalogService } from '../../../catalog/data-access/catalog.service';
 import { Product } from '../../../catalog/models/product.model';
 import { HeroScatterDirective } from '../../ui/hero-scatter.directive';
+import { productCardImageUrl } from '../../../../shared/media/cloudinary-image';
 
 @Component({
   selector: 'rb-home',
@@ -26,6 +27,10 @@ export class HomeComponent {
   readonly activeHero = signal(0);
   readonly carouselEnabled = computed(() => this.products().slice(0, 10).length > 5);
   readonly productFallbackImage = 'assets/product-placeholder-retro-bazar-v6.jpg';
+
+  cardImage(url: string | null | undefined): string {
+    return productCardImageUrl(url, this.productFallbackImage);
+  }
   readonly heroSlides = [
     {
       src: 'assets/hero-retro-products-v2.jpg',

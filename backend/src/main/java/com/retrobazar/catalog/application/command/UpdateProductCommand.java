@@ -12,6 +12,15 @@ public record UpdateProductCommand(
         BigDecimal price,
         int stock,
         ProductCategory category,
-        List<String> imageUrls
+        List<String> imageUrls,
+        List<String> imageStorageKeys
 ) {
+    public UpdateProductCommand(
+            String name, String brand, String description, BigDecimal price,
+            int stock, ProductCategory category, List<String> imageUrls
+    ) {
+        this(name, brand, description, price, stock, category, imageUrls,
+                imageUrls == null ? java.util.List.of()
+                        : java.util.Collections.nCopies(imageUrls.size(), null));
+    }
 }

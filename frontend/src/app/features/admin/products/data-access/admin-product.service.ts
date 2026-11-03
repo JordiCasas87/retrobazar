@@ -7,6 +7,7 @@ import {
   Product,
   ProductAgentRequest,
   ProductAgentResponse,
+  UploadedProductImage,
   UpdateProductRequest
 } from '../../../catalog/models/product.model';
 
@@ -21,6 +22,16 @@ export class AdminProductService {
 
   create(request: CreateProductRequest): Observable<Product> {
     return this.http.post<Product>(this.apiUrl, request);
+  }
+
+  uploadImage(file: File): Observable<UploadedProductImage> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<UploadedProductImage>(`${API_BASE_URL}/admin/product-images`, formData);
+  }
+
+  listCloudinaryImages(): Observable<UploadedProductImage[]> {
+    return this.http.get<UploadedProductImage[]>(`${API_BASE_URL}/admin/product-images`);
   }
 
   analyzeWithAgent(request: ProductAgentRequest): Observable<ProductAgentResponse> {

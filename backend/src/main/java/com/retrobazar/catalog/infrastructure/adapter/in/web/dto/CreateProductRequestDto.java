@@ -23,8 +23,19 @@ public record CreateProductRequestDto(
         @NotNull @Size(min = 1, max = 5)
         List<@NotBlank @Size(max = 1000)
                 @Pattern(regexp = "^https?://.*$") String> imageUrls,
+        @NotNull @Size(min = 1, max = 5)
+        List<@Size(max = 500) String> imageStorageKeys,
         @NotNull Boolean active
 ) {
+
+    public CreateProductRequestDto(
+            String name, String brand, String description, BigDecimal price,
+            Integer stock, ProductCategory category, List<String> imageUrls, Boolean active
+    ) {
+        this(name, brand, description, price, stock, category, imageUrls,
+                imageUrls == null ? java.util.List.of()
+                        : java.util.Collections.nCopies(imageUrls.size(), null), active);
+    }
 
     public CreateProductCommand toCommand() {
         return new CreateProductCommand(
@@ -35,6 +46,7 @@ public record CreateProductRequestDto(
                 stock,
                 category,
                 imageUrls,
+                imageStorageKeys,
                 active
         );
 

@@ -17,13 +17,21 @@
       <button type="button" (click)="goBack()">Volver al catálogo</button>
     </section>
   } @else if (product(); as item) {
+    <header class="detail-heading">
+      <p class="kicker">{{ categoryLabel(item.category) }} / {{ item.brand }}</p>
+      <h1>{{ item.name }}</h1>
+    </header>
+
     <section class="detail-layout">
       <div class="gallery">
         <div class="main-image">
-          <img
-            [src]="item.imageUrls[activeImage()] || fallbackImage"
-            [alt]="item.name"
-            (error)="useFallback($event)">
+          <button type="button" class="zoom-trigger" (click)="openExpandedImage()" aria-label="Ampliar fotografía de {{ item.name }}">
+            <img
+              [src]="item.imageUrls[activeImage()] || fallbackImage"
+              [alt]="item.name"
+              (error)="useFallback($event)">
+            <span class="zoom-hint">Ampliar</span>
+          </button>
           @if (item.stock <= 3) { <span class="stock-label">Stock limitado</span> }
         </div>
 
@@ -39,22 +47,38 @@
       </div>
 
       <div class="product-copy">
-        <p class="kicker">{{ categoryLabel(item.category) }} / {{ item.brand }}</p>
-        <h1>{{ item.name }}</h1>
-        <p class="price">{{ item.price | currency:'EUR':'symbol':'1.2-2':'es' }}</p>
         <p class="description">{{ item.description }}</p>
 
-        <dl>
-          <div><dt>Marca</dt><dd>{{ item.brand }}</dd></div>
-          <div><dt>Categoría</dt><dd>{{ categoryLabel(item.category) }}</dd></div>
-          <div><dt>Disponibilidad</dt><dd>{{ item.stock > 0 ? 'Disponible' : 'Agotado' }}</dd></div>
-        </dl>
+        <div class="purchase-panel">
+          <div class="price-row">
+            <p class="price">{{ item.price | currency:'EUR':'symbol':'1.2-2':'es' }}</p>
+            <p class="shipping-note">Envío no incluido. Consulta el coste en Wallapop o pregunta al vendedor.</p>
+          </div>
 
-        <button class="cart-action" type="button" disabled>
-          Añadir al carrito <span>Próximamente</span>
-        </button>
-        <p class="purchase-note">La compra estará disponible en la siguiente fase del proyecto.</p>
+          <dl>
+            <div><dt>Marca</dt><dd>{{ item.brand }}</dd></div>
+            <div><dt>Categoría</dt><dd>{{ categoryLabel(item.category) }}</dd></div>
+            <div><dt>Disponibilidad</dt><dd>{{ item.stock > 0 ? 'Disponible' : 'Agotado' }}</dd></div>
+          </dl>
+
+          <div class="product-actions" aria-label="Opciones de compra y contacto">
+            <button class="wallapop-action" type="button" disabled>Comprar en Wallapop</button>
+            <button class="contact-action" type="button" disabled>Contactar con el vendedor</button>
+          </div>
+          <p class="purchase-note">Estas opciones estarán disponibles próximamente.</p>
+        </div>
       </div>
     </section>
+
+    @if (imageExpanded()) {
+      <div class="image-lightbox" role="dialog" aria-modal="true" aria-label="Fotografía ampliada de {{ item.name }}" (click)="closeExpandedImage()">
+        <button type="button" class="lightbox-close" (click)="closeExpandedImage(); $event.stopPropagation()" aria-label="Cerrar fotografía ampliada">×</button>
+        <img
+          [src]="item.imageUrls[activeImage()] || fallbackImage"
+          [alt]="item.name"
+          (click)="$event.stopPropagation()"
+          (error)="useFallback($event)">
+      </div>
+    }
   }
 </main>

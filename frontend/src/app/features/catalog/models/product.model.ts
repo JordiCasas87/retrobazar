@@ -9,6 +9,7 @@ export interface Product {
   stock: number;
   category: ProductCategory;
   imageUrls: string[];
+  imageStorageKeys: Array<string | null>;
   active: boolean;
   createdAt: string;
 }
@@ -21,6 +22,7 @@ export interface CreateProductRequest {
   stock: number;
   category: ProductCategory;
   imageUrls: string[];
+  imageStorageKeys: Array<string | null>;
   active: boolean;
 }
 
@@ -33,6 +35,11 @@ export interface ProductAgentRequest {
   currentPrice: number;
   category: ProductCategory;
   imageUrls: string[];
+}
+
+export interface UploadedProductImage {
+  url: string;
+  storageKey: string;
 }
 
 export interface SameBrandProduct {
