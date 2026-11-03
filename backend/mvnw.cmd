@@ -20,6 +20,8 @@
 
 @REM ----------------------------------------------------------------------------
 @REM Apache Maven Wrapper startup batch script, version 3.3.4
+@REM This standard wrapper contains no Retro Bazar credentials. Any MVNW_USERNAME
+@REM or MVNW_PASSWORD references below are optional generic Maven settings only.
 @REM
 @REM Optional ENV vars
 @REM   MVNW_REPOURL - repo url base for downloading maven distribution
