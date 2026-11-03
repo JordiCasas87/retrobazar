@@ -51,14 +51,13 @@
           @for (product of visibleProducts(); track product.id) {
             <article class="catalog-card admin-card">
               <div class="product-image">
-                <img [src]="product.imageUrls[0] || fallbackImage" [alt]="product.name" loading="lazy" (error)="useFallback($event)">
+                <img [src]="cardImage(product.imageUrls[0])" [alt]="product.name" loading="lazy" (error)="useFallback($event)">
                 <span class="status-badge" [class.inactive]="!product.active">{{ product.active ? 'Activo' : 'Inactivo' }}</span>
               </div>
               <div class="product-info">
                 <div><p>{{ product.brand }}</p><h2>{{ product.name }}</h2></div>
                 <strong>{{ product.price | currency:'EUR':'symbol':'1.2-2':'es' }}</strong>
               </div>
-              <p class="product-description">{{ product.description }}</p>
               <div class="admin-card-footer">
                 <span>Stock: {{ product.stock }}</span>
                 <div class="admin-card-actions">
@@ -78,7 +77,7 @@
           @for (product of visibleProducts(); track product.id) {
             <article class="admin-list-row">
               <div class="admin-list-image">
-                <img [src]="product.imageUrls[0] || fallbackImage" [alt]="product.name" loading="lazy" (error)="useFallback($event)">
+                <img [src]="cardImage(product.imageUrls[0])" [alt]="product.name" loading="lazy" (error)="useFallback($event)">
               </div>
               <div class="admin-list-identity">
                 <span>{{ product.brand }}</span>

@@ -121,6 +121,7 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
                 product.getStock(),
                 product.getCategory(),
                 product.getImageUrls(),
+                product.getImageStorageKeys(),
                 product.isActive(),
                 product.getCreatedAt()
         );
@@ -136,6 +137,7 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
                 entity.getStock(),
                 entity.getCategory(),
                 entity.getImageUrls(),
+                entity.getImageStorageKeys(),
                 entity.isActive(),
                 entity.getCreatedAt()
         );

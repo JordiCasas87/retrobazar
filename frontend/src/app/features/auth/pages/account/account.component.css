@@ -84,16 +84,16 @@
   .account-options { gap: 44px; }
   .account-options h2 { font-size: clamp(20px, 6vw, 28px); }
   .account-options p { font-size: clamp(12px, 3.5vw, 15px); }
-  .modal-backdrop { padding: 12px; }
+  .modal-backdrop { min-height: 100dvh; padding: 12px 12px max(12px, env(safe-area-inset-bottom)); }
   .account-dialog { width: min(96vw, 500px); }
   .dialog-close { width: 34px; height: 34px; font-size: 24px; }
-  .gameboy-dialog .dialog-label { inset: 29% 12% 10%; padding: 5% 7%; }
-  .nes-dialog .dialog-label { inset: 2% 7% 23% 37%; padding: 5%; }
+  .gameboy-dialog .dialog-label { inset: 29% 12% 8%; padding: 5% 7% 7%; overflow-y: auto; }
+  .nes-dialog .dialog-label { inset: 2% 6% 13% 34%; padding: 5% 5% 7%; overflow-y: auto; }
   .dialog-label > p { margin-bottom: 4px; font-size: 8px; }
   .dialog-label h2, .register-form h2 { margin-bottom: 6px; font-size: clamp(17px, 5.5vw, 22px); }
   .dialog-label > label:not(.consent-field), .register-form > label:not(.consent-field) { margin: 3px 0 2px; font-size: 10px; }
   .dialog-label > input, .register-form > input { min-height: 32px; padding: 4px 6px; font-size: 16px; }
-  .dialog-label > button, .register-form > button { margin-top: 7px; padding: 7px 10px; font-size: 12px; }
+  .dialog-label > button, .register-form > button { flex: 0 0 auto; margin-top: 7px; margin-bottom: 4px; padding: 8px 10px; font-size: 12px; }
   .consent-field { margin-top: 5px; gap: 5px; font-size: 9px; }
   .form-error { margin-top: 4px; font-size: 9px; }
   .profile-shell, .profile-heading, .profile-heading > div { width: 100%; max-width: 100%; min-width: 0; }

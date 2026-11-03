@@ -15,10 +15,10 @@
 .admin-card { display: flex; min-width: 0; flex-direction: column; color: var(--ink); box-shadow: 0 18px 36px rgba(0,0,0,.35); }
 .status-badge { position: absolute; top: 14px; left: 14px; padding: 7px 9px; background: var(--cyan); color: var(--ink); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
 .status-badge.inactive { background: #777; color: #fff; }
-.admin-card-footer { margin-top: auto; padding: 18px; display: flex; align-items: center; justify-content: space-between; gap: 14px; border-top: 1px solid rgba(16,16,16,.1); }
+.admin-card-footer { margin-top: auto; padding: 18px; display: flex; align-items: center; justify-content: space-between; gap: 14px; }
 .admin-card-footer span { color: #55544f; font-size: 14px; }
 .admin-card-actions { display: flex; align-items: center; justify-content: flex-end; gap: 9px; }
-.admin-card-actions a, .admin-card-footer button { padding: 9px 13px; border: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; font-weight: 600; }
+.admin-card-actions a, .admin-card-footer button { padding: 9px 13px; border: 1px solid var(--ink); border-radius: 9px; background: transparent; color: var(--ink); cursor: pointer; font-weight: 600; }
 .admin-card-footer button { border-color: #9c3028; color: #8a241d; }
 .admin-card-actions a:hover { background: var(--ink); color: #fff; }
 .admin-card-footer button:hover { background: #8a241d; color: #fff; }
@@ -44,7 +44,7 @@
 .admin-list-meta { min-width: 110px; display: grid; gap: 7px; color: #55544f; font-size: 13px; text-align: right; }
 .admin-list-meta strong { color: var(--ink); }
 .admin-list-actions { display: flex; gap: 8px; }
-.admin-list-actions a, .admin-list-actions button { padding: 9px 12px; border: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; font-weight: 600; }
+.admin-list-actions a, .admin-list-actions button { padding: 9px 12px; border: 1px solid var(--ink); border-radius: 9px; background: transparent; color: var(--ink); cursor: pointer; font-weight: 600; }
 .admin-list-actions button { border-color: #9c3028; color: #8a241d; }
 .admin-list-actions a:hover { background: var(--ink); color: #fff; }
 .admin-list-actions button:hover { background: #8a241d; color: #fff; }

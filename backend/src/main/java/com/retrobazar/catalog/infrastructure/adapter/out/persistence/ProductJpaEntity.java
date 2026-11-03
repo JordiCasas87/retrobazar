@@ -51,8 +51,7 @@ public class ProductJpaEntity {
             joinColumns = @JoinColumn(name = "product_id")
     )
     @OrderColumn(name = "image_order")
-    @Column(name = "image_url", nullable = false, length = 1000)
-    private List<String> imageUrls = new ArrayList<>();
+    private List<ProductImageJpaEmbeddable> images = new ArrayList<>();
 
     @Column(nullable = false)
     private boolean active;
@@ -72,6 +71,7 @@ public class ProductJpaEntity {
             int stock,
             ProductCategory category,
             List<String> imageUrls,
+            List<String> imageStorageKeys,
             boolean active,
             Instant createdAt
     ) {
@@ -82,7 +82,13 @@ public class ProductJpaEntity {
         this.price = price;
         this.stock = stock;
         this.category = category;
-        this.imageUrls = new ArrayList<>(imageUrls);
+        this.images = new ArrayList<>();
+        for (int index = 0; index < imageUrls.size(); index++) {
+            this.images.add(new ProductImageJpaEmbeddable(
+                    imageUrls.get(index),
+                    imageStorageKeys.get(index)
+            ));
+        }
         this.active = active;
         this.createdAt = createdAt;
     }
@@ -116,7 +122,11 @@ public class ProductJpaEntity {
     }
 
     public List<String> getImageUrls() {
-        return imageUrls;
+        return images.stream().map(ProductImageJpaEmbeddable::getUrl).toList();
+    }
+
+    public List<String> getImageStorageKeys() {
+        return images.stream().map(ProductImageJpaEmbeddable::getStorageKey).toList();
     }
 
     public boolean isActive() {

@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.Collections;
 
 public class Product {
 
@@ -16,6 +17,7 @@ public class Product {
     private int stock;
     private ProductCategory category;
     private List<String> imageUrls;
+    private List<String> imageStorageKeys;
     private boolean active;
     private final Instant createdAt;
 
@@ -31,6 +33,27 @@ public class Product {
             boolean active,
             Instant createdAt
     ) {
+        this(
+                id, name, brand, description, price, stock, category,
+                imageUrls,
+                imageUrls == null ? List.of() : Collections.nCopies(imageUrls.size(), null),
+                active, createdAt
+        );
+    }
+
+    public Product(
+            UUID id,
+            String name,
+            String brand,
+            String description,
+            BigDecimal price,
+            int stock,
+            ProductCategory category,
+            List<String> imageUrls,
+            List<String> imageStorageKeys,
+            boolean active,
+            Instant createdAt
+    ) {
         this.id = Objects.requireNonNull(id, "id cannot be null");
         this.name = requireText(name, "name");
         this.brand = requireText(brand, "brand");
@@ -39,6 +62,7 @@ public class Product {
         this.stock = requireNonNegativeStock(stock);
         this.category = Objects.requireNonNull(category, "category cannot be null");
         this.imageUrls = requireImages(imageUrls);
+        this.imageStorageKeys = requireStorageKeys(imageStorageKeys, this.imageUrls.size());
         this.active = active;
         this.createdAt = Objects.requireNonNull(createdAt, "createdAt cannot be null");
     }
@@ -75,6 +99,10 @@ public class Product {
         return imageUrls;
     }
 
+    public List<String> getImageStorageKeys() {
+        return imageStorageKeys;
+    }
+
     public boolean isActive() {
         return active;
     }
@@ -92,6 +120,23 @@ public class Product {
             ProductCategory category,
             List<String> imageUrls
     ) {
+        updateDetails(
+                name, brand, description, price, stock, category,
+                imageUrls,
+                imageUrls == null ? List.of() : Collections.nCopies(imageUrls.size(), null)
+        );
+    }
+
+    public void updateDetails(
+            String name,
+            String brand,
+            String description,
+            BigDecimal price,
+            int stock,
+            ProductCategory category,
+            List<String> imageUrls,
+            List<String> imageStorageKeys
+    ) {
         String validName = requireText(name, "name");
         String validBrand = requireText(brand, "brand");
         String validDescription = requireText(description, "description");
@@ -102,6 +147,10 @@ public class Product {
                 "category cannot be null"
         );
         List<String> validImageUrls = requireImages(imageUrls);
+        List<String> validStorageKeys = requireStorageKeys(
+                imageStorageKeys,
+                validImageUrls.size()
+        );
 
         this.name = validName;
         this.brand = validBrand;
@@ -110,6 +159,7 @@ public class Product {
         this.stock = validStock;
         this.category = validCategory;
         this.imageUrls = validImageUrls;
+        this.imageStorageKeys = validStorageKeys;
     }
 
     private static String requireText(String value, String fieldName) {
@@ -146,6 +196,16 @@ public class Product {
 
         imageUrls.forEach(imageUrl -> requireText(imageUrl, "imageUrl"));
         return List.copyOf(imageUrls);
+    }
+
+    private static List<String> requireStorageKeys(List<String> storageKeys, int imageCount) {
+        Objects.requireNonNull(storageKeys, "imageStorageKeys cannot be null");
+        if (storageKeys.size() != imageCount) {
+            throw new IllegalArgumentException("each image must have a matching storage key");
+        }
+        return Collections.unmodifiableList(storageKeys.stream()
+                .map(key -> key == null || key.isBlank() ? null : key)
+                .toList());
     }
 
     //métodos de active

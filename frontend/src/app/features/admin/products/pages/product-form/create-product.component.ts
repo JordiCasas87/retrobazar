@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Observable, of, Subscription, switchMap } from 'rxjs';
+import { finalize, forkJoin, Observable, of, Subscription, switchMap } from 'rxjs';
 import { AdminProductService } from '../../data-access/admin-product.service';
 import { createImageUrlControl, createProductForm, productRequestFromForm } from '../../forms/product-form';
 import { PRODUCT_CATEGORY_OPTIONS } from '../../../../catalog/models/product.constants';
@@ -10,6 +10,7 @@ import {
   CreateProductRequest,
   Product,
   ProductAgentResponse,
+  UploadedProductImage,
   UpdateProductRequest
 } from '../../../../catalog/models/product.model';
 
@@ -36,6 +37,12 @@ export class CreateProductComponent {
   readonly editing = signal(Boolean(this.productId));
   readonly loadingProduct = signal(Boolean(this.productId));
   readonly submitting = signal(false);
+  readonly uploadingImages = signal(false);
+  readonly imageUploadError = signal('');
+  readonly cloudinaryLibraryOpen = signal(false);
+  readonly cloudinaryLibraryLoading = signal(false);
+  readonly cloudinaryLibraryError = signal('');
+  readonly cloudinaryImages = signal<UploadedProductImage[]>([]);
   readonly submitError = signal('');
   readonly fieldErrors = signal<Record<string, string>>({});
   readonly agentModalOpen = signal(false);
@@ -58,14 +65,98 @@ export class CreateProductComponent {
     return this.form.controls.imageUrls;
   }
 
-  addImageUrl(): void {
-    if (this.imageUrls.length >= 5) return;
-    this.imageUrls.push(createImageUrlControl(this.urlPattern));
+  get imageStorageKeys(): FormArray<FormControl<string | null>> {
+    return this.form.controls.imageStorageKeys;
+  }
+
+  get primaryImageUrl(): string {
+    return this.imageUrls.controls[0]?.value || this.fallbackImage;
   }
 
   removeImageUrl(index: number): void {
-    if (this.imageUrls.length === 1) return;
     this.imageUrls.removeAt(index);
+    this.imageStorageKeys.removeAt(index);
+  }
+
+  moveImage(index: number, direction: -1 | 1): void {
+    const target = index + direction;
+    if (target < 0 || target >= this.imageUrls.length) return;
+
+    const url = this.imageUrls.at(index);
+    const storageKey = this.imageStorageKeys.at(index);
+    this.imageUrls.removeAt(index);
+    this.imageStorageKeys.removeAt(index);
+    this.imageUrls.insert(target, url);
+    this.imageStorageKeys.insert(target, storageKey);
+  }
+
+  openCloudinaryLibrary(): void {
+    this.cloudinaryLibraryOpen.set(true);
+    if (this.cloudinaryImages().length) return;
+
+    this.cloudinaryLibraryLoading.set(true);
+    this.cloudinaryLibraryError.set('');
+    this.adminProducts.listCloudinaryImages()
+      .pipe(finalize(() => this.cloudinaryLibraryLoading.set(false)))
+      .subscribe({
+        next: (images) => this.cloudinaryImages.set(images),
+        error: () => this.cloudinaryLibraryError.set(
+          'No se ha podido leer la carpeta Retro Bazar Products de Cloudinary.'
+        )
+      });
+  }
+
+  closeCloudinaryLibrary(): void {
+    this.cloudinaryLibraryOpen.set(false);
+  }
+
+  toggleCloudinaryImage(image: UploadedProductImage): void {
+    const selectedIndex = this.imageStorageKeys.controls.findIndex(
+      (control) => control.value === image.storageKey
+    );
+    if (selectedIndex >= 0) {
+      this.removeImageUrl(selectedIndex);
+      return;
+    }
+
+    if (this.imageUrls.length >= 5) return;
+    this.imageUrls.push(createImageUrlControl(this.urlPattern, image.url));
+    this.imageStorageKeys.push(new FormControl(image.storageKey));
+  }
+
+  hasSelectedImage(image: UploadedProductImage): boolean {
+    return this.imageStorageKeys.controls.some((control) => control.value === image.storageKey);
+  }
+
+  isPrimaryImage(image: UploadedProductImage): boolean {
+    return this.imageStorageKeys.controls[0]?.value === image.storageKey;
+  }
+
+  selectImages(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const selected = Array.from(input.files ?? []);
+    input.value = '';
+    this.imageUploadError.set('');
+
+    const availableSlots = 5 - this.imageUrls.length;
+    if (!selected.length || availableSlots <= 0) return;
+    if (selected.length > availableSlots) {
+      this.imageUploadError.set(`Solo puedes añadir ${availableSlots} imagen${availableSlots === 1 ? '' : 'es'} más.`);
+      return;
+    }
+
+    this.uploadingImages.set(true);
+    forkJoin(selected.map((file) => this.adminProducts.uploadImage(file)))
+      .pipe(finalize(() => this.uploadingImages.set(false)))
+      .subscribe({
+        next: (images) => images.forEach((image) => {
+          this.imageUrls.push(createImageUrlControl(this.urlPattern, image.url));
+          this.imageStorageKeys.push(new FormControl(image.storageKey));
+        }),
+        error: () => this.imageUploadError.set(
+          'No se han podido subir las imágenes. Comprueba Cloudinary y vuelve a intentarlo.'
+        )
+      });
   }
 
   openAgentModal(): void {
@@ -180,7 +271,10 @@ export class CreateProductComponent {
         });
         this.imageUrls.clear();
         product.imageUrls.forEach((url) => this.imageUrls.push(createImageUrlControl(this.urlPattern, url)));
-        if (!product.imageUrls.length) this.imageUrls.push(createImageUrlControl(this.urlPattern));
+        this.imageStorageKeys.clear();
+        product.imageUrls.forEach((_, index) => this.imageStorageKeys.push(
+          new FormControl(product.imageStorageKeys?.[index] ?? null)
+        ));
         this.loadingProduct.set(false);
       },
       error: () => {
@@ -199,6 +293,8 @@ export class CreateProductComponent {
       stock: request.stock,
       category: request.category,
       imageUrls: request.imageUrls
+      ,
+      imageStorageKeys: request.imageStorageKeys
     };
 
     return this.adminProducts.update(id, updateRequest).pipe(

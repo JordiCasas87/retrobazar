@@ -16,7 +16,8 @@ export function createProductForm(urlPattern: RegExp) {
     price: new FormControl<number | null>(null, [Validators.required, Validators.min(0.01)]),
     stock: new FormControl<number | null>(0, [Validators.required, Validators.min(0)]),
     category: new FormControl<ProductCategory>('GAMING', { nonNullable: true, validators: [Validators.required] }),
-    imageUrls: new FormArray<FormControl<string>>([createImageUrlControl(urlPattern)]),
+    imageUrls: new FormArray<FormControl<string>>([], [Validators.minLength(1), Validators.maxLength(5)]),
+    imageStorageKeys: new FormArray<FormControl<string | null>>([], [Validators.minLength(1), Validators.maxLength(5)]),
     active: new FormControl(true, { nonNullable: true })
   });
 }
@@ -33,6 +34,7 @@ export function productRequestFromForm(form: ProductForm): CreateProductRequest 
     stock: value.stock!,
     category: value.category,
     imageUrls: value.imageUrls.map((url) => url.trim()),
+    imageStorageKeys: value.imageStorageKeys,
     active: value.active
   };
 }

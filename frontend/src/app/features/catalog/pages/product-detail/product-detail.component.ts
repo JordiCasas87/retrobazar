@@ -21,6 +21,7 @@ export class ProductDetailComponent {
   readonly loading = signal(true);
   readonly error = signal(false);
   readonly activeImage = signal(0);
+  readonly imageExpanded = signal(false);
   readonly fallbackImage = 'assets/product-placeholder-retro-bazar-v6.jpg';
 
   constructor() {
@@ -44,6 +45,14 @@ export class ProductDetailComponent {
 
   selectImage(index: number): void {
     this.activeImage.set(index);
+  }
+
+  openExpandedImage(): void {
+    this.imageExpanded.set(true);
+  }
+
+  closeExpandedImage(): void {
+    this.imageExpanded.set(false);
   }
 
   useFallback(event: Event): void {
