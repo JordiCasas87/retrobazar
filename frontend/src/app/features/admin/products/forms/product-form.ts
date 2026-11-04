@@ -18,6 +18,10 @@ export function createProductForm(urlPattern: RegExp) {
     category: new FormControl<ProductCategory>('GAMING', { nonNullable: true, validators: [Validators.required] }),
     imageUrls: new FormArray<FormControl<string>>([], [Validators.minLength(1), Validators.maxLength(5)]),
     imageStorageKeys: new FormArray<FormControl<string | null>>([], [Validators.minLength(1), Validators.maxLength(5)]),
+    wallapopUrl: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.maxLength(1000), Validators.pattern(/^https:\/\/([a-z0-9-]+\.)*wallapop\.com(?:\/.*)?$/i)]
+    }),
     active: new FormControl(true, { nonNullable: true })
   });
 }
@@ -35,6 +39,7 @@ export function productRequestFromForm(form: ProductForm): CreateProductRequest 
     category: value.category,
     imageUrls: value.imageUrls.map((url) => url.trim()),
     imageStorageKeys: value.imageStorageKeys,
+    wallapopUrl: value.wallapopUrl.trim() || null,
     active: value.active
   };
 }

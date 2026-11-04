@@ -62,10 +62,14 @@
           </dl>
 
           <div class="product-actions" aria-label="Opciones de compra y contacto">
-            <button class="wallapop-action" type="button" disabled>Comprar en Wallapop</button>
+            @if (item.wallapopUrl) {
+              <a class="wallapop-action" [href]="item.wallapopUrl" target="_blank" rel="noopener noreferrer">Comprar en Wallapop</a>
+            } @else {
+              <button class="wallapop-action" type="button" disabled>Comprar en Wallapop</button>
+            }
             <button class="contact-action" type="button" disabled>Contactar con el vendedor</button>
           </div>
-          <p class="purchase-note">Estas opciones estarán disponibles próximamente.</p>
+          <p class="purchase-note">{{ item.wallapopUrl ? 'La compra se completa de forma segura en Wallapop.' : 'Este producto todavía no tiene un anuncio de Wallapop asociado.' }}</p>
         </div>
       </div>
     </section>

@@ -86,6 +86,14 @@
           <input type="checkbox" formControlName="active">
           <span>Publicar como producto activo</span>
         </label>
+
+        <label class="full-width">
+          <span>Enlace de Wallapop</span>
+          <input type="url" formControlName="wallapopUrl" placeholder="https://es.wallapop.com/item/...">
+          @if (form.controls.wallapopUrl.touched && form.controls.wallapopUrl.invalid) {
+            <small>Introduce una URL HTTPS válida de Wallapop.</small>
+          }
+        </label>
       </div>
 
       <fieldset>
