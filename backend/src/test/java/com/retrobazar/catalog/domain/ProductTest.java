@@ -34,6 +34,7 @@ class ProductTest {
         assertEquals(10, product.getStock());
         assertEquals(ProductCategory.GADGETS, product.getCategory());
         assertEquals(List.of("https://example.com/product.jpg"), product.getImageUrls());
+        assertEquals(null, product.getWallapopUrl());
         assertTrue(product.isActive());
         assertEquals(CREATED_AT, product.getCreatedAt());
     }
@@ -71,6 +72,28 @@ class ProductTest {
         );
 
         assertEquals(new BigDecimal("0.01"), product.getPrice());
+    }
+
+    @Test
+    void shouldAcceptAValidWallapopUrl() {
+        Product product = new Product(
+                PRODUCT_ID, "Pixel Clock", "Divoom", "Description",
+                new BigDecimal("49.99"), 1, ProductCategory.GADGETS,
+                List.of("https://example.com/product.jpg"), java.util.Collections.singletonList(null),
+                "https://es.wallapop.com/item/pixel-clock-123", true, CREATED_AT
+        );
+
+        assertEquals("https://es.wallapop.com/item/pixel-clock-123", product.getWallapopUrl());
+    }
+
+    @Test
+    void shouldRejectANonWallapopUrl() {
+        assertThrows(IllegalArgumentException.class, () -> new Product(
+                PRODUCT_ID, "Pixel Clock", "Divoom", "Description",
+                new BigDecimal("49.99"), 1, ProductCategory.GADGETS,
+                List.of("https://example.com/product.jpg"), java.util.Collections.singletonList(null),
+                "https://example.com/item/123", true, CREATED_AT
+        ));
     }
 
     @Test

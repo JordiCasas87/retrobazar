@@ -2,6 +2,7 @@ package com.retrobazar.catalog.domain;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -18,6 +19,7 @@ public class Product {
     private ProductCategory category;
     private List<String> imageUrls;
     private List<String> imageStorageKeys;
+    private String wallapopUrl;
     private boolean active;
     private final Instant createdAt;
 
@@ -37,7 +39,7 @@ public class Product {
                 id, name, brand, description, price, stock, category,
                 imageUrls,
                 imageUrls == null ? List.of() : Collections.nCopies(imageUrls.size(), null),
-                active, createdAt
+                null, active, createdAt
         );
     }
 
@@ -54,6 +56,24 @@ public class Product {
             boolean active,
             Instant createdAt
     ) {
+        this(id, name, brand, description, price, stock, category, imageUrls,
+                imageStorageKeys, null, active, createdAt);
+    }
+
+    public Product(
+            UUID id,
+            String name,
+            String brand,
+            String description,
+            BigDecimal price,
+            int stock,
+            ProductCategory category,
+            List<String> imageUrls,
+            List<String> imageStorageKeys,
+            String wallapopUrl,
+            boolean active,
+            Instant createdAt
+    ) {
         this.id = Objects.requireNonNull(id, "id cannot be null");
         this.name = requireText(name, "name");
         this.brand = requireText(brand, "brand");
@@ -63,6 +83,7 @@ public class Product {
         this.category = Objects.requireNonNull(category, "category cannot be null");
         this.imageUrls = requireImages(imageUrls);
         this.imageStorageKeys = requireStorageKeys(imageStorageKeys, this.imageUrls.size());
+        this.wallapopUrl = requireWallapopUrl(wallapopUrl);
         this.active = active;
         this.createdAt = Objects.requireNonNull(createdAt, "createdAt cannot be null");
     }
@@ -103,6 +124,10 @@ public class Product {
         return imageStorageKeys;
     }
 
+    public String getWallapopUrl() {
+        return wallapopUrl;
+    }
+
     public boolean isActive() {
         return active;
     }
@@ -123,7 +148,8 @@ public class Product {
         updateDetails(
                 name, brand, description, price, stock, category,
                 imageUrls,
-                imageUrls == null ? List.of() : Collections.nCopies(imageUrls.size(), null)
+                imageUrls == null ? List.of() : Collections.nCopies(imageUrls.size(), null),
+                wallapopUrl
         );
     }
 
@@ -136,6 +162,21 @@ public class Product {
             ProductCategory category,
             List<String> imageUrls,
             List<String> imageStorageKeys
+    ) {
+        updateDetails(name, brand, description, price, stock, category,
+                imageUrls, imageStorageKeys, wallapopUrl);
+    }
+
+    public void updateDetails(
+            String name,
+            String brand,
+            String description,
+            BigDecimal price,
+            int stock,
+            ProductCategory category,
+            List<String> imageUrls,
+            List<String> imageStorageKeys,
+            String wallapopUrl
     ) {
         String validName = requireText(name, "name");
         String validBrand = requireText(brand, "brand");
@@ -151,6 +192,7 @@ public class Product {
                 imageStorageKeys,
                 validImageUrls.size()
         );
+        String validWallapopUrl = requireWallapopUrl(wallapopUrl);
 
         this.name = validName;
         this.brand = validBrand;
@@ -160,6 +202,7 @@ public class Product {
         this.category = validCategory;
         this.imageUrls = validImageUrls;
         this.imageStorageKeys = validStorageKeys;
+        this.wallapopUrl = validWallapopUrl;
     }
 
     private static String requireText(String value, String fieldName) {
@@ -206,6 +249,26 @@ public class Product {
         return Collections.unmodifiableList(storageKeys.stream()
                 .map(key -> key == null || key.isBlank() ? null : key)
                 .toList());
+    }
+
+    private static String requireWallapopUrl(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+
+        try {
+            URI uri = URI.create(value.trim());
+            String host = uri.getHost();
+            if (!"https".equalsIgnoreCase(uri.getScheme())
+                    || host == null
+                    || !(host.equalsIgnoreCase("wallapop.com")
+                    || host.toLowerCase().endsWith(".wallapop.com"))) {
+                throw new IllegalArgumentException("wallapopUrl must be a valid HTTPS Wallapop URL");
+            }
+            return uri.toString();
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException("wallapopUrl must be a valid HTTPS Wallapop URL");
+        }
     }
 
     //métodos de active
