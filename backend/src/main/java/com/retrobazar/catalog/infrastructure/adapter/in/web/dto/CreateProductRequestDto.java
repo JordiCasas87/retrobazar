@@ -25,8 +25,23 @@ public record CreateProductRequestDto(
                 @Pattern(regexp = "^https?://.*$") String> imageUrls,
         @NotNull @Size(min = 1, max = 5)
         List<@Size(max = 500) String> imageStorageKeys,
+        @Size(max = 1000)
+        @Pattern(
+                regexp = "^https://([a-z0-9-]+\\.)*wallapop\\.com(?:/.*)?$",
+                flags = Pattern.Flag.CASE_INSENSITIVE
+        )
+        String wallapopUrl,
         @NotNull Boolean active
 ) {
+
+    public CreateProductRequestDto(
+            String name, String brand, String description, BigDecimal price,
+            Integer stock, ProductCategory category, List<String> imageUrls,
+            List<String> imageStorageKeys, Boolean active
+    ) {
+        this(name, brand, description, price, stock, category, imageUrls,
+                imageStorageKeys, null, active);
+    }
 
     public CreateProductRequestDto(
             String name, String brand, String description, BigDecimal price,
@@ -47,6 +62,7 @@ public record CreateProductRequestDto(
                 category,
                 imageUrls,
                 imageStorageKeys,
+                wallapopUrl,
                 active
         );
 

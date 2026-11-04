@@ -127,6 +127,32 @@ class ProductRequestDtoValidationTest {
         assertEquals(0, updateRequest.toCommand().stock());
     }
 
+    @Test
+    void shouldRejectInvalidWallapopUrls() {
+        CreateProductRequestDto request = new CreateProductRequestDto(
+                "Pixel Clock", "Divoom", "Description", BigDecimal.TEN, 1,
+                ProductCategory.GADGETS, List.of("https://example.com/image.jpg"),
+                java.util.Collections.singletonList(null), "https://example.com/item/1", true
+        );
+
+        assertViolation(request, "wallapopUrl", Pattern.class);
+    }
+
+    @Test
+    void shouldAcceptARealWallapopItemUrl() {
+        String wallapopUrl = "https://es.wallapop.com/item/"
+                + "pokemon-edicion-azul-game-boy-pal-alemania-1320387850";
+        CreateProductRequestDto request = new CreateProductRequestDto(
+                "Pokémon Edición Azul", "Nintendo", "Juego para Game Boy",
+                BigDecimal.TEN, 1, ProductCategory.GAMING,
+                List.of("https://example.com/image.jpg"),
+                java.util.Collections.singletonList(null), wallapopUrl, true
+        );
+
+        assertTrue(VALIDATOR.validate(request).isEmpty());
+        assertEquals(wallapopUrl, request.toCommand().wallapopUrl());
+    }
+
     private void assertRequiredFieldViolations(Object request, boolean includesActive) {
         assertViolation(request, "name", NotBlank.class);
         assertViolation(request, "brand", NotBlank.class);

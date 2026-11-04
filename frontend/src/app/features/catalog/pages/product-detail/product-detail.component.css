@@ -33,7 +33,9 @@ dl div { padding: 11px 0; display: flex; justify-content: space-between; gap: 20
 dt { color: rgba(244,242,236,.55); }
 dd { margin: 0; text-align: right; }
 .product-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.product-actions button { min-height: 54px; padding: 14px 18px; border-radius: 10px; font-size: 15px; font-weight: 650; cursor: not-allowed; opacity: .72; }
+.product-actions button, .product-actions a { min-height: 54px; padding: 14px 18px; border-radius: 10px; font-size: 15px; font-weight: 650; display: flex; align-items: center; justify-content: center; text-decoration: none; box-sizing: border-box; }
+.product-actions button { cursor: not-allowed; opacity: .72; }
+.product-actions a { cursor: pointer; }
 .wallapop-action { border: 1px solid #35d5c5; background: #35d5c5; color: #071311; }
 .contact-action { border: 1px solid rgba(255,255,255,.5); background: transparent; color: #fff; }
 .purchase-note { color: rgba(244,242,236,.5); font-size: 13px; line-height: 1.5; text-align: center; }

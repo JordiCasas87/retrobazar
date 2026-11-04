@@ -267,6 +267,7 @@ export class CreateProductComponent {
           price: product.price,
           stock: product.stock,
           category: product.category,
+          wallapopUrl: product.wallapopUrl ?? '',
           active: product.active
         });
         this.imageUrls.clear();
@@ -292,9 +293,9 @@ export class CreateProductComponent {
       price: request.price,
       stock: request.stock,
       category: request.category,
-      imageUrls: request.imageUrls
-      ,
-      imageStorageKeys: request.imageStorageKeys
+      imageUrls: request.imageUrls,
+      imageStorageKeys: request.imageStorageKeys,
+      wallapopUrl: request.wallapopUrl
     };
 
     return this.adminProducts.update(id, updateRequest).pipe(

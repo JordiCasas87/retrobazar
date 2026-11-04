@@ -13,14 +13,24 @@ public record UpdateProductCommand(
         int stock,
         ProductCategory category,
         List<String> imageUrls,
-        List<String> imageStorageKeys
+        List<String> imageStorageKeys,
+        String wallapopUrl
 ) {
+    public UpdateProductCommand(
+            String name, String brand, String description, BigDecimal price,
+            int stock, ProductCategory category, List<String> imageUrls,
+            List<String> imageStorageKeys
+    ) {
+        this(name, brand, description, price, stock, category, imageUrls,
+                imageStorageKeys, null);
+    }
+
     public UpdateProductCommand(
             String name, String brand, String description, BigDecimal price,
             int stock, ProductCategory category, List<String> imageUrls
     ) {
         this(name, brand, description, price, stock, category, imageUrls,
                 imageUrls == null ? java.util.List.of()
-                        : java.util.Collections.nCopies(imageUrls.size(), null));
+                        : java.util.Collections.nCopies(imageUrls.size(), null), null);
     }
 }

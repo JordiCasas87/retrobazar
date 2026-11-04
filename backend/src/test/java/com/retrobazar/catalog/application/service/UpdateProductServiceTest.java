@@ -45,6 +45,7 @@ class UpdateProductServiceTest {
         assertEquals(command.name(), result.getName());
         assertEquals(command.price(), result.getPrice());
         assertEquals(command.stock(), result.getStock());
+        assertEquals(command.wallapopUrl(), result.getWallapopUrl());
         verify(productRepositoryPort).save(product);
     }
 
@@ -73,7 +74,9 @@ class UpdateProductServiceTest {
                 new BigDecimal("-1.00"),
                 5,
                 ProductCategory.SETUP_ACCESSORIES,
-                List.of("https://example.com/keyboard.jpg")
+                List.of("https://example.com/keyboard.jpg"),
+                java.util.Collections.singletonList(null),
+                "https://es.wallapop.com/item/mechanical-keyboard-123"
         );
 
         when(productRepositoryPort.findById(productId)).thenReturn(Optional.of(product));
@@ -94,7 +97,9 @@ class UpdateProductServiceTest {
                 new BigDecimal("79.99"),
                 5,
                 ProductCategory.SETUP_ACCESSORIES,
-                List.of("https://example.com/keyboard.jpg")
+                List.of("https://example.com/keyboard.jpg"),
+                java.util.Collections.singletonList(null),
+                "https://es.wallapop.com/item/mechanical-keyboard-123"
         );
     }
 

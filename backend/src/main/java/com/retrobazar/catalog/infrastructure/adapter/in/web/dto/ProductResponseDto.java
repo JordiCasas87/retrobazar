@@ -18,6 +18,7 @@ public record ProductResponseDto(
         ProductCategory category,
         List<String> imageUrls,
         List<String> imageStorageKeys,
+        String wallapopUrl,
         boolean active,
         Instant createdAt
 ) {
@@ -33,6 +34,7 @@ public record ProductResponseDto(
                 product.getCategory(),
                 product.getImageUrls(),
                 product.getImageStorageKeys(),
+                product.getWallapopUrl(),
                 product.isActive(),
                 product.getCreatedAt()
         );

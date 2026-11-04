@@ -31,6 +31,7 @@ public class CreateProductService implements CreateProductUseCase {
                 command.category(),
                 command.imageUrls(),
                 command.imageStorageKeys(),
+                command.wallapopUrl(),
                 command.active(),
                 createdAt
         );

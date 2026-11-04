@@ -10,6 +10,7 @@ export interface Product {
   category: ProductCategory;
   imageUrls: string[];
   imageStorageKeys: Array<string | null>;
+  wallapopUrl: string | null;
   active: boolean;
   createdAt: string;
 }
@@ -23,6 +24,7 @@ export interface CreateProductRequest {
   category: ProductCategory;
   imageUrls: string[];
   imageStorageKeys: Array<string | null>;
+  wallapopUrl: string | null;
   active: boolean;
 }
 
