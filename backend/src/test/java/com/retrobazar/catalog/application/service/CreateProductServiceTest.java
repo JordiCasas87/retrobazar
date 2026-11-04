@@ -34,6 +34,8 @@ class CreateProductServiceTest {
                 3,
                 ProductCategory.GAMING,
                 List.of("https://example.com/game-boy-color.jpg"),
+                java.util.Collections.singletonList(null),
+                "https://es.wallapop.com/item/game-boy-color-123",
                 true
         );
 
@@ -49,6 +51,7 @@ class CreateProductServiceTest {
         assertEquals(command.stock(), result.getStock());
         assertEquals(command.category(), result.getCategory());
         assertEquals(command.imageUrls(), result.getImageUrls());
+        assertEquals(command.wallapopUrl(), result.getWallapopUrl());
         assertEquals(command.active(), result.isActive());
         assertNotNull(result.getId());
         assertNotNull(result.getCreatedAt());

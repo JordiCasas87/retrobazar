@@ -53,6 +53,9 @@ public class ProductJpaEntity {
     @OrderColumn(name = "image_order")
     private List<ProductImageJpaEmbeddable> images = new ArrayList<>();
 
+    @Column(name = "wallapop_url", length = 1000)
+    private String wallapopUrl;
+
     @Column(nullable = false)
     private boolean active;
 
@@ -75,6 +78,16 @@ public class ProductJpaEntity {
             boolean active,
             Instant createdAt
     ) {
+        this(id, name, brand, description, price, stock, category, imageUrls,
+                imageStorageKeys, null, active, createdAt);
+    }
+
+    public ProductJpaEntity(
+            UUID id, String name, String brand, String description,
+            BigDecimal price, int stock, ProductCategory category,
+            List<String> imageUrls, List<String> imageStorageKeys,
+            String wallapopUrl, boolean active, Instant createdAt
+    ) {
         this.id = id;
         this.name = name;
         this.brand = brand;
@@ -89,6 +102,7 @@ public class ProductJpaEntity {
                     imageStorageKeys.get(index)
             ));
         }
+        this.wallapopUrl = wallapopUrl;
         this.active = active;
         this.createdAt = createdAt;
     }
@@ -127,6 +141,10 @@ public class ProductJpaEntity {
 
     public List<String> getImageStorageKeys() {
         return images.stream().map(ProductImageJpaEmbeddable::getStorageKey).toList();
+    }
+
+    public String getWallapopUrl() {
+        return wallapopUrl;
     }
 
     public boolean isActive() {
